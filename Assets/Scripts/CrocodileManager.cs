@@ -104,28 +104,60 @@ public class CrocodileManager : Manager
 
     private void CrocodilesJumping()
     {
-        if (Input.touchCount > 0 && !EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId))
-        {
-            Touch touch = Input.GetTouch(0);
-            if (touch.phase == TouchPhase.Began)
-            {
-                if (FirstCrocodile && FirstCrocodile.JumpStatus == 0)
-                {
-                    foreach (Crocodile crocodile in crocodileList)
-                        if (!crocodile.IsOutGround)
-                            crocodile.CallTriggerJump(GetDelayedTime(crocodile));
+        bool pressBegan = false;
+        bool pressEnded = false;
+        bool pressHeld = false;
+        bool pointerOverUI = false;
 
-                    GameplayMusicManager.Instance.PlayJumpSound();
-                }
-            }
-            if (touch.phase == TouchPhase.Ended && FirstCrocodile)
-                foreach (Crocodile crocodile in crocodileList)
-                    crocodile.CallTriggerFall(GetDelayedTime(crocodile));
+        // PC / Editor (mouse + phím)
+#if UNITY_EDITOR || UNITY_STANDALONE || UNITY_WEBGL
+        if (EventSystem.current != null)
+            pointerOverUI = EventSystem.current.IsPointerOverGameObject();
+
+        pressBegan = Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space);
+        pressEnded = Input.GetMouseButtonUp(0) || Input.GetKeyUp(KeyCode.Space);
+        pressHeld = Input.GetMouseButton(0) || Input.GetKey(KeyCode.Space);
+#endif
+
+        // Mobile (touch)
+        if (Input.touchCount > 0)
+        {
+            Touch t = Input.GetTouch(0);
+            if (EventSystem.current != null)
+                pointerOverUI = EventSystem.current.IsPointerOverGameObject(t.fingerId);
+
+            if (t.phase == TouchPhase.Began) pressBegan = true;
+            if (t.phase == TouchPhase.Ended || t.phase == TouchPhase.Canceled) pressEnded = true;
+            if (t.phase == TouchPhase.Stationary || t.phase == TouchPhase.Moved) pressHeld = true;
         }
-        if (Input.touchCount == 0 && FirstCrocodile)
+
+        if (pointerOverUI) return;
+        if (!FirstCrocodile) return;
+
+        // Bắt đầu nhảy
+        if (pressBegan && FirstCrocodile.JumpStatus == 0)
+        {
+            foreach (Crocodile crocodile in crocodileList)
+                if (!crocodile.IsOutGround)
+                    crocodile.CallTriggerJump(GetDelayedTime(crocodile));
+
+            GameplayMusicManager.Instance.PlayJumpSound();
+        }
+
+        // Kết thúc giữ -> rơi xuống
+        if (pressEnded)
+        {
+            foreach (Crocodile crocodile in crocodileList)
+                crocodile.CallTriggerFall(GetDelayedTime(crocodile));
+        }
+
+        // Trạng thái thả (không còn giữ) nhưng trước đó có cá sấu đang "IsTouchingScreen"
+        if (!pressHeld)
+        {
             foreach (Crocodile crocodile in crocodileList)
                 if (crocodile.IsTouchingScreen)
                     crocodile.CallTriggerFall(GetDelayedTime(crocodile));
+        }
     }
 
     private void CalculatePosition()
