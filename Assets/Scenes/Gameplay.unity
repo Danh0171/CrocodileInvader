@@ -4215,11 +4215,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   numberRepool: 10
   objectPrefabs:
-  - {fileID: 8313919519791390800, guid: 34783649131709043b32fdcda4a22bdc, type: 3}
+  - {fileID: 4741446169254323825, guid: be7eda873b7b82444a0a48690457a1db, type: 3}
   - {fileID: 9150782629205753324, guid: d9158f9cecf81ab44b2eaa9beebf3862, type: 3}
   crocodileList: []
   associatedX: []
   currentCrocodileID: 0
+  maxJumpDelay: 0.25
 --- !u!4 &1774429094
 Transform:
   m_ObjectHideFlags: 0
