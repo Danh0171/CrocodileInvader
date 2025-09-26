@@ -9,7 +9,7 @@ public class Box : PoolableObject
     [SerializeField] private BoxCollider2D boxCollider2D;
     [SerializeField] private int numberHumansContains;
     [SerializeField] private int numberCrocodileNeeded;
-    [SerializeField] private List<Collision2D> collisions = new List<Collision2D>();
+    private readonly HashSet<Crocodile> crocodileContacts = new HashSet<Crocodile>();
     [SerializeField] private Slider slider;
 
     [SerializeField] private TextMeshProUGUI text;
@@ -19,12 +19,13 @@ public class Box : PoolableObject
     public override void Init()
     {
         base.Init();
-        collisions.Clear();
+        crocodileContacts.Clear();
+        turnedGold = false;
     }
 
     public override float Width => boxCollider2D.size.x;
     public override float Height => boxCollider2D.size.y;
-    public int CollisionCount => collisions.Count;
+    public int CollisionCount => crocodileContacts.Count;
 
     // Start is called before the first frame update
     protected override void Start()
@@ -76,27 +77,33 @@ public class Box : PoolableObject
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Zombie"))
+        if (!collision.gameObject.CompareTag("Zombie")) return;
+
+        if (GameManager.Instance.Zombies.CurrentFormID == 0)
         {
-            if (GameManager.Instance.Zombies.CurrentFormID == 0)
-            {
-                collisions.Add(collision);
-            }
-            else if (GameManager.Instance.Zombies.CurrentFormID == 1)
-            {
-                //Call coin manager generate coin
-                GameManager.Instance.Coins.TranformIntoCoin(this, false, ID);
-                RemoveSelf();
-                GameManager.Instance.GenerateZombies(numberHumansContains);
-                GameplayMusicManager.Instance.PlayGoldenizeSound();
-            }
+            var croc = collision.gameObject.GetComponentInParent<Crocodile>();
+            if (croc != null)
+                crocodileContacts.Add(croc);
+        }
+        else if (GameManager.Instance.Zombies.CurrentFormID == 1)
+        {
+            GameManager.Instance.Coins.TranformIntoCoin(this, false, ID);
+            RemoveSelf();
+            GameManager.Instance.GenerateZombies(numberHumansContains);
+            GameplayMusicManager.Instance.PlayGoldenizeSound();
         }
     }
 
     private void OnCollisionExit2D(Collision2D collision)
     {
-        if (collisions.Contains(collision))
-            collisions.Remove(collision);
+        var croc = collision.gameObject.GetComponentInParent<Crocodile>();
+        if (croc != null)
+            crocodileContacts.Remove(croc);
+    }
+
+    private void OnDisable()
+    {
+        crocodileContacts.Clear();
     }
 
     protected override void DestroyOnOutOfBounds()

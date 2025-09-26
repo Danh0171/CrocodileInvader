@@ -1,4 +1,4 @@
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,6 +19,10 @@ public class CrocodileManager : Manager
     [SerializeField] private int currentCrocodileID;
     private int layerCount = 1;
     private Crocodile firstCrocodile;
+    [SerializeField] private float maxJumpDelay = 0.25f;
+    private float bufferedJumpTimer = -1f;
+    private const float JumpBufferDuration = 0.12f;
+    private readonly Dictionary<Crocodile, bool> queuedJump = new Dictionary<Crocodile, bool>();
 
     #region Properties
     public Crocodile FirstCrocodile => firstCrocodile;
@@ -38,6 +42,7 @@ public class CrocodileManager : Manager
         CollectingNulls();
         LoadCrocodileZombie();
         CrocodilesJumping();
+        ProcessQueuedJumps();
         CalculatePosition();
         RearrangeCrocodiles();
     }
@@ -45,11 +50,27 @@ public class CrocodileManager : Manager
     private void LoadCrocodileZombie()
     {
         if (crocodileList.Count == 0) { firstCrocodile = null; return; }
-        firstCrocodile = null;
-        float maxX = -GameManager.ScreenWidth;
-        foreach (Crocodile zombie in crocodileList)
-            if (zombie.transform.position.x > maxX && !zombie.IsOutGround)
-            { firstCrocodile = zombie; maxX = zombie.transform.position.x; }
+        Crocodile groundedCandidate = null;
+        float maxXGrounded = -GameManager.ScreenWidth;
+        float maxXAny = -GameManager.ScreenWidth;
+        Crocodile anyCandidate = null;
+
+        foreach (Crocodile c in crocodileList)
+        {
+            if (c.IsOutGround) continue;
+            float x = c.transform.position.x;
+            if (c.JumpStatus == 0 && x > maxXGrounded)
+            {
+                groundedCandidate = c;
+                maxXGrounded = x;
+            }
+            if (x > maxXAny)
+            {
+                anyCandidate = c;
+                maxXAny = x;
+            }
+        }
+        firstCrocodile = groundedCandidate != null ? groundedCandidate : anyCandidate;
     }
 
     private void CollectingNulls()
@@ -95,37 +116,99 @@ public class CrocodileManager : Manager
 
     private float GetDelayedTime(Crocodile crocodile)
     {
-        float delayModifier = 0.8f;
-        if (CurrentFormID == 1)
-            delayModifier = 0.5f;
+        float delayModifier = (CurrentFormID == 1) ? 0.5f : 0.8f;
         float distance = Mathf.Max(FirstCrocodile.transform.position.x - crocodile.transform.position.x, 0f);
-        return distance / GameManager.Instance.ScrollBackSpeed * delayModifier + 0.001f;
+        float raw = distance / GameManager.Instance.ScrollBackSpeed * delayModifier + 0.001f;
+        return Mathf.Min(maxJumpDelay, raw);
     }
 
     private void CrocodilesJumping()
     {
-        if (Input.touchCount > 0 && !EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId))
-        {
-            Touch touch = Input.GetTouch(0);
-            if (touch.phase == TouchPhase.Began)
-            {
-                if (FirstCrocodile && FirstCrocodile.JumpStatus == 0)
-                {
-                    foreach (Crocodile crocodile in crocodileList)
-                        if (!crocodile.IsOutGround)
-                            crocodile.CallTriggerJump(GetDelayedTime(crocodile));
+        bool pressBegan = false;
+        bool pressEnded = false;
+        bool pressHeld = false;
+        bool pointerOverUI = false;
 
-                    GameplayMusicManager.Instance.PlayJumpSound();
-                }
-            }
-            if (touch.phase == TouchPhase.Ended && FirstCrocodile)
-                foreach (Crocodile crocodile in crocodileList)
-                    crocodile.CallTriggerFall(GetDelayedTime(crocodile));
+        // PC / Editor (mouse + phím)
+#if UNITY_EDITOR || UNITY_STANDALONE || UNITY_WEBGL
+        if (EventSystem.current != null)
+            pointerOverUI = EventSystem.current.IsPointerOverGameObject();
+
+        pressBegan = Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space);
+        pressEnded = Input.GetMouseButtonUp(0) || Input.GetKeyUp(KeyCode.Space);
+        pressHeld = Input.GetMouseButton(0) || Input.GetKey(KeyCode.Space);
+#endif
+
+        // Mobile (touch)
+        if (Input.touchCount > 0)
+        {
+            Touch t = Input.GetTouch(0);
+            if (EventSystem.current != null)
+                pointerOverUI = EventSystem.current.IsPointerOverGameObject(t.fingerId);
+
+            if (t.phase == TouchPhase.Began) pressBegan = true;
+            if (t.phase == TouchPhase.Ended || t.phase == TouchPhase.Canceled) pressEnded = true;
+            if (t.phase == TouchPhase.Stationary || t.phase == TouchPhase.Moved) pressHeld = true;
         }
-        if (Input.touchCount == 0 && FirstCrocodile)
+
+        if (pressBegan)
+            bufferedJumpTimer = JumpBufferDuration;
+
+        if (bufferedJumpTimer > 0f)
+            bufferedJumpTimer -= Time.deltaTime;
+
+        if (pointerOverUI) return;
+        if (!FirstCrocodile) return;
+
+        // Nếu đang buffer và đã có thể nhảy -> thực thi
+        if (bufferedJumpTimer > 0f && FirstCrocodile.JumpStatus == 0)
+        {
+            TriggerGroupJump();
+            bufferedJumpTimer = -1f;
+        }
+
+        // Giữ hành vi cũ nhưng không nuốt input: chỉ gọi nếu chưa dùng buffer
+        if (pressBegan && bufferedJumpTimer < 0f && FirstCrocodile.JumpStatus == 0)
+        {
+            TriggerGroupJump();
+        }
+
+        // Kết thúc giữ -> rơi xuống
+        if (pressEnded)
+        {
+            foreach (Crocodile crocodile in crocodileList)
+                crocodile.CallTriggerFall(GetDelayedTime(crocodile));
+        }
+
+        // Trạng thái thả (không còn giữ) nhưng trước đó có cá sấu đang "IsTouchingScreen"
+        if (!pressHeld)
+        {
             foreach (Crocodile crocodile in crocodileList)
                 if (crocodile.IsTouchingScreen)
                     crocodile.CallTriggerFall(GetDelayedTime(crocodile));
+        }
+    }
+
+    private void TriggerGroupJump()
+    {
+        crocodileList.Sort((a, b) => b.transform.position.x.CompareTo(a.transform.position.x));
+
+        foreach (Crocodile crocodile in crocodileList)
+        {
+            if (crocodile.IsOutGround) continue;
+
+            if (crocodile.JumpStatus == 0)
+            {
+                crocodile.CallTriggerJump(GetDelayedTime(crocodile));
+            }
+            else
+            {
+                // Đang ở trên không: xếp hàng chờ đáp rồi nhảy lại
+                if (!queuedJump.ContainsKey(crocodile))
+                    queuedJump.Add(crocodile, true);
+            }
+        }
+        GameplayMusicManager.Instance.PlayJumpSound();
     }
 
     private void CalculatePosition()
@@ -178,5 +261,34 @@ public class CrocodileManager : Manager
             ReturnItem(temp);
         }
         currentCrocodileID = id;
+    }
+
+    private void ProcessQueuedJumps()
+    {
+        if (queuedJump.Count == 0) return;
+
+        // Gom danh sách xóa để tránh sửa collection khi duyệt
+        List<Crocodile> toRemove = null;
+
+        foreach (var kv in queuedJump)
+        {
+            var c = kv.Key;
+            if (!c || !c.isActiveAndEnabled)
+            {
+                (toRemove ??= new List<Crocodile>()).Add(c);
+                continue;
+            }
+
+            // Khi đã chạm đất -> nhảy ngay (delay nhỏ để đảm bảo thứ tự gọi)
+            if (c.JumpStatus == 0)
+            {
+                c.CallTriggerJump(0.001f);
+                (toRemove ??= new List<Crocodile>()).Add(c);
+            }
+        }
+
+        if (toRemove != null)
+            foreach (var c in toRemove)
+                queuedJump.Remove(c);
     }
 }
