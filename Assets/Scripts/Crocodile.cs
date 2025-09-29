@@ -70,6 +70,83 @@ public class Crocodile : PoolableObject
         }
     }
 
+    // Thêm method này để vẽ Gizmos
+    private void OnDrawGizmos()
+    {
+        if (!boxCollider) return;
+
+        // Vẽ BoxCollider bounds
+        Gizmos.color = Color.blue;
+        Vector3 center = transform.position + (Vector3)boxCollider.offset;
+        Vector3 size = boxCollider.size;
+        Gizmos.DrawWireCube(center, size);
+
+        // Vẽ vị trí lowestPoint (chân crocodile)
+        float lowestPoint = Height / 2f - boxCollider.offset.y;
+        Vector3 bottomPosition = new Vector3(transform.position.x, transform.position.y - lowestPoint, transform.position.z);
+        Gizmos.color = Color.red;
+        Gizmos.DrawSphere(bottomPosition, 0.1f);
+
+        // Vẽ raycast từ IsOutGround
+        LayerMask mask = LayerMask.GetMask("Road1");
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 10f, mask);
+
+        if (hit)
+        {
+            // Raycast hit - vẽ màu xanh lá
+            Gizmos.color = Color.green;
+            Gizmos.DrawLine(transform.position, hit.point);
+            Gizmos.DrawSphere(hit.point, 0.15f);
+
+            // Vẽ Road object được hit
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireCube(hit.collider.transform.position, hit.collider.bounds.size);
+        }
+        else
+        {
+            // Raycast miss - vẽ màu đỏ
+            Gizmos.color = Color.red;
+            Vector3 endPoint = transform.position + Vector3.down * 10f;
+            Gizmos.DrawLine(transform.position, endPoint);
+        }
+
+        // Vẽ groundHeight line nếu đã được set
+        if (groundHeight != float.MaxValue)
+        {
+            Gizmos.color = Color.magenta;
+            Vector3 groundStart = transform.position + Vector3.left * 2f;
+            Vector3 groundEnd = transform.position + Vector3.right * 2f;
+            groundStart.y = groundHeight;
+            groundEnd.y = groundHeight;
+            Gizmos.DrawLine(groundStart, groundEnd);
+        }
+
+        // Vẽ text hiển thị jumpStatus
+#if UNITY_EDITOR
+        UnityEditor.Handles.color = Color.white;
+        UnityEditor.Handles.Label(transform.position + Vector3.up * 1f, $"Jump: {jumpStatus}");
+#endif
+    }
+
+    // Thêm method để debug collision detection
+    private void OnDrawGizmosSelected()
+    {
+        if (!boxCollider) return;
+
+        // Vẽ collision detection area
+        Gizmos.color = Color.cyan;
+        float lowestPoint = Height / 2f - boxCollider.offset.y;
+
+        // Vẽ line từ center crocodile xuống chân
+        Vector3 centerPos = transform.position;
+        Vector3 bottomPos = new Vector3(centerPos.x, centerPos.y - lowestPoint, centerPos.z);
+        Gizmos.DrawLine(centerPos, bottomPos);
+
+        // Vẽ collision check area
+        Gizmos.color = Color.black;
+        Gizmos.DrawWireSphere(bottomPos, 0.2f);
+    }
+
     // Start is called before the first frame update
     protected override void Start()
     {
