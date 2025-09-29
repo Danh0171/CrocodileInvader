@@ -159,7 +159,7 @@ ScriptedImporter:
     - position: {x: 139.84799, y: 37.039}
       boneWeight:
         weight0: 0.6
-        weight1: 0.29999998
+        weight1: 0.39999998
         weight2: 0
         weight3: 0
         boneIndex0: 0
@@ -179,7 +179,7 @@ ScriptedImporter:
     - position: {x: 172, y: 49.031}
       boneWeight:
         weight0: 0.5
-        weight1: 0.4
+        weight1: 0.5
         weight2: 0
         weight3: 0
         boneIndex0: 0
@@ -188,7 +188,7 @@ ScriptedImporter:
         boneIndex3: 0
     - position: {x: 194.2, y: 86.216995}
       boneWeight:
-        weight0: 0.5
+        weight0: 0.6
         weight1: 0.39999998
         weight2: 0
         weight3: 0
@@ -198,7 +198,7 @@ ScriptedImporter:
         boneIndex3: 0
     - position: {x: 222.541, y: 106}
       boneWeight:
-        weight0: 0.5999999
+        weight0: 1
         weight1: 0
         weight2: 0
         weight3: 0
@@ -208,7 +208,7 @@ ScriptedImporter:
         boneIndex3: 0
     - position: {x: 260.931, y: 111.658}
       boneWeight:
-        weight0: 0.6999999
+        weight0: 1
         weight1: 0
         weight2: 0
         weight3: 0
@@ -218,7 +218,7 @@ ScriptedImporter:
         boneIndex3: 0
     - position: {x: 266.389, y: 121.594}
       boneWeight:
-        weight0: 0.6999999
+        weight0: 1
         weight1: 0
         weight2: 0
         weight3: 0
@@ -228,7 +228,7 @@ ScriptedImporter:
         boneIndex3: 0
     - position: {x: 265.902, y: 164.753}
       boneWeight:
-        weight0: 0.79999995
+        weight0: 1
         weight1: 0
         weight2: 0
         weight3: 0
@@ -238,7 +238,7 @@ ScriptedImporter:
         boneIndex3: 0
     - position: {x: 278.665, y: 195.812}
       boneWeight:
-        weight0: 0.9
+        weight0: 1
         weight1: 0
         weight2: 0
         weight3: 0
@@ -248,7 +248,7 @@ ScriptedImporter:
         boneIndex3: 0
     - position: {x: 288.813, y: 200.99}
       boneWeight:
-        weight0: 0.9
+        weight0: 1
         weight1: 0
         weight2: 0
         weight3: 0
@@ -398,41 +398,41 @@ ScriptedImporter:
         boneIndex3: 0
     - position: {x: 33.231995, y: 102.966995}
       boneWeight:
-        weight0: 0.71073323
-        weight1: 0.28926677
-        weight2: 0
-        weight3: 0
-        boneIndex0: 0
-        boneIndex1: 2
-        boneIndex2: 0
-        boneIndex3: 0
-    - position: {x: 8.729996, y: 70.358}
-      boneWeight:
         weight0: 1
         weight1: 0
         weight2: 0
         weight3: 0
-        boneIndex0: 2
+        boneIndex0: 0
+        boneIndex1: 0
+        boneIndex2: 0
+        boneIndex3: 0
+    - position: {x: 8.729996, y: 70.358}
+      boneWeight:
+        weight0: 0
+        weight1: 0
+        weight2: 0
+        weight3: 0
+        boneIndex0: 0
         boneIndex1: 0
         boneIndex2: 0
         boneIndex3: 0
     - position: {x: 1.9329987, y: 53.15}
       boneWeight:
-        weight0: 0.74444187
-        weight1: 0.25555816
+        weight0: 1
+        weight1: 0
         weight2: 0
         weight3: 0
-        boneIndex0: 2
+        boneIndex0: 0
         boneIndex1: 0
         boneIndex2: 0
         boneIndex3: 0
     - position: {x: 1.8049926, y: 47.196}
       boneWeight:
-        weight0: 0.6466103
-        weight1: 0.35338968
+        weight0: 1
+        weight1: 0
         weight2: 0
         weight3: 0
-        boneIndex0: 2
+        boneIndex0: 0
         boneIndex1: 0
         boneIndex2: 0
         boneIndex3: 0
@@ -3861,7 +3861,7 @@ ScriptedImporter:
       order: 0
     dimension: {x: 0, y: 0}
     characterGroups: []
-    pivot: {x: 0.58483034, y: 0.6794743}
+    pivot: {x: 0.5388821, y: 0.42216426}
     boneReadOnly: 0
   sharedRigSpriteImportData: []
   sharedRigCharacterData:
@@ -3898,7 +3898,7 @@ ScriptedImporter:
     androidETC2FallbackOverride: 0
   mosaicLayers: 1
   characterMode: 1
-  documentPivot: {x: 0.58483034, y: 0.6794743}
+  documentPivot: {x: 0.5388821, y: 0.42216426}
   documentAlignment: 9
   importHiddenLayers: 0
   layerMappingOption: 2
