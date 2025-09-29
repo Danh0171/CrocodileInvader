@@ -209,7 +209,9 @@ public class Crocodile : PoolableObject
         if (waitForJump > 0)
         {
             waitForJump -= Time.deltaTime;
-            if (waitForJump < 0 && jumpStatus == 0)
+            // Thêm check: phải thực sự trên đất (không đang rơi) mới cho nhảy
+            bool isActuallyGrounded = jumpStatus == 0 && rigidBody.velocity.y >= -0.1f;
+            if (waitForJump < 0 && isActuallyGrounded)
             {
                 isTouchingScreen = true;
                 jumpStatus = 1;
