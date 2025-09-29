@@ -223,7 +223,7 @@ public class CrocodileManager : Manager
         float lastPossibleXPosition = -0.4f * GameManager.ScreenWidth;
 
         float d = availableWidth / crocodileList.Count;
-        float maxD = 0.75f * FirstCrocodile.Width;
+        float maxD = 0.5f * FirstCrocodile.Width;
         if (maxD < d) d = maxD;
 
         for (int i = 0; i < crocodileList.Count; i++)
@@ -243,7 +243,7 @@ public class CrocodileManager : Manager
                 if (crocodileList[i].transform.position.x == associatedX[i])
                     continue;
                 float d = crocodileList[i].transform.position.x - associatedX[i];
-                crocodileList[i].transform.position += 2 * d * Time.deltaTime * Vector3.left;
+                crocodileList[i].transform.position += 3 * d * Time.deltaTime * Vector3.left;
             }
         }
     }
