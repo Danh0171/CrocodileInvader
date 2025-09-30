@@ -291,7 +291,8 @@ public class Crocodile : PoolableObject
         }
         else if (collision.gameObject.CompareTag("Object"))
         {
-            if (ID != 1 && !collisions.Contains(collision))
+            // Allow SPELLCASTER to track collisions for proper interaction with Box objects
+            if (!collisions.Contains(collision))
                 collisions.Add(collision);
         }
 
