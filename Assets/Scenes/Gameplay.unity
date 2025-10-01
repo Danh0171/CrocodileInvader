@@ -4219,7 +4219,7 @@ MonoBehaviour:
   - {fileID: 3404931247979141110, guid: 05d9b30f4aa8cbc47bf9fc817fdf8fa6, type: 3}
   crocodileList: []
   associatedX: []
-  currentCrocodileID: 0
+  currentCrocodileID: 1
   maxJumpDelay: 0.3
 --- !u!4 &1774429094
 Transform:
