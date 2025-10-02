@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Gem : MonoBehaviour
 {
-    [SerializeField] private AudioSource audioSource;
-    [SerializeField] private SpriteRenderer spriteRenderer;
+    public AudioSource audioSource;
+    [SerializeField] SpriteRenderer spriteRenderer;
     // Start is called before the first frame update
     void Start()
     {
@@ -39,10 +39,12 @@ public class Gem : MonoBehaviour
         if (spriteRenderer.enabled && collision.gameObject.CompareTag("Zombie"))
         {
             if (audioSource)
+            {
+                audioSource.volume = GameplayMusicManager.Instance.SFXUI.value;
                 audioSource.Play();
+            }
             spriteRenderer.enabled = false;
             GameManager.Instance.IncCoin();
-            
         }
     }
 }

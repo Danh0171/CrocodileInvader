@@ -805,11 +805,11 @@ PlayerSettings:
   apiCompatibilityLevel: 6
   activeInputHandler: 0
   windowsGamepadBackendHint: 0
-  cloudProjectId: dd904770-3898-4a8d-9884-3b8525247a04
+  cloudProjectId: 50601a77-3431-4c81-84ff-89146f98e610
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: ZombieTsunami
-  organizationId: tienminhduong
+  projectName: Runner Game
+  organizationId: danh661
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   hmiLoadingImage: {fileID: 0}

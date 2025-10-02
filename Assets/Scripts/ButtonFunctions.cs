@@ -23,11 +23,11 @@ public class ButtonFunctions : MonoBehaviour
     }
     private void Start()
     {
-        int hs = 0;
-        if (PlayerPrefs.HasKey("HighScore"))
-            hs = PlayerPrefs.GetInt("HighScore");
-        Time.timeScale = 1.0f;
-        highScoreText.text = hs.ToString();
+        // int hs = 0;
+        // if (PlayerPrefs.HasKey("HighScore"))
+        //     hs = PlayerPrefs.GetInt("HighScore");
+        // Time.timeScale = 1.0f;
+        // highScoreText.text = hs.ToString();
     }
     
 }
