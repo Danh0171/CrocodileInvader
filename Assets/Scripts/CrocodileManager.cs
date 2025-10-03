@@ -97,7 +97,7 @@ public class CrocodileManager : Manager
             layerCount = 1;
 
         crocodileList.Add(c);
-        GameplayMusicManager.Instance.PlayChickenIntoCrocodileSound();
+        GameplayMusicManager.Instance.PlayEggToDragonSound();
     }
 
     private bool AreAllOnGround()

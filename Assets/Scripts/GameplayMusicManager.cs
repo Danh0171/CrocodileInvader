@@ -22,6 +22,7 @@ public class GameplayMusicManager : MonoBehaviour
     [SerializeField] private AudioSource BGM;
     [SerializeField] private AudioSource zombiesSound;
     [SerializeField] private AudioSource soundEffect;
+    [SerializeField] private AudioSource soundEffect2;
     [SerializeField] private AudioSource jumpSound;
     [SerializeField] private AudioSource rockCollide;
     [SerializeField] private AudioSource coin;
@@ -81,10 +82,10 @@ public class GameplayMusicManager : MonoBehaviour
         soundEffect.clip = boom;
         soundEffect.Play();
     }
-    public void PlayChickenIntoCrocodileSound()
+    public void PlayEggToDragonSound()
     {
-        soundEffect.clip = humanIntoZombie;
-        soundEffect.Play();
+        soundEffect2.clip = humanIntoZombie;
+        soundEffect2.Play();
     }
     public void PlayJumpSound()
     {
@@ -121,6 +122,7 @@ public class GameplayMusicManager : MonoBehaviour
     public void ChangeSFXVolume()
     {
        soundEffect.volume = SFXUI.value;
+       soundEffect2.volume = SFXUI.value;
        jumpSound.volume = SFXUI.value;
        coin.volume = SFXUI.value;
        rockCollide.volume = SFXUI.value;
@@ -137,6 +139,7 @@ public class GameplayMusicManager : MonoBehaviour
         BGM.volume = musicUI.value;
         zombiesSound.volume = musicUI.value;
         soundEffect.volume = SFXUI.value;
+        soundEffect2.volume = SFXUI.value;
         jumpSound.volume = SFXUI.value;
         coin.volume = SFXUI.value;
         rockCollide.volume = SFXUI.value;
