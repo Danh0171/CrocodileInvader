@@ -95,6 +95,7 @@ public class GameManager : MonoBehaviour
     public CrocodileManager Zombies => (CrocodileManager)managers[0];
     public GemManager Coins => (GemManager)managers[4];
     public ChickenManager Humans => (ChickenManager)managers[2];
+    public CrackedRoadManager CrackedRoads => (CrackedRoadManager)managers[managers.Count - 1]; // Assuming it's the last one
     #endregion Properties
 
 
@@ -155,7 +156,14 @@ public class GameManager : MonoBehaviour
             if (spawnCode == 0)
             {
                 if (spawnOnly == -1)
-                    managers[Random.Range(2, managers.Count)].CallSpawnItem();
+                {
+                    // Thêm CrackedRoadManager vào danh sách có thể spawn
+                    var availableManagers = new List<Manager>();
+                    for (int i = 2; i < managers.Count; i++)
+                        availableManagers.Add(managers[i]);
+                    
+                    availableManagers[Random.Range(0, availableManagers.Count)].CallSpawnItem();
+                }
                 else
                     managers[spawnOnly].CallSpawnItem();
             }

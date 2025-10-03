@@ -28,9 +28,9 @@ public class GameplayMusicManager : MonoBehaviour
     [SerializeField] private AudioSource coin;
     [Header("Effect")]
     [SerializeField] private AudioClip boom;
-    [SerializeField] private AudioClip humanIntoZombie;
+    [SerializeField] private AudioClip eggToDragon;
     [SerializeField] private AudioClip henshin;
-    [SerializeField] private AudioClip carExplode;
+    [SerializeField] private AudioClip chestExplode;
     [SerializeField] private AudioClip goldenize;
     [Header("UI")]
     [SerializeField] private Slider musicUI;
@@ -84,7 +84,7 @@ public class GameplayMusicManager : MonoBehaviour
     }
     public void PlayEggToDragonSound()
     {
-        soundEffect2.clip = humanIntoZombie;
+        soundEffect2.clip = eggToDragon;
         soundEffect2.Play();
     }
     public void PlayJumpSound()
@@ -99,7 +99,7 @@ public class GameplayMusicManager : MonoBehaviour
     }
     public void PlayCarExplodeSound()
     {
-        soundEffect.clip = carExplode;
+        soundEffect.clip = chestExplode;
         soundEffect.Play();
     }
     public void PlayGoldenizeSound()
