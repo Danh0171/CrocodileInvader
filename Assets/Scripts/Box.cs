@@ -40,7 +40,7 @@ public class Box : PoolableObject
         if (CollisionCount >= numberCrocodileNeeded)
         {
             GeneratePreys();
-            GameplayMusicManager.Instance.PlayBoomSound();
+            GameplayMusicManager.Instance.PlayCarExplodeSound();
             GameManager.Instance.CallExplosion(false);
             RemoveSelf();
         }

@@ -99,6 +99,14 @@ public class RoadManager : Manager
             m2 = 0f;
         }
 
+        // Thêm logic spawn cracked road ngẫu nhiên
+        if (GameManager.Instance.Zombies.Count >= 5 && Random.Range(0, 100) < 10) // 10% chance
+        {
+            // Spawn cracked road thay vì road bình thường ở một số vị trí
+            Vector3 crackedPos = r.transform.position + Vector3.right * (width + 2f);
+            GameManager.Instance.CrackedRoads.GetItem().transform.position = crackedPos;
+        }
+
         if (nextHeight > currentHeight)
             m2 *= 0.5f;
 
