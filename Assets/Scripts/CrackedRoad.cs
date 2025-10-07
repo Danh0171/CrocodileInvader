@@ -114,7 +114,7 @@ public class CrackedRoad : PoolableObject
                 animator.SetBool("isCracking", true);
             
             // Play crack sound effect
-            GameplayMusicManager.Instance.PlayBoomSound();
+            GameplayMusicManager.Instance.PlayCrackedRoadSound();
         }
     }
 

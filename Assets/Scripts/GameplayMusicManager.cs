@@ -26,6 +26,7 @@ public class GameplayMusicManager : MonoBehaviour
     [SerializeField] private AudioSource jumpSound;
     [SerializeField] private AudioSource rockCollide;
     [SerializeField] private AudioSource coin;
+    [SerializeField] private AudioSource crackedRoadSound;
     [Header("Effect")]
     [SerializeField] private AudioClip boom;
     [SerializeField] private AudioClip eggToDragon;
@@ -82,6 +83,12 @@ public class GameplayMusicManager : MonoBehaviour
         soundEffect.clip = boom;
         soundEffect.Play();
     }
+
+    public void PlayCrackedRoadSound()
+    {
+        crackedRoadSound.Play();
+    }
+    
     public void PlayEggToDragonSound()
     {
         soundEffect2.clip = eggToDragon;
