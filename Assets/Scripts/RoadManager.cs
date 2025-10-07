@@ -13,25 +13,15 @@ public class RoadManager : Manager
     [SerializeField] private float currentHeight;
     [SerializeField] private float nextHeight;
     [SerializeField] private int nextRoadID;
+    [SerializeField] private bool lastSpawnWasCrackedRoad = false; // Track để tăng width road kế tiếp
 
     //public float CurrentHeight => currentHeight;
     public float MinHeight => standardHeight[0];
 
     public override PoolableObject GetItem(int id = 0)
     {
-        Road r = (Road)base.GetItem(id);
-
-        int l = nextHeight == standardHeight[0] ? 0 : 1;
-        r.Config(standardWidth[nextRoadID], l);
-
-        r.transform.position = GameManager.Instance.SpawnerPosition;
-        r.transform.position = new Vector3(r.transform.position.x + r.Width / 2,
-            nextHeight, transform.position.z);
-
-        if (r.Width == standardWidth[^1])
-            GameManager.Instance.SpawnBombOnly = true;
-
-        return r;
+        // Simply return the pooled object, configuration handled in SpawnRoad()
+        return base.GetItem(id);
     }
 
     // Start is called before the first frame update
@@ -58,16 +48,70 @@ public class RoadManager : Manager
     {
         if (GameManager.Instance.SpawnBombOnly)
             GameManager.Instance.SpawnBombOnly = false;
-        Road r = (Road)GetItem();
+
+        // DECISION: Spawn CrackedRoad hoặc normal Road
+        // Chỉ spawn khi BrainNumber >= 30 và chỉ với width nhỏ/vừa
+        bool meetsBrainRequirement = GameManager.Instance.BrainNumber >= 30;
+        bool isAllowedWidth = ((standardWidth[nextRoadID] == 4.5f || standardWidth[nextRoadID] == 35.16f) && nextHeight == standardHeight[1]  );
+        
+        bool shouldSpawnCrackedRoad = meetsBrainRequirement && 
+                                      isAllowedWidth && 
+                                      Random.Range(0, 100) < 100;
+        
+        PoolableObject spawnedRoad;
+        float width;
+        int l = nextHeight == standardHeight[0] ? 0 : 1;
+        
+        if (shouldSpawnCrackedRoad && PrefabsCount > 1)
+        {
+            // Spawn CrackedRoad (id = 1)
+            CrackedRoad cr = (CrackedRoad)GetItem(1);
+            cr.Config(standardWidth[nextRoadID], l);
+            
+            cr.transform.position = GameManager.Instance.SpawnerPosition;
+            cr.transform.position = new Vector3(cr.transform.position.x + cr.Width / 2,
+                nextHeight, transform.position.z);
+                
+            spawnedRoad = cr;
+            width = cr.Width;
+            
+            // Set flag để road kế tiếp sẽ có width lớn hơn
+            lastSpawnWasCrackedRoad = true;
+            
+        }
+        else
+        {
+            // Spawn normal Road (id = 0)
+            float roadWidth = standardWidth[nextRoadID];
+            
+            // Nếu road trước là CrackedRoad → tăng width để dễ landing
+            if (lastSpawnWasCrackedRoad)
+            {
+                roadWidth = Mathf.Max(roadWidth * 1.5f, standardWidth[standardWidth.Count - 2]); // 50% wider or use large road size
+                lastSpawnWasCrackedRoad = false; // Reset flag
+            }
+            
+            Road r = (Road)GetItem(0);
+            r.Config(roadWidth, l);
+
+            r.transform.position = GameManager.Instance.SpawnerPosition;
+            r.transform.position = new Vector3(r.transform.position.x + r.Width / 2,
+                nextHeight, transform.position.z);
+                
+            spawnedRoad = r;
+            width = r.Width;
+        }
+
+        if (width == standardWidth[^1])
+            GameManager.Instance.SpawnBombOnly = true;
 
         // Determine stat for next road
-        float width = r.Width;
         float distance = standardDistance * GameManager.Instance.ScrollBackSpeed / 3f;
         nextHeight = standardHeight[Random.Range(0, standardHeight.Count)];
 
         int rd = Random.Range(0, 100);
 
-        if (r.Width == standardWidth[0])
+        if (width == standardWidth[0])
             rd = 0;
 
         float m1 = 0f, m2 = 1f;
@@ -75,7 +119,7 @@ public class RoadManager : Manager
         {
             // Spawn normally
             nextRoadID = Random.Range(0, standardWidth.Count - 1);
-            if (nextRoadID == 0 && r.Width == standardWidth[0])
+            if (nextRoadID == 0 && width == standardWidth[0])
                 nextHeight = currentHeight;
         }
         else if (rd < 50 + 35)
@@ -97,14 +141,6 @@ public class RoadManager : Manager
         {
             // Spawn right next road
             m2 = 0f;
-        }
-
-        // Thêm logic spawn cracked road ngẫu nhiên
-        if (GameManager.Instance.Zombies.Count >= 5 && Random.Range(0, 100) < 10) // 10% chance
-        {
-            // Spawn cracked road thay vì road bình thường ở một số vị trí
-            Vector3 crackedPos = r.transform.position + Vector3.right * (width + 2f);
-            GameManager.Instance.CrackedRoads.GetItem().transform.position = crackedPos;
         }
 
         if (nextHeight > currentHeight)

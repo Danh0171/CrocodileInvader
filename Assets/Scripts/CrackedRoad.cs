@@ -4,18 +4,60 @@ using UnityEngine;
 
 public class CrackedRoad : PoolableObject
 {
+    [Header("CrackedRoad Components")]
+    [SerializeField] private Surface surface;
     [SerializeField] private BoxCollider2D boxCollider;
+    [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private Animator animator;
-    [SerializeField] private float crackTime = 2f; // Thời gian trước khi vỡ
-    [SerializeField] private float fallSpeed = 5f;
+    
+    [Header("Auto Crack Settings")]
+    [SerializeField] private float fallSpeed = 1.5f;
+    
+    // Dynamic timing calculated from width and ScrollBackSpeed
+    private float delayBeforeCrack;
+    private float crackTime;
     
     private bool isCracking = false;
     private bool hasFallen = false;
     private float crackTimer = 0f;
-    private List<Crocodile> crocodilesOnRoad = new List<Crocodile>();
+    private float delayTimer = 0f;
     
-    public override float Width => boxCollider.size.x;
-    public override float Height => boxCollider.size.y;
+    public override float Width => spriteRenderer.size.x;
+    public override float Height => spriteRenderer.size.y;
+    
+    public void Config(float width, int layer)
+    {
+        // Tăng width cho CrackedRoad để dễ nhảy hơn
+        float crackedRoadWidth = width * 1.3f; // 30% longer than normal road
+        
+        spriteRenderer.size = new Vector2(crackedRoadWidth, spriteRenderer.size.y);
+        surface.Resize(crackedRoadWidth); // Resize surface colliders 
+        boxCollider.size = new Vector2(crackedRoadWidth, boxCollider.size.y);
+        spriteRenderer.sortingOrder = layer;
+        
+        // Calculate timing based on ORIGINAL width (not extended)
+        CalculateCrackTiming(width);
+        
+    }
+    
+    private void CalculateCrackTiming(float width)
+    {
+        float currentScrollSpeed = GameManager.Instance.ScrollBackSpeed;
+        
+        // Base timing: Larger roads get more time, faster speeds get less time
+        float baseDelay = (width-4.5f) / 14f; // Small road (4.84) = ~0.32s, Large road (35.16) = ~2.3s
+        float speedFactor = 7f / currentScrollSpeed; // Slower at high speeds, more time at low speeds
+        
+        // Delay before crack starts (safe time)
+        delayBeforeCrack = baseDelay * speedFactor * 1.3f; // 1.5x multiplier for generous timing
+        
+        // Crack warning time (time to react)
+        crackTime = delayBeforeCrack * 0.7f; // 70% of delay time as warning
+        
+        // Minimum timing bounds (ensure playability)
+        delayBeforeCrack = Mathf.Max(delayBeforeCrack, 1.2f); // At least 1.2s delay
+        crackTime = Mathf.Max(crackTime, 1.5f); // At least 1.5s warning
+    }
 
     protected override void Start()
     {
@@ -26,7 +68,16 @@ public class CrackedRoad : PoolableObject
     {
         base.Update();
         
-        if (isCracking && !hasFallen)
+        // Auto crack sequence: delay → crack → break
+        if (!isCracking && !hasFallen)
+        {
+            delayTimer += Time.deltaTime;
+            if (delayTimer >= delayBeforeCrack)
+            {
+                StartCracking();
+            }
+        }
+        else if (isCracking && !hasFallen)
         {
             crackTimer += Time.deltaTime;
             if (crackTimer >= crackTime)
@@ -47,10 +98,14 @@ public class CrackedRoad : PoolableObject
         isCracking = false;
         hasFallen = false;
         crackTimer = 0f;
-        crocodilesOnRoad.Clear();
-        boxCollider.isTrigger = false;
+        delayTimer = 0f; // Reset delay timer
+        // boxCollider.isTrigger = false;
         if (animator != null)
+        {
             animator.SetBool("isCracking", false);
+            animator.ResetTrigger("break");
+        }
+        
     }
 
     private void StartCracking()
@@ -70,54 +125,11 @@ public class CrackedRoad : PoolableObject
     private void BreakRoad()
     {
         hasFallen = true;
-        boxCollider.isTrigger = true;
         
         if (animator != null)
             animator.SetTrigger("break");
-            
-        // Make crocodiles fall
-        foreach (var crocodile in crocodilesOnRoad)
-        {
-            if (crocodile != null)
-                crocodile.CallTriggerFall(0.5f);
-        }
         
-        // Play break sound
+        // Play break sound and explosion
         GameplayMusicManager.Instance.PlayCarExplodeSound();
-        GameManager.Instance.CallExplosion(false, transform.position);
-        
-        // Remove after delay
-        StartCoroutine(RemoveAfterDelay(2f));
-    }
-    
-    private IEnumerator RemoveAfterDelay(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        RemoveSelf();
-    }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Zombie"))
-        {
-            var crocodile = collision.gameObject.GetComponent<Crocodile>();
-            if (crocodile != null && !crocodilesOnRoad.Contains(crocodile))
-            {
-                crocodilesOnRoad.Add(crocodile);
-                StartCracking();
-            }
-        }
-    }
-
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Zombie"))
-        {
-            var crocodile = collision.gameObject.GetComponent<Crocodile>();
-            if (crocodile != null && crocodilesOnRoad.Contains(crocodile))
-            {
-                crocodilesOnRoad.Remove(crocodile);
-            }
-        }
     }
 }
