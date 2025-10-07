@@ -21,7 +21,8 @@ public class Crocodile : PoolableObject
     /// </summary>
     [SerializeField] private int jumpStatus;
     [SerializeField] private float jumpSpeed;
-    [SerializeField] private float jumpHeightModifier;
+    public float jumpHeightModifier;
+    [SerializeField] private float jumpStartTime;
 
     private float jumpAcceleration;
     private float maxJumpAcceleration;
@@ -113,7 +114,7 @@ public class Crocodile : PoolableObject
         // Vẽ groundHeight line nếu đã được set
         if (groundHeight != float.MaxValue)
         {
-            Gizmos.color = Color.magenta;
+            Gizmos.color = Color.black;
             Vector3 groundStart = transform.position + Vector3.left * 2f;
             Vector3 groundEnd = transform.position + Vector3.right * 2f;
             groundStart.y = groundHeight;
@@ -165,6 +166,7 @@ public class Crocodile : PoolableObject
         waitForFall = 0f;
         waitForJump = 0f;
         jumpStatus = -1;
+        jumpStartTime = 0f;
 
         dForward = 0f;
         tForward = 0f;
@@ -204,17 +206,19 @@ public class Crocodile : PoolableObject
 
     public void CallTriggerJump(float time) { waitForJump = (waitForJump > 0 ? waitForJump : time); }
     public void CallTriggerFall(float time) { waitForFall = (waitForFall > 0 ? waitForFall : time); }
+    public bool isActuallyGrounded;
     private void CheckJump()
     {
         if (waitForJump > 0)
         {
             waitForJump -= Time.deltaTime;
             // Thêm check: phải thực sự trên đất (không đang rơi) mới cho nhảy
-            bool isActuallyGrounded = jumpStatus == 0 && rigidBody.velocity.y >= -0.1f;
+            isActuallyGrounded = jumpStatus == 0 && rigidBody.velocity.y >= -2f;
             if (waitForJump < 0 && isActuallyGrounded)
             {
                 isTouchingScreen = true;
                 jumpStatus = 1;
+                jumpStartTime = Time.time;
                 animator.SetBool("isMoving", false);
                 jumpAcceleration = maxJumpAcceleration;
 
@@ -255,7 +259,7 @@ public class Crocodile : PoolableObject
 
             if (CurrentHeight >= maxJumpHeight * 0.75f && isTouchingScreen == false)
                 jumpStatus = -1;
-            if (CurrentHeight >= maxJumpHeight)
+            if (CurrentHeight >= maxJumpHeight || Time.time - jumpStartTime >= 0.9f)
                 jumpStatus = 2;
 
             tForward += Time.deltaTime;

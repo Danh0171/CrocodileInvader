@@ -40,11 +40,11 @@ public class BombManager : Manager
         position += Vector3.right * width;
         bomb.transform.position = position;
         position += Vector3.right * (width + zombieWidth);
-        for (int i = 1; i < 4; ++i)
+        for (int i = 1; i < 3; ++i)
         {
             Bomb b = (Bomb)GetItem();
             b.transform.position = position;
-            position += Vector3.right * (width + zombieWidth);
+            position += Vector3.right * (width + zombieWidth*1.5f);
         }
     }
     private void SpawnContinuousBomb()

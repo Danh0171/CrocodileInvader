@@ -10,10 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1554268398585265696}
   - component: {fileID: 8354150306746342913}
-  - component: {fileID: 7283253146164064108}
   m_Layer: 0
   m_Name: Road
-  m_TagString: Object
+  m_TagString: Road
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -53,32 +52,6 @@ MonoBehaviour:
   surface: {fileID: 689081297724498991}
   spriteRenderer: {fileID: 7672715137412120905}
   boxCollider: {fileID: 1648711827025430036}
-  normalRender: {fileID: 6247503893760511962}
-  crackedRender: {fileID: 6780313337856365727}
-  animator: {fileID: 7283253146164064108}
-  crackTime: 2
-  fallSpeed: 5
---- !u!95 &7283253146164064108
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3414754237526266610}
-  m_Enabled: 0
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 543c4ca9e4990ec4981586f4738e1723, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &6247503893760511962
 GameObject:
   m_ObjectHideFlags: 0

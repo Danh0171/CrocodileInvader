@@ -95,7 +95,6 @@ public class GameManager : MonoBehaviour
     public CrocodileManager Zombies => (CrocodileManager)managers[0];
     public GemManager Coins => (GemManager)managers[4];
     public ChickenManager Humans => (ChickenManager)managers[2];
-    public CrackedRoadManager CrackedRoads => (CrackedRoadManager)managers[managers.Count - 1]; // Assuming it's the last one
     #endregion Properties
 
 
