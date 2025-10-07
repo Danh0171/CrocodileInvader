@@ -44,19 +44,15 @@ public class CrackedRoad : PoolableObject
     {
         float currentScrollSpeed = GameManager.Instance.ScrollBackSpeed;
         
-        // Base timing: Larger roads get more time, faster speeds get less time
-        float baseDelay = (width-4.5f) / 14f; // Small road (4.84) = ~0.32s, Large road (35.16) = ~2.3s
-        float speedFactor = 7f / currentScrollSpeed; // Slower at high speeds, more time at low speeds
-        
         // Delay before crack starts (safe time)
-        delayBeforeCrack = baseDelay * speedFactor * 1.3f; // 1.5x multiplier for generous timing
+        delayBeforeCrack = (width - 4.5f)*1.55f / (currentScrollSpeed * 1.25f + 2f); 
         
         // Crack warning time (time to react)
-        crackTime = delayBeforeCrack * 0.7f; // 70% of delay time as warning
+        crackTime = delayBeforeCrack * 0.55f; // 70% of delay time as warning
         
         // Minimum timing bounds (ensure playability)
-        delayBeforeCrack = Mathf.Max(delayBeforeCrack, 1.2f); // At least 1.2s delay
-        crackTime = Mathf.Max(crackTime, 1.5f); // At least 1.5s warning
+        delayBeforeCrack = Mathf.Max(delayBeforeCrack, 0.1f); // At least 0s delay
+        crackTime = Mathf.Max(crackTime, 1f); // At least 1s warning
     }
 
     protected override void Start()

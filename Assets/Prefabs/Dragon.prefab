@@ -332,9 +332,11 @@ MonoBehaviour:
   jumpStatus: -1
   jumpSpeed: 20
   jumpHeightModifier: 1.5
+  jumpStartTime: 0
   floatingGravityScale: 0.5
   fallingGravityScale: 10
   animator: {fileID: 6845474084713600107}
+  isActuallyGrounded: 0
 --- !u!61 &3442493198086222988
 BoxCollider2D:
   m_ObjectHideFlags: 0

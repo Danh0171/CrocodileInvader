@@ -53,10 +53,9 @@ public class RoadManager : Manager
         // Chỉ spawn khi BrainNumber >= 30 và chỉ với width nhỏ/vừa
         bool meetsBrainRequirement = GameManager.Instance.BrainNumber >= 30;
         bool isAllowedWidth = ((standardWidth[nextRoadID] == 4.5f || standardWidth[nextRoadID] == 35.16f) && nextHeight == standardHeight[1]  );
-        
-        bool shouldSpawnCrackedRoad = meetsBrainRequirement && 
-                                      isAllowedWidth && 
-                                      Random.Range(0, 100) < 100;
+
+        bool shouldSpawnCrackedRoad = meetsBrainRequirement &&
+                                      isAllowedWidth;
         
         PoolableObject spawnedRoad;
         float width;
