@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8270425460378644466}
   - component: {fileID: 6596859672280563502}
   m_Layer: 15
-  m_Name: BusCoin
+  m_Name: BusScales
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

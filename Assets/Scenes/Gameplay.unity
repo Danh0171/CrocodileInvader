@@ -589,7 +589,7 @@ GameObject:
   - component: {fileID: 113319129}
   - component: {fileID: 113319128}
   m_Layer: 0
-  m_Name: ZombiesSound
+  m_Name: DragonRoar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1392,7 +1392,7 @@ GameObject:
   - component: {fileID: 331957478}
   - component: {fileID: 331957479}
   m_Layer: 0
-  m_Name: ChickenManager
+  m_Name: EggManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2777,7 +2777,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5833797905848645820, guid: 0be3fb7c8ae232547bad2fc12f3bbf5f, type: 3}
       propertyPath: m_Name
-      value: CoinLine
+      value: ScalesLine
       objectReference: {fileID: 0}
     - target: {fileID: 6520810425421588587, guid: 0be3fb7c8ae232547bad2fc12f3bbf5f, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3111,7 +3111,7 @@ GameObject:
   - component: {fileID: 708275361}
   - component: {fileID: 708275360}
   m_Layer: 0
-  m_Name: GemManager
+  m_Name: ScalesManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3133,6 +3133,8 @@ MonoBehaviour:
   objectPrefabs:
   - {fileID: 8988472031850249770, guid: 0be3fb7c8ae232547bad2fc12f3bbf5f, type: 3}
   - {fileID: 8428192649958334926, guid: f9dab864aaa1c404d8e550d28700141e, type: 3}
+  - {fileID: 8988472031850249770, guid: e4a1a5d575903fd4dbcf4380f69a0cca, type: 3}
+  - {fileID: 8988472031850249770, guid: d6c63551d6b5c3f4e8440bcf31894737, type: 3}
   - {fileID: 1230530344951002047, guid: c036fd124d52c8749b07359866eb2832, type: 3}
   - {fileID: 888824027969609981, guid: 81968a3bd07a9864abfaad16b832de26, type: 3}
   - {fileID: 522535851759634583, guid: 17fe9fa66ead34d4683c57b78cd6e73f, type: 3}
@@ -8176,7 +8178,7 @@ GameObject:
   - component: {fileID: 2127485595}
   - component: {fileID: 2127485596}
   m_Layer: 0
-  m_Name: Coin
+  m_Name: Scales
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

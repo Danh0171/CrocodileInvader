@@ -33,7 +33,7 @@ public class ScalesManager : Manager
 
     public override void CallSpawnItem()
     {
-        GetItem(Random.Range(0, 2));
+        GetItem(Random.Range(0, 4));
     }
 
     public void TransformIntoCoin(PoolableObject item, bool isBomb, int vehicleID)
