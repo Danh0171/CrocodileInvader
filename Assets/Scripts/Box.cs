@@ -56,7 +56,7 @@ public class Box : PoolableObject
 
     private void TurnIntoGold()
     {
-        GameManager.Instance.Coins.TranformIntoCoin(this, false, ID);
+        GameManager.Instance.Coins.TransformIntoCoin(this, false, ID);
         GameManager.Instance.Zombies.FirstCrocodile.PlayAttackAnimation();
         GameplayMusicManager.Instance.PlayGoldenizeSound();
         GeneratePreys();
@@ -87,7 +87,7 @@ public class Box : PoolableObject
         }
         else if (GameManager.Instance.Zombies.CurrentFormID == 1)
         {
-            GameManager.Instance.Coins.TranformIntoCoin(this, false, ID);
+            GameManager.Instance.Coins.TransformIntoCoin(this, false, ID);
             RemoveSelf();
             GameManager.Instance.GenerateZombies(numberHumansContains);
             GameplayMusicManager.Instance.PlayGoldenizeSound();

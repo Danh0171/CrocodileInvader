@@ -27,6 +27,7 @@ public class GameplayMusicManager : MonoBehaviour
     [SerializeField] private AudioSource rockCollide;
     [SerializeField] private AudioSource coin;
     [SerializeField] private AudioSource crackedRoadSound;
+    [SerializeField] private AudioSource perfectSound;
     [Header("Effect")]
     [SerializeField] private AudioClip boom;
     [SerializeField] private AudioClip eggToDragon;
@@ -88,6 +89,11 @@ public class GameplayMusicManager : MonoBehaviour
     {
         crackedRoadSound.Play();
     }
+
+    public void PlayPerfectSound()
+    {
+        perfectSound.Play();
+    }
     
     public void PlayEggToDragonSound()
     {
@@ -133,6 +139,8 @@ public class GameplayMusicManager : MonoBehaviour
        jumpSound.volume = SFXUI.value;
        coin.volume = SFXUI.value;
        rockCollide.volume = SFXUI.value;
+       perfectSound.volume = SFXUI.value;
+       crackedRoadSound.volume = SFXUI.value;
        SaveSound();
     }
 
@@ -150,6 +158,8 @@ public class GameplayMusicManager : MonoBehaviour
         jumpSound.volume = SFXUI.value;
         coin.volume = SFXUI.value;
         rockCollide.volume = SFXUI.value;
+        perfectSound.volume = SFXUI.value;
+        crackedRoadSound.volume = SFXUI.value;
     }
 
     private void SaveSound()

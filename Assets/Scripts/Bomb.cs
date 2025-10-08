@@ -39,7 +39,7 @@ public class Bomb : PoolableObject
 
     private void TurnIntoGold()
     {
-        GameManager.Instance.Coins.TranformIntoCoin(this, true, 0);
+        GameManager.Instance.Coins.TransformIntoCoin(this, true, 0);
         GameManager.Instance.Zombies.FirstCrocodile.PlayAttackAnimation();
         GameplayMusicManager.Instance.PlayGoldenizeSound();
         RemoveSelf();

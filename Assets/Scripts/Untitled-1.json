@@ -1,0 +1,6 @@
+{
+    "dotnet.server.useOmnisharp": true,
+    "omnisharp.useModernNet": false,
+    "omnisharp.enableRoslynAnalyzers": false,
+    "omnisharp.enableAnalyzersSupport": false
+}

@@ -6,6 +6,7 @@ public class Gem : MonoBehaviour
 {
     public AudioSource audioSource;
     [SerializeField] SpriteRenderer spriteRenderer;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -44,7 +45,12 @@ public class Gem : MonoBehaviour
                 audioSource.Play();
             }
             spriteRenderer.enabled = false;
+            
+            // Normal coin increment
             GameManager.Instance.IncCoin();
+            
+            // Process gem bonus through GemManager
+            GameManager.Instance.Coins.ProcessGemBonus();
         }
     }
 }
