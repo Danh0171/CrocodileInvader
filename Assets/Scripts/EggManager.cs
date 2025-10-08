@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ChickenManager : Manager
+public class EggManager : Manager
 {
     // Start is called before the first frame update
     void Start()
@@ -21,14 +21,14 @@ public class ChickenManager : Manager
         {
             for (int i = 0; i < 4; ++i)
             {
-                Chicken h = (Chicken)GetItem(Random.Range(0, PrefabsCount));
+                Egg h = (Egg)GetItem(Random.Range(0, PrefabsCount));
                 h.transform.position += Vector3.right * (i * h.Width);
                 h.SetLayer(i == 3 ? 3 : 3 - i);
             }
         }
         else
         {
-            Chicken h = (Chicken)GetItem(Random.Range(0, PrefabsCount));
+            Egg h = (Egg)GetItem(Random.Range(0, PrefabsCount));
             h.SetLayer(Random.Range(1, 4));
         }
     }

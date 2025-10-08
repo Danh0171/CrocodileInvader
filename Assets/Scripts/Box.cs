@@ -68,7 +68,7 @@ public class Box : PoolableObject
     {
         for (int i = 0; i < numberHumansContains; ++i)
         {
-            Chicken h = (Chicken)GameManager.Instance.Humans.GetItem(Random.Range(0,
+            Egg h = (Egg)GameManager.Instance.Humans.GetItem(Random.Range(0,
                 GameManager.Instance.Humans.PrefabsCount));
             h.transform.position = gameObject.transform.position + Vector3.right * Width;
             h.SetLayer(Random.Range(1, 4));

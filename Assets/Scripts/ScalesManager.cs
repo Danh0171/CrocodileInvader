@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GemManager : Manager
+public class ScalesManager : Manager
 {
-    [Header("Gem Bonus System")]
+    [Header("Scales Bonus System")]
     [SerializeField] private int countAward = 0;
     [SerializeField] private float gemTimeBonus = 0f;
     [SerializeField] private int BONUS_GEMS = 3;
@@ -26,7 +26,7 @@ public class GemManager : Manager
             if (gemTimeBonus <= 0f)
             {
                 // Reset khi hết thời gian
-                ResetGemBonus();
+                ResetScalesBonus();
             }
         }
     }
@@ -41,12 +41,12 @@ public class GemManager : Manager
         int ID = 3;
         if (!isBomb)
             ID += vehicleID + 1;
-        GemContainer cc = (GemContainer)GetItem(ID);
+        ScalesContainer cc = (ScalesContainer)GetItem(ID);
         cc.transform.position = item.transform.position;
     }
     
-    // Called by Gem when collected
-    public void ProcessGemBonus()
+    // Called by Scales when collected
+    public void ProcessScalesBonus()
     {
         // Reset time window to 2 seconds
         gemTimeBonus = TIME_BONUS_WINDOW;
@@ -64,11 +64,11 @@ public class GemManager : Manager
             GameplayMusicManager.Instance.PlayPerfectSound();
             
             // Reset for next bonus round
-            ResetGemBonus();
+            ResetScalesBonus();
         }
     }
     
-    private void ResetGemBonus()
+    private void ResetScalesBonus()
     {
         countAward = 0;
         gemTimeBonus = 0f;
