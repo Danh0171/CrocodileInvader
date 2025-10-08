@@ -210,7 +210,7 @@ MonoBehaviour:
   id: 2
   boxCollider2D: {fileID: 8251664851107320906}
   numberHumansContains: 3
-  numberCrocodileNeeded: 12
+  numberDragonNeeded: 12
   slider: {fileID: 8641879402286514433}
   text: {fileID: 7995469576093867396}
 --- !u!61 &8251664851107320906

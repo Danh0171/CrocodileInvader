@@ -838,7 +838,7 @@ MonoBehaviour:
   id: 0
   boxCollider2D: {fileID: 1865182720179807772}
   numberHumansContains: 1
-  numberCrocodileNeeded: 4
+  numberDragonNeeded: 4
   slider: {fileID: 3366200413890879018}
   text: {fileID: 5765999114571604903}
 --- !u!61 &1865182720179807772

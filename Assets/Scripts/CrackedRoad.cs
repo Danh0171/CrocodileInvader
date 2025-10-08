@@ -124,8 +124,5 @@ public class CrackedRoad : PoolableObject
         
         if (animator != null)
             animator.SetTrigger("break");
-        
-        // Play break sound and explosion
-        GameplayMusicManager.Instance.PlayCarExplodeSound();
     }
 }

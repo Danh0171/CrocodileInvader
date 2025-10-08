@@ -22,10 +22,10 @@ public class Bomb : PoolableObject
     protected override void Update()
     {
         base.Update();
-        if (!turnedGold && GameManager.Instance.Zombies.FirstCrocodile &&
-            (transform.position - GameManager.Instance.Zombies.FirstCrocodile.transform.position).magnitude
+        if (!turnedGold && GameManager.Instance.Zombies.FirstDragon &&
+            (transform.position - GameManager.Instance.Zombies.FirstDragon.transform.position).magnitude
             <= GameManager.ScreenWidth * 0.2f &&
-            GameManager.Instance.Zombies.CurrentFormID == Crocodile.SPELLCASTERID)
+            GameManager.Instance.Zombies.CurrentFormID == Dragon.SPELLCASTERID)
             TurnIntoGold();
     }
 
@@ -40,7 +40,7 @@ public class Bomb : PoolableObject
     private void TurnIntoGold()
     {
         GameManager.Instance.Coins.TransformIntoCoin(this, true, 0);
-        GameManager.Instance.Zombies.FirstCrocodile.PlayAttackAnimation();
+        GameManager.Instance.Zombies.FirstDragon.PlayAttackAnimation();
         GameplayMusicManager.Instance.PlayGoldenizeSound();
         RemoveSelf();
         turnedGold = true;
@@ -53,7 +53,7 @@ public class Bomb : PoolableObject
         if (collision.gameObject.CompareTag("Zombie"))
         {
             collided = true;
-            if (GameManager.Instance.Zombies.CurrentFormID != Crocodile.SPELLCASTERID)
+            if (GameManager.Instance.Zombies.CurrentFormID != Dragon.SPELLCASTERID)
             {
                 boxCollider.isTrigger = true;
                 animator.SetTrigger("damage");

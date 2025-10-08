@@ -92,7 +92,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public CrocodileManager Zombies => (CrocodileManager)managers[0];
+    public DragonManager Zombies => (DragonManager)managers[0];
     public GemManager Coins => (GemManager)managers[4];
     public ChickenManager Humans => (ChickenManager)managers[2];
     #endregion Properties
@@ -256,8 +256,8 @@ public class GameManager : MonoBehaviour
         if (isBomb)
             explosion.transform.position = new Vector3(position.x, position.y + 1f, explosion.transform.position.z);
         else
-            explosion.transform.position = new Vector3(Zombies.FirstCrocodile.transform.position.x + 3f,
-                Zombies.FirstCrocodile.transform.position.y, explosion.transform.position.z);
+            explosion.transform.position = new Vector3(Zombies.FirstDragon.transform.position.x + 3f,
+                Zombies.FirstDragon.transform.position.y, explosion.transform.position.z);
         explosion.gameObject.SetActive(true);
     }
 }

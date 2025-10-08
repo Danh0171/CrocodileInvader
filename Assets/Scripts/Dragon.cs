@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Security.Cryptography;
 using UnityEngine;
 
-public class Crocodile : PoolableObject
+public class Dragon : PoolableObject
 {
     [Header("Zombie")]
     [SerializeField] private BoxCollider2D boxCollider;
@@ -82,7 +82,7 @@ public class Crocodile : PoolableObject
         Vector3 size = boxCollider.size;
         Gizmos.DrawWireCube(center, size);
 
-        // Vẽ vị trí lowestPoint (chân crocodile)
+        // Vẽ vị trí lowestPoint (chân dragon)
         float lowestPoint = Height / 2f - boxCollider.offset.y;
         Vector3 bottomPosition = new Vector3(transform.position.x, transform.position.y - lowestPoint, transform.position.z);
         Gizmos.color = Color.red;
@@ -138,7 +138,7 @@ public class Crocodile : PoolableObject
         Gizmos.color = Color.cyan;
         float lowestPoint = Height / 2f - boxCollider.offset.y;
 
-        // Vẽ line từ center crocodile xuống chân
+        // Vẽ line từ center dragon xuống chân
         Vector3 centerPos = transform.position;
         Vector3 bottomPos = new Vector3(centerPos.x, centerPos.y - lowestPoint, centerPos.z);
         Gizmos.DrawLine(centerPos, bottomPos);
@@ -223,8 +223,8 @@ public class Crocodile : PoolableObject
                 jumpAcceleration = maxJumpAcceleration;
 
                 dForward = GameManager.ScreenWidth / 20f;
-                if (Random.Range(0, 100) < 10 && GameManager.Instance.Zombies.FirstCrocodile)
-                    dForward += (GameManager.Instance.Zombies.FirstCrocodile.transform.position.x - transform.position.x) * 0.5f;
+                if (Random.Range(0, 100) < 10 && GameManager.Instance.Zombies.FirstDragon)
+                    dForward += (GameManager.Instance.Zombies.FirstDragon.transform.position.x - transform.position.x) * 0.5f;
                 if (Random.Range(0, 100) < 10 || transform.position.x + dForward >= -0.1f * GameManager.ScreenWidth)
                     dForward = 0f;
             }

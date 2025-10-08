@@ -4,31 +4,31 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class CrocodileManager : Manager
+public class DragonManager : Manager
 {
     public override PoolableObject GetItem(int id = 0)
     {
-        Crocodile c = (Crocodile)base.GetItem(id);
+        Dragon c = (Dragon)base.GetItem(id);
         c.transform.position = transform.position;
 
         return c;
     }
 
-    [SerializeField] private List<Crocodile> crocodileList = new List<Crocodile>();
+    [SerializeField] private List<Dragon> dragonList = new List<Dragon>();
     [SerializeField] private List<float> associatedX;
-    [SerializeField] private int currentCrocodileID;
+    [SerializeField] private int currentDragonID;
     private int layerCount = 1;
-    private Crocodile firstCrocodile;
+    private Dragon firstDragon;
     [SerializeField] private float maxJumpDelay = 0.25f;
     private float bufferedJumpTimer = -1f;
     private const float JumpBufferDuration = 0.12f;
-    private readonly Dictionary<Crocodile, bool> queuedJump = new Dictionary<Crocodile, bool>();
+    private readonly Dictionary<Dragon, bool> queuedJump = new Dictionary<Dragon, bool>();
 
     #region Properties
-    public Crocodile FirstCrocodile => firstCrocodile;
+    public Dragon FirstDragon => firstDragon;
 
-    public int Count => crocodileList.Count;
-    public int CurrentFormID => currentCrocodileID;
+    public int Count => dragonList.Count;
+    public int CurrentFormID => currentDragonID;
     #endregion Properties
 
     // Start is called before the first frame update
@@ -40,22 +40,22 @@ public class CrocodileManager : Manager
     void Update()
     {
         CollectingNulls();
-        LoadCrocodileZombie();
-        CrocodilesJumping();
+        LoadDragonZombie();
+        DragonsJumping();
         ProcessQueuedJumps();
         CalculatePosition();
-        RearrangeCrocodiles();
+        RearrangeDragons();
     }
 
-    private void LoadCrocodileZombie()
+    private void LoadDragonZombie()
     {
-        if (crocodileList.Count == 0) { firstCrocodile = null; return; }
-        Crocodile groundedCandidate = null;
+        if (dragonList.Count == 0) { firstDragon = null; return; }
+        Dragon groundedCandidate = null;
         float maxXGrounded = -GameManager.ScreenWidth;
         float maxXAny = -GameManager.ScreenWidth;
-        Crocodile anyCandidate = null;
+        Dragon anyCandidate = null;
 
-        foreach (Crocodile c in crocodileList)
+        foreach (Dragon c in dragonList)
         {
             if (c.IsOutGround) continue;
             float x = c.transform.position.x;
@@ -70,23 +70,23 @@ public class CrocodileManager : Manager
                 maxXAny = x;
             }
         }
-        firstCrocodile = groundedCandidate != null ? groundedCandidate : anyCandidate;
+        firstDragon = groundedCandidate != null ? groundedCandidate : anyCandidate;
     }
 
     private void CollectingNulls()
     {
-        for (int i = 0; i < crocodileList.Count; i++)
-            if (!crocodileList[i].isActiveAndEnabled) { crocodileList.RemoveAt(i); i--; }
+        for (int i = 0; i < dragonList.Count; i++)
+            if (!dragonList[i].isActiveAndEnabled) { dragonList.RemoveAt(i); i--; }
 
     }
 
     public void AddZombie(bool isEating = false)
     {
-        Crocodile c = (Crocodile)GetItem(currentCrocodileID);
+        Dragon c = (Dragon)GetItem(currentDragonID);
         c.SetLayer(layerCount);
 
-        if (isEating && GameManager.Instance.Zombies.FirstCrocodile)
-            c.transform.position = GameManager.Instance.Zombies.FirstCrocodile.transform.position
+        if (isEating && GameManager.Instance.Zombies.FirstDragon)
+            c.transform.position = GameManager.Instance.Zombies.FirstDragon.transform.position
                 + new Vector3(-1f, 1f, 0f);
 
         if (layerCount == 1)
@@ -96,33 +96,33 @@ public class CrocodileManager : Manager
         else
             layerCount = 1;
 
-        crocodileList.Add(c);
+        dragonList.Add(c);
         GameplayMusicManager.Instance.PlayEggToDragonSound();
     }
 
     private bool AreAllOnGround()
     {
-        foreach (Crocodile crocodile in crocodileList)
-            if (crocodile.JumpStatus != 0) return false;
+        foreach (Dragon dragon in dragonList)
+            if (dragon.JumpStatus != 0) return false;
         return true;
     }
 
     private bool AreAllNotTouchingAnythingOtherThanGround()
     {
-        foreach (Crocodile crocodile in crocodileList)
-            if (crocodile.CollisionNumber > 0) return false;
+        foreach (Dragon dragon in dragonList)
+            if (dragon.CollisionNumber > 0) return false;
         return true;
     }
 
-    private float GetDelayedTime(Crocodile crocodile)
+    private float GetDelayedTime(Dragon dragon)
     {
         float delayModifier = (CurrentFormID == 1) ? 0.5f : 0.8f;
-        float distance = Mathf.Max(FirstCrocodile.transform.position.x - crocodile.transform.position.x, 0f);
+        float distance = Mathf.Max(FirstDragon.transform.position.x - dragon.transform.position.x, 0f);
         float raw = distance / GameManager.Instance.ScrollBackSpeed * delayModifier + 0.001f;
         return Mathf.Min(maxJumpDelay, raw);
     }
 
-    private void CrocodilesJumping()
+    private void DragonsJumping()
     {
         bool pressBegan = false;
         bool pressEnded = false;
@@ -158,17 +158,17 @@ public class CrocodileManager : Manager
             bufferedJumpTimer -= Time.deltaTime;
 
         if (pointerOverUI) return;
-        if (!FirstCrocodile) return;
+        if (!FirstDragon) return;
 
         // Nếu đang buffer và đã có thể nhảy -> thực thi
-        if (bufferedJumpTimer > 0f && FirstCrocodile.JumpStatus == 0)
+        if (bufferedJumpTimer > 0f && FirstDragon.JumpStatus == 0)
         {
             TriggerGroupJump();
             bufferedJumpTimer = -1f;
         }
 
         // Giữ hành vi cũ nhưng không nuốt input: chỉ gọi nếu chưa dùng buffer
-        if (pressBegan && bufferedJumpTimer < 0f && FirstCrocodile.JumpStatus == 0)
+        if (pressBegan && bufferedJumpTimer < 0f && FirstDragon.JumpStatus == 0)
         {
             TriggerGroupJump();
         }
@@ -176,36 +176,36 @@ public class CrocodileManager : Manager
         // Kết thúc giữ -> rơi xuống
         if (pressEnded)
         {
-            foreach (Crocodile crocodile in crocodileList)
-                crocodile.CallTriggerFall(GetDelayedTime(crocodile));
+            foreach (Dragon dragon in dragonList)
+                dragon.CallTriggerFall(GetDelayedTime(dragon));
         }
 
         // Trạng thái thả (không còn giữ) nhưng trước đó có cá sấu đang "IsTouchingScreen"
         if (!pressHeld)
         {
-            foreach (Crocodile crocodile in crocodileList)
-                if (crocodile.IsTouchingScreen)
-                    crocodile.CallTriggerFall(GetDelayedTime(crocodile));
+            foreach (Dragon dragon in dragonList)
+                if (dragon.IsTouchingScreen)
+                    dragon.CallTriggerFall(GetDelayedTime(dragon));
         }
     }
 
     private void TriggerGroupJump()
     {
-        crocodileList.Sort((a, b) => b.transform.position.x.CompareTo(a.transform.position.x));
+        dragonList.Sort((a, b) => b.transform.position.x.CompareTo(a.transform.position.x));
 
-        foreach (Crocodile crocodile in crocodileList)
+        foreach (Dragon dragon in dragonList)
         {
-            if (crocodile.IsOutGround) continue;
+            if (dragon.IsOutGround) continue;
 
-            if (crocodile.JumpStatus == 0)
+            if (dragon.JumpStatus == 0)
             {
-                crocodile.CallTriggerJump(GetDelayedTime(crocodile));
+                dragon.CallTriggerJump(GetDelayedTime(dragon));
             }
             else
             {
                 // Đang ở trên không: xếp hàng chờ đáp rồi nhảy lại
-                if (!queuedJump.ContainsKey(crocodile))
-                    queuedJump.Add(crocodile, true);
+                if (!queuedJump.ContainsKey(dragon))
+                    queuedJump.Add(dragon, true);
             }
         }
         GameplayMusicManager.Instance.PlayJumpSound();
@@ -213,7 +213,7 @@ public class CrocodileManager : Manager
 
     private void CalculatePosition()
     {
-        if (!FirstCrocodile || !AreAllOnGround()
+        if (!FirstDragon || !AreAllOnGround()
             || !AreAllNotTouchingAnythingOtherThanGround()) return;
         associatedX = new List<float>();
 
@@ -222,28 +222,28 @@ public class CrocodileManager : Manager
             availableWidth = 0.4f * GameManager.ScreenWidth;
         float lastPossibleXPosition = -0.4f * GameManager.ScreenWidth;
 
-        float d = availableWidth / crocodileList.Count;
-        float maxD = 0.5f * FirstCrocodile.Width;
+        float d = availableWidth / dragonList.Count;
+        float maxD = 0.5f * FirstDragon.Width;
         if (maxD < d) d = maxD;
 
-        for (int i = 0; i < crocodileList.Count; i++)
+        for (int i = 0; i < dragonList.Count; i++)
         {
-            float distance = (crocodileList.Count - 1 - i) * d;
+            float distance = (dragonList.Count - 1 - i) * d;
             associatedX.Add(lastPossibleXPosition + distance);
         }
     }
 
-    private void RearrangeCrocodiles()
+    private void RearrangeDragons()
     {
-        if (associatedX == null || associatedX.Count < crocodileList.Count) return;
+        if (associatedX == null || associatedX.Count < dragonList.Count) return;
         if (AreAllOnGround() && AreAllNotTouchingAnythingOtherThanGround())
         {
-            for (int i = 0; i < crocodileList.Count; ++i)
+            for (int i = 0; i < dragonList.Count; ++i)
             {
-                if (crocodileList[i].transform.position.x == associatedX[i])
+                if (dragonList[i].transform.position.x == associatedX[i])
                     continue;
-                float d = crocodileList[i].transform.position.x - associatedX[i];
-                crocodileList[i].transform.position += 3 * d * Time.deltaTime * Vector3.left;
+                float d = dragonList[i].transform.position.x - associatedX[i];
+                dragonList[i].transform.position += 3 * d * Time.deltaTime * Vector3.left;
             }
         }
     }
@@ -254,13 +254,13 @@ public class CrocodileManager : Manager
             GameplayMusicManager.Instance.PlayGoldenizeSound();
         for (int i = 0; i < Count; ++i)
         {
-            Crocodile temp = crocodileList[i];
-            crocodileList[i] = (Crocodile)GetItem(id);
-            crocodileList[i].transform.position = temp.transform.position + Vector3.up * 0.1f;
-            crocodileList[i].SetLayer(temp.Layer);
+            Dragon temp = dragonList[i];
+            dragonList[i] = (Dragon)GetItem(id);
+            dragonList[i].transform.position = temp.transform.position + Vector3.up * 0.1f;
+            dragonList[i].SetLayer(temp.Layer);
             ReturnItem(temp);
         }
-        currentCrocodileID = id;
+        currentDragonID = id;
     }
 
     private void ProcessQueuedJumps()
@@ -268,14 +268,14 @@ public class CrocodileManager : Manager
         if (queuedJump.Count == 0) return;
 
         // Gom danh sách xóa để tránh sửa collection khi duyệt
-        List<Crocodile> toRemove = null;
+        List<Dragon> toRemove = null;
 
         foreach (var kv in queuedJump)
         {
             var c = kv.Key;
             if (!c || !c.isActiveAndEnabled)
             {
-                (toRemove ??= new List<Crocodile>()).Add(c);
+                (toRemove ??= new List<Dragon>()).Add(c);
                 continue;
             }
 
@@ -283,7 +283,7 @@ public class CrocodileManager : Manager
             if (c.JumpStatus == 0)
             {
                 c.CallTriggerJump(0.001f);
-                (toRemove ??= new List<Crocodile>()).Add(c);
+                (toRemove ??= new List<Dragon>()).Add(c);
             }
         }
 

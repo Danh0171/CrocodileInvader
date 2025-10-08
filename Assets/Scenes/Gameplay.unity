@@ -6821,7 +6821,7 @@ GameObject:
   - component: {fileID: 1774429094}
   - component: {fileID: 1774429093}
   m_Layer: 0
-  m_Name: CrocodileManager
+  m_Name: DragonManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6843,10 +6843,10 @@ MonoBehaviour:
   objectPrefabs:
   - {fileID: 4741446169254323825, guid: be7eda873b7b82444a0a48690457a1db, type: 3}
   - {fileID: 3404931247979141110, guid: 05d9b30f4aa8cbc47bf9fc817fdf8fa6, type: 3}
-  crocodileList: []
+  dragonList: []
   associatedX: []
-  currentCrocodileID: 0
-  maxJumpDelay: 0.6
+  currentDragonID: 0
+  maxJumpDelay: 0.4
 --- !u!4 &1774429094
 Transform:
   m_ObjectHideFlags: 0

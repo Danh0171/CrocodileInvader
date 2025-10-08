@@ -27,7 +27,7 @@ public class Gem : MonoBehaviour
 
     private void MoveToZombie()
     {
-        Crocodile target = GameManager.Instance.Zombies.FirstCrocodile;
+        Dragon target = GameManager.Instance.Zombies.FirstDragon;
         if (!target)
             return;
         Vector3 d = transform.position - target.transform.position;

@@ -8,8 +8,8 @@ public class Box : PoolableObject
 {
     [SerializeField] private BoxCollider2D boxCollider2D;
     [SerializeField] private int numberHumansContains;
-    [SerializeField] private int numberCrocodileNeeded;
-    private readonly HashSet<Crocodile> crocodileContacts = new HashSet<Crocodile>();
+    [SerializeField] private int numberDragonNeeded;
+    private readonly HashSet<Dragon> dragonContacts = new HashSet<Dragon>();
     [SerializeField] private Slider slider;
 
     [SerializeField] private TextMeshProUGUI text;
@@ -19,13 +19,13 @@ public class Box : PoolableObject
     public override void Init()
     {
         base.Init();
-        crocodileContacts.Clear();
+        dragonContacts.Clear();
         turnedGold = false;
     }
 
     public override float Width => boxCollider2D.size.x;
     public override float Height => boxCollider2D.size.y;
-    public int CollisionCount => crocodileContacts.Count;
+    public int CollisionCount => dragonContacts.Count;
 
     // Start is called before the first frame update
     protected override void Start()
@@ -37,27 +37,27 @@ public class Box : PoolableObject
     protected override void Update()
     {
         base.Update();
-        if (CollisionCount >= numberCrocodileNeeded)
+        if (CollisionCount >= numberDragonNeeded)
         {
             GeneratePreys();
             GameplayMusicManager.Instance.PlayCarExplodeSound();
             GameManager.Instance.CallExplosion(false);
             RemoveSelf();
         }
-        text.text = CollisionCount.ToString() + "/" + numberCrocodileNeeded.ToString();
-        slider.value = (float)CollisionCount / numberCrocodileNeeded;
+        text.text = CollisionCount.ToString() + "/" + numberDragonNeeded.ToString();
+        slider.value = (float)CollisionCount / numberDragonNeeded;
 
-        if (!turnedGold && GameManager.Instance.Zombies.FirstCrocodile &&
-            (transform.position - GameManager.Instance.Zombies.FirstCrocodile.transform.position).magnitude
+        if (!turnedGold && GameManager.Instance.Zombies.FirstDragon &&
+            (transform.position - GameManager.Instance.Zombies.FirstDragon.transform.position).magnitude
             <= GameManager.ScreenWidth * 0.2f &&
-            GameManager.Instance.Zombies.CurrentFormID == Crocodile.SPELLCASTERID)
+            GameManager.Instance.Zombies.CurrentFormID == Dragon.SPELLCASTERID)
             TurnIntoGold();
     }
 
     private void TurnIntoGold()
     {
         GameManager.Instance.Coins.TransformIntoCoin(this, false, ID);
-        GameManager.Instance.Zombies.FirstCrocodile.PlayAttackAnimation();
+        GameManager.Instance.Zombies.FirstDragon.PlayAttackAnimation();
         GameplayMusicManager.Instance.PlayGoldenizeSound();
         GeneratePreys();
         RemoveSelf();
@@ -81,9 +81,9 @@ public class Box : PoolableObject
 
         if (GameManager.Instance.Zombies.CurrentFormID == 0)
         {
-            var croc = collision.gameObject.GetComponentInParent<Crocodile>();
+            var croc = collision.gameObject.GetComponentInParent<Dragon>();
             if (croc != null)
-                crocodileContacts.Add(croc);
+                dragonContacts.Add(croc);
         }
         else if (GameManager.Instance.Zombies.CurrentFormID == 1)
         {
@@ -96,14 +96,14 @@ public class Box : PoolableObject
 
     private void OnCollisionExit2D(Collision2D collision)
     {
-        var croc = collision.gameObject.GetComponentInParent<Crocodile>();
+        var croc = collision.gameObject.GetComponentInParent<Dragon>();
         if (croc != null)
-            crocodileContacts.Remove(croc);
+            dragonContacts.Remove(croc);
     }
 
     private void OnDisable()
     {
-        crocodileContacts.Clear();
+        dragonContacts.Clear();
     }
 
     protected override void DestroyOnOutOfBounds()

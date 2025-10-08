@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GoldZombie : Crocodile
+public class MagicDragon : Dragon
 {
     // Update is called once per frame
 
