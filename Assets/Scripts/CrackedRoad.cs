@@ -45,7 +45,7 @@ public class CrackedRoad : PoolableObject
         float currentScrollSpeed = GameManager.Instance.ScrollBackSpeed;
         
         // Delay before crack starts (safe time)
-        delayBeforeCrack = (width - 4.5f)*1.55f / (currentScrollSpeed * 1.25f + 2f); 
+        delayBeforeCrack = ((width - 4.4f)*2f ) / (currentScrollSpeed * 5f - 49.3f); 
         
         // Crack warning time (time to react)
         crackTime = delayBeforeCrack * 0.55f; // 70% of delay time as warning

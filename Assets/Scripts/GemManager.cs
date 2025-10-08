@@ -52,8 +52,6 @@ public class GemManager : Manager
         gemTimeBonus = TIME_BONUS_WINDOW;
         countAward++;
         
-        Debug.Log($"Gem collected! Count: {countAward}/10, Time left: {gemTimeBonus:F2}s");
-        
         // Check if completed 10 gems
         if (countAward >= 10)
         {
@@ -63,10 +61,7 @@ public class GemManager : Manager
                 GameManager.Instance.IncCoin();
             }
             
-            // Play bonus sound
             GameplayMusicManager.Instance.PlayPerfectSound();
-            
-            Debug.Log($"BONUS! Collected 10 gems fast! Received {BONUS_GEMS} bonus gems!");
             
             // Reset for next bonus round
             ResetGemBonus();
@@ -77,6 +72,5 @@ public class GemManager : Manager
     {
         countAward = 0;
         gemTimeBonus = 0f;
-        Debug.Log("Gem bonus reset - too slow or completed bonus round");
     }
 }
