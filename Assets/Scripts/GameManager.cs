@@ -167,7 +167,7 @@ public class GameManager : MonoBehaviour
                 {
                     // SpawnBombAndWitchOnly - 70% bomb, 30% witch
                     int randomChance = Random.Range(0, 100);
-                    if (randomChance < 00)
+                    if (randomChance < 70)
                     {
                         // 70% spawn bomb
                         managers[3].CallSpawnItem(); // BombManager

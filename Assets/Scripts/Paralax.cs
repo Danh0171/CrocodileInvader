@@ -5,8 +5,8 @@ using UnityEngine;
 public class Paralax : MonoBehaviour
 {
     private float startPos;
-    public float parallaxEffect = 0.5f; // 0 = static, 1 = same speed as scroll
-    // [SerializeField] private float baseScrollSpeed = 3f; // Fixed speed thay vì dynamic ScrollBackSpeed
+
+    public float parallaxEffect = 0.5f; 
     [SerializeField] private bool moveRight = false; // true = bay qua phải, false = scroll left như bình thường
     private float sharedLength = 20f; // Length chung cho tất cả backgrounds
     
