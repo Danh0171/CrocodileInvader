@@ -108,7 +108,7 @@ public class Witch : PoolableObject
     {
         // Effect khi giết dragon
         GameManager.Instance.CallExplosion(false, dragon.transform.position);
-        GameplayMusicManager.Instance.PlayCarExplodeSound();
+        GameplayMusicManager.Instance.PlayBoomSound();
         
         // Remove dragon using DragonManager (Zombies)
         GameManager.Instance.Zombies.ReturnItem(dragon);
