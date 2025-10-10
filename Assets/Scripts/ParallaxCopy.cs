@@ -43,8 +43,6 @@ public class ParallaxCopy : MonoBehaviour
         
         // Áp dụng vị trí mới (world position, không phải local)
         transform.position = newPos;
-        
-        Debug.Log($"{gameObject.name} positioned at: {newPos} (Parent: {parentPos}, ScreenWidth: {GameManager.ScreenWidth})");
     }
     
     // Method để re-setup nếu ScreenWidth thay đổi trong runtime

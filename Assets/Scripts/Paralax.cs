@@ -15,7 +15,6 @@ public class Paralax : MonoBehaviour
     {
         startPos = transform.position.x;
         sharedLength = GameManager.ScreenWidth;
-        Debug.Log($"Parallax initialized - StartPos: {startPos}, Shared Length: {sharedLength}");
     }
 
     void Update() // Sử dụng FixedUpdate thay vì Update để mượt hơn

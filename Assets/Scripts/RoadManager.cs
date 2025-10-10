@@ -46,8 +46,8 @@ public class RoadManager : Manager
 
     private void SpawnRoad()
     {
-        if (GameManager.Instance.SpawnBombOnly)
-            GameManager.Instance.SpawnBombOnly = false;
+        if (GameManager.Instance.SpawnBombAndWitchOnly)
+            GameManager.Instance.SpawnBombAndWitchOnly = false;
 
         // DECISION: Spawn CrackedRoad hoặc normal Road
         // Chỉ spawn khi BrainNumber >= 30 và chỉ với width nhỏ/vừa
@@ -102,7 +102,7 @@ public class RoadManager : Manager
         }
 
         if (width == standardWidth[^1])
-            GameManager.Instance.SpawnBombOnly = true;
+            GameManager.Instance.SpawnBombAndWitchOnly = true;
 
         // Determine stat for next road
         float distance = standardDistance * GameManager.Instance.ScrollBackSpeed / 3f;

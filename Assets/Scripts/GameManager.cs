@@ -44,7 +44,7 @@ public class GameManager : MonoBehaviour
 
     [Header("Debug only")]
     [SerializeField] private int spawnOnly;
-    public bool SpawnBombOnly
+    public bool SpawnBombAndWitchOnly
     {
         set
         {
@@ -156,15 +156,33 @@ public class GameManager : MonoBehaviour
             {
                 if (spawnOnly == -1)
                 {
-                    // Thêm CrackedRoadManager vào danh sách có thể spawn
+                    // Normal spawn - all managers từ index 2 trở đi và trừ Witch ở index cuối
                     var availableManagers = new List<Manager>();
-                    for (int i = 2; i < managers.Count; i++)
+                    for (int i = 2; i < managers.Count-1; i++)
                         availableManagers.Add(managers[i]);
                     
                     availableManagers[Random.Range(0, availableManagers.Count)].CallSpawnItem();
                 }
+                else if (spawnOnly == 3)
+                {
+                    // SpawnBombAndWitchOnly - 70% bomb, 30% witch
+                    int randomChance = Random.Range(0, 100);
+                    if (randomChance < 00)
+                    {
+                        // 70% spawn bomb
+                        managers[3].CallSpawnItem(); // BombManager
+                    }
+                    else
+                    {
+                        // 30% spawn witch
+                        managers[6].CallSpawnItem(); // WitchManager (assuming index 6)
+                    }
+                }
                 else
+                {
+                    // Specific manager spawn
                     managers[spawnOnly].CallSpawnItem();
+                }
             }
             else
             {
