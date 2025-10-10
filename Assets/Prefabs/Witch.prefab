@@ -52,7 +52,7 @@ MonoBehaviour:
   boxCollider: {fileID: 3225190514666150016}
   animator: {fileID: 1654616014599878688}
   waitTime: 1
-  flySpeed: 20
+  flySpeed: 30
   dragonLayer:
     serializedVersion: 2
     m_Bits: 0

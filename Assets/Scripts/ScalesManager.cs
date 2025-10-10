@@ -38,7 +38,9 @@ public class ScalesManager : Manager
 
     public void TransformIntoCoin(PoolableObject item, bool isBomb, int vehicleID)
     {
-        int ID = 3;
+        // Calculate ID from the END of the list to avoid issues when adding new prefabs at the beginning
+        int bombScalesIndex = PrefabsCount - 4;
+        int ID = bombScalesIndex;
         if (!isBomb)
             ID += vehicleID + 1;
         ScalesContainer cc = (ScalesContainer)GetItem(ID);
