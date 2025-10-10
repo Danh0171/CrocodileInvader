@@ -189,7 +189,7 @@ public class GameManager : MonoBehaviour
                 if (spawnCode == 1)
                     SetActiveBonusBlock();
                 else
-                    Coins.GetItem(2);
+                    Coins.GetItem(4); // Two column coin
                 spawnCode = 0;
             }
             spawnTimeCount = 0f;

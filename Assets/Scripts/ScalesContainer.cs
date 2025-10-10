@@ -27,9 +27,9 @@ public class ScalesContainer : PoolableObject
     protected override void Update()
     {
         base.Update();
-        if (ID == 2 && transform.position.x < -GameManager.ScreenWidth / 2f)
+        if (ID == 4 && transform.position.x < -GameManager.ScreenWidth / 2f)
             GameManager.Instance.DeactivateTranform();
-        if (ID == 2 && transform.position.x <= 0)
+        if (ID == 4 && transform.position.x <= 0)
             GameplayMusicManager.Instance.PlayDeTransformSound();
     }
 }
