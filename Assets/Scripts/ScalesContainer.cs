@@ -28,7 +28,7 @@ public class ScalesContainer : PoolableObject
     {
         base.Update();
         if (ID == 4 && transform.position.x < -GameManager.ScreenWidth / 2f)
-            GameManager.Instance.DeactivateTranform();
+            GameManager.Instance.DeactivateTransform();
         if (ID == 4 && transform.position.x <= 0)
             GameplayMusicManager.Instance.PlayDeTransformSound();
     }

@@ -263,7 +263,7 @@ public class GameManager : MonoBehaviour
         bonusBlockActiveCountTime = bonusBlockActiveMaxTime;
     }
 
-    public void DeactivateTranform()
+    public void DeactivateTransform()
     {
         Instance.Zombies.ChangeForm(0);
         isCountSpawnBlock = true;
