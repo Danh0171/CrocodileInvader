@@ -24,6 +24,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Transform detector1, detector2;
 
     [SerializeField] private float scrollBackSpeed;
+    private float savedScrollBackSpeed;
     [SerializeField] private float deltaSpawnTime;
     [SerializeField] private GameObject explosion;
 
@@ -143,6 +144,7 @@ public class GameManager : MonoBehaviour
                 }
 
                 Time.timeScale = 0f;
+                scrollBackSpeed = 0f;
             }
         }
     }
@@ -215,6 +217,8 @@ public class GameManager : MonoBehaviour
     public void PauseGame()
     {
         Time.timeScale = 0f;
+        savedScrollBackSpeed = scrollBackSpeed;
+        scrollBackSpeed = 0f;
         pausedUI.SetActive(true);
         GameplayMusicManager.Instance.PauseBGMandZombie();
     }
@@ -222,6 +226,7 @@ public class GameManager : MonoBehaviour
     public void ContinueGame()
     {
         Time.timeScale = 1f;
+        scrollBackSpeed = savedScrollBackSpeed;
         pausedUI.SetActive(false);
         GameplayMusicManager.Instance.PlayBGMandZombie();
     }
