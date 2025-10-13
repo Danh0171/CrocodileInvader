@@ -419,7 +419,7 @@ MonoBehaviour:
   pausedUI: {fileID: 316647766}
   highRecord: {fileID: 1367720818}
   spawnOnly: -1
-  initialZombieNumber: 5
+  initialZombieNumber: 4
   spawnCode: 0
   gameOverPanel: {fileID: 545035685}
   gameOverScore: {fileID: 1417118920}
