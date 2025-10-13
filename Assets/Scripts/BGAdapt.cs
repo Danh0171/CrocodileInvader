@@ -10,6 +10,5 @@ public class BGAdapt : MonoBehaviour
         adapt = GameManager.ScreenWidth;
         float length = this.GetComponent<SpriteRenderer>().bounds.size.x;
         length = adapt;
-        Debug.Log("Length: " + length);
     }
 }
