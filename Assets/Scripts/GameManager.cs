@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+
 
 public class GameManager : MonoBehaviour
 {
@@ -229,6 +231,11 @@ public class GameManager : MonoBehaviour
         scrollBackSpeed = savedScrollBackSpeed;
         pausedUI.SetActive(false);
         GameplayMusicManager.Instance.PlayBGMandZombie();
+    }
+
+    public void ReplayGame(string sceneName)
+    {
+        SceneManager.LoadScene(sceneName);
     }
 
     private void CheckBonusBlockUpdate()

@@ -5423,7 +5423,7 @@ GameObject:
   - component: {fileID: 1075887563}
   - component: {fileID: 1075887562}
   m_Layer: 5
-  m_Name: Shop Button
+  m_Name: Replay Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5501,7 +5501,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: Shop
+          m_StringArgument: Gameplay
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1075887563
@@ -5524,7 +5524,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 36e49494348297248af57efb680a3a4d, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 6496ad9006500984ebdbeba2b43282d6, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -5652,7 +5652,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 210, y: 30}
+  m_AnchoredPosition: {x: 299, y: 30}
   m_SizeDelta: {x: 256, y: 256}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1110750917
@@ -5798,7 +5798,7 @@ GameObject:
   - component: {fileID: 1146535047}
   - component: {fileID: 1146535046}
   m_Layer: 5
-  m_Name: Shop Button
+  m_Name: Replay Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5820,7 +5820,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 487, y: -214}
+  m_AnchoredPosition: {x: -7, y: 23}
   m_SizeDelta: {x: 256, y: 256}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1146535046
@@ -5876,7 +5876,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: Shop
+          m_StringArgument: Gameplay
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1146535047
@@ -5899,7 +5899,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 36e49494348297248af57efb680a3a4d, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 6496ad9006500984ebdbeba2b43282d6, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -8447,63 +8447,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 97677678}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &1784005067
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 6197226005571158512, guid: 59d40e49fac234f418fe7148b2141f39, type: 3}
-      propertyPath: m_Name
-      value: Dragon PNG
-      objectReference: {fileID: 0}
-    - target: {fileID: 9055983494223085772, guid: 59d40e49fac234f418fe7148b2141f39, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.6839
-      objectReference: {fileID: 0}
-    - target: {fileID: 9055983494223085772, guid: 59d40e49fac234f418fe7148b2141f39, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -0.1957
-      objectReference: {fileID: 0}
-    - target: {fileID: 9055983494223085772, guid: 59d40e49fac234f418fe7148b2141f39, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9055983494223085772, guid: 59d40e49fac234f418fe7148b2141f39, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 9055983494223085772, guid: 59d40e49fac234f418fe7148b2141f39, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9055983494223085772, guid: 59d40e49fac234f418fe7148b2141f39, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9055983494223085772, guid: 59d40e49fac234f418fe7148b2141f39, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9055983494223085772, guid: 59d40e49fac234f418fe7148b2141f39, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9055983494223085772, guid: 59d40e49fac234f418fe7148b2141f39, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9055983494223085772, guid: 59d40e49fac234f418fe7148b2141f39, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 59d40e49fac234f418fe7148b2141f39, type: 3}
 --- !u!1 &1798255045
 GameObject:
   m_ObjectHideFlags: 0
@@ -9698,7 +9641,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -190, y: 30}
+  m_AnchoredPosition: {x: -325, y: 30}
   m_SizeDelta: {x: 256, y: 256}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2095083489
@@ -10065,4 +10008,3 @@ SceneRoots:
   - {fileID: 647481123}
   - {fileID: 1508844906}
   - {fileID: 1065882885}
-  - {fileID: 1784005067}
