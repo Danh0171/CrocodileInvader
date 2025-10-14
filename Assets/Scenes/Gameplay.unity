@@ -409,9 +409,9 @@ MonoBehaviour:
   deltaSpawnTime: 3
   explosion: {fileID: 1346821117}
   bonusBlock: {fileID: 2002508821}
-  bonusBlockMaxTime: 100
+  bonusBlockMaxTime: 40
   bonusBlockCountTime: 0
-  bonusBlockActiveMaxTime: 30
+  bonusBlockActiveMaxTime: 20
   bonusBlockActiveCountTime: 0
   zombieNumberText: {fileID: 793137353}
   coinNumberText: {fileID: 90383089}
@@ -5805,7 +5805,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1164265295
 Transform:
   m_ObjectHideFlags: 0

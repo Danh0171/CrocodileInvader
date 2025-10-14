@@ -6,6 +6,9 @@ using UnityEngine.SceneManagement;
 
 public class ShopManager : MonoBehaviour
 {
+    [SerializeField] private GameObject Dragons;
+    [SerializeField] private GameObject Trails;
+    [SerializeField] private GameObject PowerUp;
 
     public Text coinsText;
 
@@ -43,5 +46,26 @@ public class ShopManager : MonoBehaviour
     public void NavigateTo(string sceneName)
     {
         SceneManager.LoadScene(sceneName);
+    }
+
+    public void DragonPopUp()
+    {
+        Dragons.SetActive(true);
+        Trails.SetActive(false);
+        PowerUp.SetActive(false);
+    }
+
+    public void TrailsPopUp()
+    {
+        Trails.SetActive(true);
+        Dragons.SetActive(false);
+        PowerUp.SetActive(false);
+    }
+
+    public void PowerUpPopUp()
+    {
+        PowerUp.SetActive(true);
+        Dragons.SetActive(false);
+        Trails.SetActive(false);
     }
 }

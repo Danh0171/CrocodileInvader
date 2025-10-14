@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 5ad2ab63fc60e1d43ad00f480f9981c1
+guid: 6349d389de5d35e48934c81b25bc7968
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -34,7 +34,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 2
+    filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -45,9 +45,9 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 1
   spriteExtrude: 1
-  spriteMeshType: 0
+  spriteMeshType: 1
   alignment: 9
-  spritePivot: {x: 0.4307691, y: 0.22467965}
+  spritePivot: {x: 0.52090365, y: 0.21699621}
   spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
@@ -69,10 +69,10 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 256
+    maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 2
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -112,14 +112,14 @@ TextureImporter:
       guid: 8fa47b0fb8d8a6e488d85a5be5378dbb
       position: {x: 69.09537, y: -154.5902, z: 0}
       rotation: {x: 0, y: 0, z: 0.99464977, w: -0.10330501}
-      length: 153.2439
+      length: 153.24391
       parentId: 0
       color:
         serializedVersion: 2
         rgba: 4278255615
     - name: Leg Front1
       guid: 60b7e36d468cf2a4ba9a215b56071a0a
-      position: {x: 153.24387, y: 0.00010286492, z: 0}
+      position: {x: 153.24388, y: 0.0000992492, z: 0}
       rotation: {x: 0, y: 0, z: -0.48210683, w: 0.8761125}
       length: 92.45132
       parentId: 1
@@ -128,7 +128,7 @@ TextureImporter:
         rgba: 4278255360
     - name: Leg Back
       guid: 1c4e536a0501f334ab51d9d63b04afff
-      position: {x: 20.980106, y: 80.69198, z: 0}
+      position: {x: 20.980122, y: 80.69198, z: 0}
       rotation: {x: 0, y: 0, z: 0.93927634, w: -0.34316176}
       length: 97.70599
       parentId: 0
@@ -137,7 +137,7 @@ TextureImporter:
         rgba: 4294967040
     - name: Leg Back1
       guid: 339a62163e199bf4b80ea20d0508644e
-      position: {x: 97.70601, y: 0.00004983074, z: 0}
+      position: {x: 97.706024, y: 0.000060038365, z: 0}
       rotation: {x: 0, y: 0, z: -0.7699243, w: 0.6381353}
       length: 72.23975
       parentId: 3
@@ -146,8 +146,8 @@ TextureImporter:
         rgba: 4294901760
     - name: Arm front
       guid: 31beefa483baa9e479ed43655c215654
-      position: {x: 196.45514, y: -118.726746, z: 0}
-      rotation: {x: 0, y: -0, z: 0.8552482, w: 0.51821864}
+      position: {x: 196.45517, y: -118.726746, z: 0}
+      rotation: {x: 0, y: 0, z: 0.8552482, w: 0.51821864}
       length: 146.65192
       parentId: 0
       color:
@@ -155,7 +155,7 @@ TextureImporter:
         rgba: 4294902015
     - name: arm back
       guid: 8c0184436eea7f846b469c6e08b289ec
-      position: {x: 249.0029, y: 91.49981, z: 0}
+      position: {x: 249.00293, y: 91.49981, z: 0}
       rotation: {x: 0, y: 0, z: 0.9249209, w: 0.38015965}
       length: 90.78822
       parentId: 0
@@ -164,26 +164,26 @@ TextureImporter:
         rgba: 4278223103
     - name: tail
       guid: 7e088244af8dafd44bca56975a855b0a
-      position: {x: -13.247809, y: -266.98077, z: 0}
+      position: {x: -13.247794, y: -266.98077, z: 0}
       rotation: {x: 0, y: 0, z: 0.74117, w: -0.6713174}
-      length: 127.374245
+      length: 127.37424
       parentId: 0
       color:
         serializedVersion: 2
         rgba: 4278255488
     - name: tail1
       guid: a805eb32a1820204d87183c99238c4c3
-      position: {x: 127.37426, y: -0.00000034620462, z: 0}
-      rotation: {x: 0, y: -0, z: -0.5878757, w: -0.80895126}
-      length: 149.91907
+      position: {x: 127.37426, y: -0.000030863783, z: 0}
+      rotation: {x: 0, y: -0, z: -0.5878761, w: -0.808951}
+      length: 149.91905
       parentId: 7
       color:
         serializedVersion: 2
         rgba: 4286643968
     - name: tail2
       guid: 12007ff8e867e074fb9c6c4a24ae8fbc
-      position: {x: 149.91904, y: 0.00008806764, z: 0}
-      rotation: {x: 0, y: 0, z: 0.03906172, w: 0.9992368}
+      position: {x: 149.91905, y: -0.000044752996, z: 0}
+      rotation: {x: 0, y: 0, z: 0.039061204, w: 0.9992368}
       length: 138.2033
       parentId: 8
       color:
