@@ -298,8 +298,6 @@ public class DragonManager : Manager
             dragonList[i].SetLayer(temp.Layer);
             ReturnItem(temp);
         }
-        
-        Debug.Log($"ChangeForm completed: IsNormalForm={isNormalForm}, Dragons transformed: {Count}");
     }
 
     private void ProcessQueuedJumps()

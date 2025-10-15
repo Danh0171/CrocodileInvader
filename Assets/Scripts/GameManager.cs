@@ -104,8 +104,6 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log("ScreenSize: " + ScreenWidth + "x" + ScreenHeight);
-
         brainNumber = 0;
         GenerateZombies(initialZombieNumber);
         spawnTimeCount = 0f;
