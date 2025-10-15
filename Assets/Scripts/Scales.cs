@@ -11,7 +11,7 @@ public class Scales : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (GameManager.Instance.Zombies.CurrentFormID == 1)
+        if (GameManager.Instance.Zombies.IsMagicForm)
             MoveToZombie();
     }
 

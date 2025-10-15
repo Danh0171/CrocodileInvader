@@ -50,7 +50,7 @@ public class Box : PoolableObject
         if (!turnedGold && GameManager.Instance.Zombies.FirstDragon &&
             (transform.position - GameManager.Instance.Zombies.FirstDragon.transform.position).magnitude
             <= GameManager.ScreenWidth * 0.2f &&
-            GameManager.Instance.Zombies.CurrentFormID == Dragon.SPELLCASTERID)
+            GameManager.Instance.Zombies.IsMagicForm)
             TurnIntoGold();
     }
 
@@ -79,13 +79,13 @@ public class Box : PoolableObject
     {
         if (!collision.gameObject.CompareTag("Zombie")) return;
 
-        if (GameManager.Instance.Zombies.CurrentFormID == 0)
+        if (GameManager.Instance.Zombies.IsNormalForm)
         {
             var croc = collision.gameObject.GetComponentInParent<Dragon>();
             if (croc != null)
                 dragonContacts.Add(croc);
         }
-        else if (GameManager.Instance.Zombies.CurrentFormID == 1)
+        else if (GameManager.Instance.Zombies.IsMagicForm)
         {
             GameManager.Instance.Coins.TransformIntoCoin(this, false, ID);
             RemoveSelf();

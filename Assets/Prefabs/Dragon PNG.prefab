@@ -393,10 +393,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9055983494223085772}
+  - component: {fileID: 6108364729374035299}
+  - component: {fileID: -3817261442846515353}
   - component: {fileID: 3559916993731224632}
   - component: {fileID: 1624559524665154554}
-  - component: {fileID: -3817261442846515353}
-  - component: {fileID: 6108364729374035299}
   - component: {fileID: -19291930988626111}
   - component: {fileID: -4918846671656297049}
   m_Layer: 0
@@ -422,6 +422,54 @@ Transform:
   - {fileID: 5147879423653251344}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6108364729374035299
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6197226005571158512}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fa06de35751a0b418afa0370cb4b1ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scrollbackModifier: 0
+  id: 0
+  boxCollider: {fileID: -19291930988626111}
+  rigidBody: {fileID: -4918846671656297049}
+  renderers:
+  - {fileID: 3559916993731224632}
+  groundHeight: 0
+  jumpStatus: -1
+  jumpSpeed: 20
+  jumpHeightModifier: 1.5
+  jumpStartTime: 0
+  floatingGravityScale: 0.5
+  fallingGravityScale: 10
+  animator: {fileID: -3817261442846515353}
+  isActuallyGrounded: 0
+--- !u!95 &-3817261442846515353
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6197226005571158512}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: c29d97716b357c64680a2ddb543ccd24, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!212 &3559916993731224632
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -506,54 +554,6 @@ MonoBehaviour:
     m_Extent: {x: 3.7987006, y: 4.621736, z: 0}
   m_AlwaysUpdate: 1
   m_AutoRebind: 0
---- !u!95 &-3817261442846515353
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6197226005571158512}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: c29d97716b357c64680a2ddb543ccd24, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
---- !u!114 &6108364729374035299
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6197226005571158512}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5fa06de35751a0b418afa0370cb4b1ef, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  scrollbackModifier: 0
-  id: 0
-  boxCollider: {fileID: -19291930988626111}
-  rigidBody: {fileID: -4918846671656297049}
-  renderers:
-  - {fileID: 3559916993731224632}
-  groundHeight: 0
-  jumpStatus: -1
-  jumpSpeed: 20
-  jumpHeightModifier: 1.5
-  jumpStartTime: 0
-  floatingGravityScale: 0.5
-  fallingGravityScale: 10
-  animator: {fileID: -3817261442846515353}
-  isActuallyGrounded: 0
 --- !u!61 &-19291930988626111
 BoxCollider2D:
   m_ObjectHideFlags: 0

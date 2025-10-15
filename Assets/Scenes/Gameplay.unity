@@ -409,9 +409,9 @@ MonoBehaviour:
   deltaSpawnTime: 3
   explosion: {fileID: 1346821117}
   bonusBlock: {fileID: 2002508821}
-  bonusBlockMaxTime: 40
+  bonusBlockMaxTime: 10
   bonusBlockCountTime: 0
-  bonusBlockActiveMaxTime: 20
+  bonusBlockActiveMaxTime: 10
   bonusBlockActiveCountTime: 0
   zombieNumberText: {fileID: 793137353}
   coinNumberText: {fileID: 90383089}
@@ -5815,7 +5815,7 @@ Transform:
   m_GameObject: {fileID: 1164265294}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.19, y: -1.3107555, z: 0}
+  m_LocalPosition: {x: 12.51, y: -1.3107555, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -8300,10 +8300,11 @@ MonoBehaviour:
   numberRepool: 10
   objectPrefabs:
   - {fileID: 6108364729374035299, guid: 59d40e49fac234f418fe7148b2141f39, type: 3}
+  - {fileID: 6108364729374035299, guid: 5b75e7b679ccaf14eacdff00ed1dc48c, type: 3}
   - {fileID: 3404931247979141110, guid: 05d9b30f4aa8cbc47bf9fc817fdf8fa6, type: 3}
   dragonList: []
   associatedX: []
-  currentDragonID: 0
+  isNormalForm: 1
   maxJumpDelay: 0.4
 --- !u!4 &1774429094
 Transform:

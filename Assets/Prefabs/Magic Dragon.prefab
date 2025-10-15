@@ -1278,7 +1278,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scrollbackModifier: 0
-  id: 1
+  id: 2
   boxCollider: {fileID: 7735808596228052516}
   rigidBody: {fileID: 1048067224518823574}
   renderers:
@@ -1295,9 +1295,11 @@ MonoBehaviour:
   jumpStatus: -1
   jumpSpeed: 35
   jumpHeightModifier: 1.5
+  jumpStartTime: 0
   floatingGravityScale: 0.5
   fallingGravityScale: 10
   animator: {fileID: 5613390933323887924}
+  isActuallyGrounded: 0
 --- !u!61 &7735808596228052516
 BoxCollider2D:
   m_ObjectHideFlags: 0

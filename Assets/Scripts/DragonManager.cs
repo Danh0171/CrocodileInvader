@@ -16,7 +16,7 @@ public class DragonManager : Manager
 
     [SerializeField] private List<Dragon> dragonList = new List<Dragon>();
     [SerializeField] private List<float> associatedX;
-    [SerializeField] private int currentDragonID;
+    [SerializeField] private bool isNormalForm = true; // true = normal dragons, false = magic dragon
     private int layerCount = 1;
     private Dragon firstDragon;
     [SerializeField] private float maxJumpDelay = 0.25f;
@@ -28,7 +28,11 @@ public class DragonManager : Manager
     public Dragon FirstDragon => firstDragon;
 
     public int Count => dragonList.Count;
-    public int CurrentFormID => currentDragonID;
+    public bool IsNormalForm => isNormalForm;
+    public bool IsMagicForm => !isNormalForm;
+    
+    // Backward compatibility cho các scripts khác
+    public int CurrentFormID => isNormalForm ? 0 : 1;
     #endregion Properties
 
     // Start is called before the first frame update
@@ -82,7 +86,19 @@ public class DragonManager : Manager
 
     public void AddZombie(bool isEating = false)
     {
-        Dragon c = (Dragon)GetItem(currentDragonID);
+        int prefabID; // ID để spawn từ Object Prefabs array
+        
+        if (isNormalForm) // Normal form - random từ các normal prefabs
+        {
+            int normalPrefabCount = PrefabsCount - 1; // Tất cả prefabs trừ magic dragon cuối
+            prefabID = Random.Range(0, normalPrefabCount);
+        }
+        else // Magic form - prefab cuối cùng
+        {
+            prefabID = PrefabsCount - 1; // Sử dụng [^1] logic: magic dragon ở cuối
+        }
+        
+        Dragon c = (Dragon)GetItem(prefabID);
         c.SetLayer(layerCount);
 
         if (isEating && GameManager.Instance.Zombies.FirstDragon)
@@ -116,7 +132,7 @@ public class DragonManager : Manager
 
     private float GetDelayedTime(Dragon dragon)
     {
-        float delayModifier = (CurrentFormID == 1) ? 0.5f : 0.8f;
+        float delayModifier = IsMagicForm ? 0.5f : 0.8f; // Magic form nhanh hơn
         float distance = Mathf.Max(FirstDragon.transform.position.x - dragon.transform.position.x, 0f);
         float raw = distance / GameManager.Instance.ScrollBackSpeed * delayModifier + 0.001f;
         return Mathf.Min(maxJumpDelay, raw);
@@ -250,17 +266,40 @@ public class DragonManager : Manager
 
     public void ChangeForm(int id)
     {
-        if (id != 0)
+        // Convert old ID system to new bool system
+        bool newIsNormalForm = (id == 0);
+        ChangeForm(newIsNormalForm);
+    }
+    
+    public void ChangeForm(bool toNormalForm)
+    {
+        if (!toNormalForm) // Chuyển sang magic form
             GameplayMusicManager.Instance.PlayGoldenizeSound();
+            
+        isNormalForm = toNormalForm;
+        
         for (int i = 0; i < Count; ++i)
         {
             Dragon temp = dragonList[i];
-            dragonList[i] = (Dragon)GetItem(id);
+            
+            int prefabID;
+            if (isNormalForm) // Normal form - random variant
+            {
+                int normalPrefabCount = PrefabsCount - 1;
+                prefabID = Random.Range(0, normalPrefabCount);
+            }
+            else // Magic form - last prefab
+            {
+                prefabID = PrefabsCount - 1; // Magic dragon ở cuối [^1]
+            }
+            
+            dragonList[i] = (Dragon)GetItem(prefabID);
             dragonList[i].transform.position = temp.transform.position + Vector3.up * 0.1f;
             dragonList[i].SetLayer(temp.Layer);
             ReturnItem(temp);
         }
-        currentDragonID = id;
+        
+        Debug.Log($"ChangeForm completed: IsNormalForm={isNormalForm}, Dragons transformed: {Count}");
     }
 
     private void ProcessQueuedJumps()
