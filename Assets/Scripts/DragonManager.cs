@@ -35,6 +35,32 @@ public class DragonManager : Manager
     public int CurrentFormID => isNormalForm ? 0 : 1;
     #endregion Properties
 
+    private int GetSelectedDragonID()
+    {
+        // Get all dragons in spawn pool and randomly select one
+        List<int> poolDragons = new List<int>();
+        
+        // Check which dragons are in the spawn pool
+        int normalDragonsCount = PrefabsCount - 1; // Exclude magic dragon at end
+        for (int i = 0; i < normalDragonsCount; i++)
+        {
+            if (PlayerPrefs.GetInt("dragonInPool" + i, i == 0 ? 1 : 0) == 1)
+            {
+                poolDragons.Add(i);
+            }
+        }
+        
+        // If no dragons in pool, default to dragon 0
+        if (poolDragons.Count == 0)
+        {
+            poolDragons.Add(0);
+        }
+        
+        // Randomly select from pool
+        int randomIndex = Random.Range(0, poolDragons.Count);
+        return poolDragons[randomIndex];
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -88,10 +114,9 @@ public class DragonManager : Manager
     {
         int prefabID; // ID để spawn từ Object Prefabs array
         
-        if (isNormalForm) // Normal form - random từ các normal prefabs
+        if (isNormalForm) // Normal form - use selected dragon from shop
         {
-            int normalPrefabCount = PrefabsCount - 1; // Tất cả prefabs trừ magic dragon cuối
-            prefabID = Random.Range(0, normalPrefabCount);
+            prefabID = GetSelectedDragonID();
         }
         else // Magic form - prefab cuối cùng
         {
@@ -283,10 +308,9 @@ public class DragonManager : Manager
             Dragon temp = dragonList[i];
             
             int prefabID;
-            if (isNormalForm) // Normal form - random variant
+            if (isNormalForm) // Normal form - use selected dragon from shop
             {
-                int normalPrefabCount = PrefabsCount - 1;
-                prefabID = Random.Range(0, normalPrefabCount);
+                prefabID = GetSelectedDragonID();
             }
             else // Magic form - last prefab
             {

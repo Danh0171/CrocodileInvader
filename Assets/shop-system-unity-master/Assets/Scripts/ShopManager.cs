@@ -16,7 +16,8 @@ public class ShopManager : MonoBehaviour
 
     private void Start()
     {
-        this.coins = (PlayerPrefs.HasKey("coins")) ? PlayerPrefs.GetInt("coins") : 0;
+        // Sync với total coins từ gameplay
+        this.coins = (PlayerPrefs.HasKey("totalCoins")) ? PlayerPrefs.GetInt("totalCoins") : 0;
         this.coinsText.text = coins.ToString();
     }
 
@@ -39,8 +40,19 @@ public class ShopManager : MonoBehaviour
 
     private void SaveAndUpdate(int coins)
     {
-        PlayerPrefs.SetInt("coins", coins);
+        PlayerPrefs.SetInt("totalCoins", coins);
         this.coinsText.text = coins.ToString();
+    }
+    
+    public bool TryPurchase(int cost)
+    {
+        if (this.coins >= cost)
+        {
+            this.coins -= cost;
+            SaveAndUpdate(this.coins);
+            return true;
+        }
+        return false;
     }
 
     public void NavigateTo(string sceneName)

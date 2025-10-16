@@ -7,9 +7,9 @@ public class ShopController : MonoBehaviour
 {
     private ShopManager gameManager;
 
-    public GameObject[] planets;
+    public GameObject[] dragons; // Renamed from planets to dragons
 
-    private GameObject selectedPlanet;
+    private GameObject selectedDragon; // Renamed from selectedPlanet
 
     [SerializeField]
     private Text value;
@@ -21,81 +21,122 @@ public class ShopController : MonoBehaviour
 
     private void Start()
     {
-        LoadProgress(planets);
+        LoadProgress(dragons);
 
-        // load and select the saved game object 
-        // or select the first planet if there is no saved value
-        if (PlayerPrefs.HasKey("selected"))
+        // load and select the saved dragon 
+        // or select the first dragon if there is no saved value
+        if (PlayerPrefs.HasKey("selectedDragon"))
         {
-            SelectPlanet(planets[PlayerPrefs.GetInt("selected")]);
+            SelectDragon(dragons[PlayerPrefs.GetInt("selectedDragon")]);
         }
         else
         {
-            SelectPlanet(planets[0]);
+            SelectDragon(dragons[0]);
         }
 
-        // get the total coins
-        coins = (PlayerPrefs.HasKey("coins")) ? PlayerPrefs.GetInt("coins") : 0;
+        // get the total coins from Dragon Age game
+        coins = (PlayerPrefs.HasKey("totalCoins")) ? PlayerPrefs.GetInt("totalCoins") : 0;
+        coinsText.text = coins.ToString();
     }
 
     public void OnClick(int index)
     {
-        SelectPlanet(planets[index]);
+        SelectDragon(dragons[index]);
     }
 
     public void Unlock()
     {
-        int index = GetIndex(selectedPlanet);
+        int index = GetIndex(selectedDragon);
         int balance = coins - int.Parse(value.text);
 
 
-        if (coins >= int.Parse(value.text) && (GetChildGameObject(selectedPlanet, 3).activeSelf == true))
+        if (coins >= int.Parse(value.text) && (GetChildGameObject(selectedDragon, 3).activeSelf == true))
         {
-            // withdraw the game object value from total coins and update text value
-            PlayerPrefs.SetInt("coins", balance);
+            // withdraw the dragon cost from total coins and update text value
+            PlayerPrefs.SetInt("totalCoins", balance);
             coinsText.text = balance.ToString();
 
-            GetChildGameObject(selectedPlanet, 3).SetActive(false);
+            GetChildGameObject(selectedDragon, 3).SetActive(false);
 
-            PlayerPrefs.SetInt("selected", index);
-            PlayerPrefs.SetInt("status " + index, 1);
+            // Unlock dragon and automatically add to spawn pool
+            PlayerPrefs.SetInt("dragonStatus" + index, 1);
+            PlayerPrefs.SetInt("dragonInPool" + index, 1);
+            
+            // Show selection indicator
+            GetChildGameObject(selectedDragon, 1).SetActive(true);
+            
+            PlayerPrefs.Save();
+            
+            Debug.Log($"Unlocked Dragon {index} and added to spawn pool!");
         }
 
     }
 
-    private void SelectPlanet(GameObject obj)
+    private void SelectDragon(GameObject obj)
     {
         int index = GetIndex(obj);
-
-        if (selectedPlanet)
+        
+        // Check if dragon is unlocked
+        if (GetChildGameObject(obj, 3).activeSelf == true)
         {
-            GetChildGameObject(selectedPlanet, 1).SetActive(false);
-            selectedPlanet = obj;
+            // Dragon is locked, show purchase UI
+            if (selectedDragon)
+                GetChildGameObject(selectedDragon, 1).SetActive(false);
+            
+            selectedDragon = obj;
+            GetChildGameObject(obj, 1).SetActive(true);
+            value.text = GetChildGameObject(obj, 0).GetComponent<Text>().text;
         }
         else
         {
-            selectedPlanet = obj;
-        }
-        GetChildGameObject(obj, 1).SetActive(true);
-
-        //change text value with the planet game object value
-        value.text = GetChildGameObject(obj, 0).GetComponent<Text>().text;
-
-        if (GetChildGameObject(selectedPlanet, 3).activeSelf == false)
-        {
-            PlayerPrefs.SetInt("selected", index);
+            // Dragon is unlocked, toggle selection for pool
+            bool currentlyEnabled = PlayerPrefs.GetInt("dragonInPool" + index, index == 0 ? 1 : 0) == 1;
+            
+            if (currentlyEnabled)
+            {
+                // Remove from pool
+                PlayerPrefs.SetInt("dragonInPool" + index, 0);
+                GetChildGameObject(obj, 1).SetActive(false); // Remove selection indicator
+                Debug.Log($"Removed Dragon {index} from spawn pool");
+            }
+            else
+            {
+                // Add to pool
+                PlayerPrefs.SetInt("dragonInPool" + index, 1);
+                GetChildGameObject(obj, 1).SetActive(true); // Show selection indicator
+                Debug.Log($"Added Dragon {index} to spawn pool");
+            }
+            
+            PlayerPrefs.Save();
         }
     }
 
-    // iterates trought the list and unlocks the game object if the status equals 1
+    // iterates through the list and unlocks dragons if the status equals 1
     private void LoadProgress(GameObject[] list)
     {
-        for (int i = 0; i <= list.Length; i++)
+        for (int i = 0; i < list.Length; i++) // Fixed: should be < not <=
         {
-            if (PlayerPrefs.GetInt("status " + i) == 1)
+            // Load unlock status
+            if (PlayerPrefs.GetInt("dragonStatus" + i) == 1)
             {
                 GetChildGameObject(list[i], 3).SetActive(false);
             }
+            
+            // Load selection status for spawn pool (only if unlocked)
+            if (PlayerPrefs.GetInt("dragonStatus" + i) == 1)
+            {
+                bool inPool = PlayerPrefs.GetInt("dragonInPool" + i, i == 0 ? 1 : 0) == 1;
+                GetChildGameObject(list[i], 1).SetActive(inPool);
+            }
+        }
+        
+        // Dragon 0 should always be unlocked and in pool (default)
+        if (list.Length > 0)
+        {
+            GetChildGameObject(list[0], 3).SetActive(false);
+            PlayerPrefs.SetInt("dragonStatus0", 1);
+            PlayerPrefs.SetInt("dragonInPool0", 1);
+            GetChildGameObject(list[0], 1).SetActive(true);
         }
     }
 
@@ -107,9 +148,9 @@ public class ShopController : MonoBehaviour
 
     private void OnScreenLeave()
     {
-        int index = GetIndex(selectedPlanet);
-        PlayerPrefs.SetInt("selected", index);
-        PlayerPrefs.SetInt("status " + index, 1);
+        int index = GetIndex(selectedDragon);
+        PlayerPrefs.SetInt("selectedDragon", index);
+        PlayerPrefs.SetInt("dragonStatus" + index, 1);
     }
 
     // find the game object index and save
@@ -117,7 +158,7 @@ public class ShopController : MonoBehaviour
     {
         int index = 0;
 
-        while (obj != planets[index])
+        while (obj != dragons[index])
         {
             index++;
         }

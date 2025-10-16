@@ -1213,7 +1213,7 @@ GameObject:
   - component: {fileID: 7735808596228052516}
   - component: {fileID: 1048067224518823574}
   m_Layer: 0
-  m_Name: Magic Dragon
+  m_Name: 4. Magic Dragon
   m_TagString: Zombie
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1278,7 +1278,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scrollbackModifier: 0
-  id: 2
+  id: 4
   boxCollider: {fileID: 7735808596228052516}
   rigidBody: {fileID: 1048067224518823574}
   renderers:

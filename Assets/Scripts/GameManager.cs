@@ -104,6 +104,9 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // Initialize coin system - load from PlayerPrefs for shop integration
+        coinNumber = 0; // Current session coins (display only)
+        
         brainNumber = 0;
         GenerateZombies(initialZombieNumber);
         spawnTimeCount = 0f;
@@ -142,6 +145,9 @@ public class GameManager : MonoBehaviour
                     highRecord.SetActive(true);
                     PlayerPrefs.SetInt("HighScore", brainNumber);
                 }
+                
+                // Ensure all progress is saved
+                PlayerPrefs.Save();
 
                 Time.timeScale = 0f;
                 scrollBackSpeed = 0f;
@@ -212,7 +218,16 @@ public class GameManager : MonoBehaviour
         brainNumber += number;
     }
 
-    public void IncCoin() { coinNumber++; }
+    public void IncCoin() 
+    { 
+        coinNumber++;
+        
+        // Save to totalCoins for shop system
+        int totalCoins = PlayerPrefs.GetInt("totalCoins", 0);
+        totalCoins++;
+        PlayerPrefs.SetInt("totalCoins", totalCoins);
+        PlayerPrefs.Save();
+    }
 
     public void PauseGame()
     {
@@ -231,7 +246,7 @@ public class GameManager : MonoBehaviour
         GameplayMusicManager.Instance.PlayBGMandZombie();
     }
 
-    public void ReplayGame(string sceneName)
+    public void NavigateTo(string sceneName)
     {
         SceneManager.LoadScene(sceneName);
     }

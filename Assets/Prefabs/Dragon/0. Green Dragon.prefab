@@ -400,7 +400,7 @@ GameObject:
   - component: {fileID: -19291930988626111}
   - component: {fileID: -4918846671656297049}
   m_Layer: 0
-  m_Name: Dragon PNG
+  m_Name: 0. Green Dragon
   m_TagString: Zombie
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
