@@ -158,7 +158,7 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _Color01: {r: 1, g: 1, b: 1, a: 0}
     - _Color02: {r: 0.3773585, g: 0.3773585, b: 0.3773585, a: 0}
-    - _ColorPanSpeed: {r: -14.21, g: -0.113, b: 0, a: 0}
+    - _ColorPanSpeed: {r: -1.15, g: -0.113, b: 0, a: 0}
     - _ColorUVScale: {r: 0.115, g: 1, b: 0, a: 0}
     - _Color_01: {r: 0.5323144, g: 0.3, b: 1, a: 0}
     - _Color_02: {r: 1, g: 0.3, b: 0.5903932, a: 0}

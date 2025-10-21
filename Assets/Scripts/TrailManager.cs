@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 
 public class TrailManager : MonoBehaviour
@@ -16,6 +17,19 @@ public class TrailManager : MonoBehaviour
     [SerializeField] private TrailType trailType = TrailType.Fire; // Loại trail
     [SerializeField] private float destroyChance = 0.1f; // 10% chance phá vỡ
     [SerializeField] private float effectRadius = 1f; // Bán kính hiệu ứng
+    
+    [Header("Effect Sprites")]
+    [SerializeField] private Sprite fireSprite; // Sprite cho Fire effect
+    [SerializeField] private Sprite iceSprite; // Sprite cho Ice effect
+    [SerializeField] private Sprite leafSprite; // Sprite cho Nature effect
+    [SerializeField] private Sprite darkHoleSprite; // Sprite cho Dark effect
+    
+    // Dictionary để lưu trữ original values trước khi apply ice effect
+    private Dictionary<GameObject, int> originalBoxDragonNeeded = new Dictionary<GameObject, int>();
+    private Dictionary<GameObject, bool> originalBombCollisionEnabled = new Dictionary<GameObject, bool>();
+    
+    // Dictionary để track effect sprites
+    private Dictionary<GameObject, GameObject> effectSprites = new Dictionary<GameObject, GameObject>();
     
     private Vector3 centerPosition; // Vị trí trung tâm orbit ban đầu
     private TrailRenderer trailRenderer;
@@ -36,30 +50,12 @@ public class TrailManager : MonoBehaviour
         centerPosition = transform.localPosition;
         currentY = centerPosition.y; // Khởi tạo current Y
         
-        // Get components với null check
         trailRenderer = GetComponent<TrailRenderer>();
-        if (trailRenderer == null)
-        {
-            Debug.LogWarning($"TrailManager on {gameObject.name}: TrailRenderer component not found!");
-        }
-        
         trailCollider = GetComponent<Collider2D>();
-        
-        // Nếu chưa có collider, tạo circle collider
-        if (trailCollider == null)
-        {
-            CircleCollider2D circle = gameObject.AddComponent<CircleCollider2D>();
-            circle.radius = effectRadius;
-            circle.isTrigger = true;
-            trailCollider = circle;
-        }
     }
 
     void Update()
     {
-        // Check null trước khi làm gì
-        if (this == null || transform == null) return;
-        
         // Tính orbit radius dựa trên dragons
         float dynamicRadius = CalculateDynamicRadius();
         
@@ -82,7 +78,7 @@ public class TrailManager : MonoBehaviour
         );
         
         Vector3 newPosition = dynamicCenter + orbitOffset;
-        newPosition.y = currentY + 0.3f; // Dùng smooth Y thay vì direct Y
+        newPosition.y = currentY + 0.7f; // Dùng smooth Y thay vì direct Y
         
         // Adjust Z để có depth relative to dragon
         if (GameManager.Instance.Zombies.FirstDragon != null)
@@ -99,20 +95,17 @@ public class TrailManager : MonoBehaviour
     
     private void UpdateSortingOrder(float zOffset)
     {
-        // Double check null cho trailRenderer
-        if (trailRenderer == null || !trailRenderer) return;
+        if (trailRenderer == null) return;
         
-        // Khi trail ở phía trước (Z > 0) → UI layer (trước dragon)
-        // Khi trail ở phía sau (Z < 0) → Vehicle layer (sau dragon)
         if (zOffset > 0)
         {
             // Trail ở phía trước
-            trailRenderer.sortingLayerName = "UI"; // Trước dragon
+            trailRenderer.sortingLayerName = "UI"; 
         }
         else
         {
             // Trail ở phía sau  
-            trailRenderer.sortingLayerName = "Vehicle"; // Sau dragon
+            trailRenderer.sortingLayerName = "Vehicle"; 
         }
     }
     
@@ -125,14 +118,6 @@ public class TrailManager : MonoBehaviour
         
         // Option 1: Dựa trên số lượng dragons
         float countBasedRadius = baseOrbitRadius + (dragonManager.Count * radiusMultiplier);
-        
-        // Option 2: Dựa trên khoảng cách giữa dragon đầu và cuối (nếu có nhiều dragon)
-        // if (dragonManager.Count > 1)
-        // {
-        //     // DragonManager không có LastDragon property
-        //     // Cần implement logic tìm dragon cuối cùng
-        //     return baseOrbitRadius + (distance * radiusMultiplier);
-        // }
         
         return countBasedRadius;
     }
@@ -185,7 +170,7 @@ public class TrailManager : MonoBehaviour
     private void ApplyTrailEffect(GameObject target)
     {
         // Null check đầu tiên
-        if (target == null || this == null || gameObject == null) return;
+        if (target == null) return;
         
         // Kiểm tra có thể phá vỡ không (tương tự hoá vàng logic)
         if (!CanDestroyObject(target)) return;
@@ -219,10 +204,16 @@ public class TrailManager : MonoBehaviour
     
     private void ApplyFireEffect(GameObject target)
     {
-        if (target == null || this == null || gameObject == null) return;
+        if (target == null) return;
         
         // Lửa - nổ đen vật thể
         Debug.Log($"Fire Trail Effect: Exploding {target.name}");
+        
+        // Thêm fire sprite overlay
+        if (fireSprite != null)
+        {
+            CreateEffectSprite(target, fireSprite);
+        }
         
         // Tạo explosion effect
         if (GameManager.Instance != null)
@@ -230,47 +221,152 @@ public class TrailManager : MonoBehaviour
             GameManager.Instance.CallExplosion(true, target.transform.position);
         }
         
-        // Generate preys if it's a Box
-        Box box = target.GetComponent<Box>();
-        if (box != null)
+        // Return to pool sau khi apply effect với delay để visual effect hoàn thành
+        StartCoroutine(ReturnToPoolAfterDelay(target, 0.5f));
+    }
+    
+    private System.Collections.IEnumerator ReturnToPoolAfterDelay(GameObject target, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        
+        if (target != null && target.activeInHierarchy)
         {
-            // Call GeneratePreys method from Box
-            box.GetType().GetMethod("GeneratePreys", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.Invoke(box, null);
+            // Reset object properties trước khi return về pool
+            ResetObjectProperties(target);
+            
+            // Use ReturnToPool helper method
+            ReturnToPool(target);
+        }
+    }
+    
+    private void ReturnToPool(GameObject target)
+    {
+        if (target == null) return;
+        
+        // Special handling for Box - generate prey before returning to pool
+        if (target.CompareTag("Box"))
+        {
+            Box box = target.GetComponent<Box>();
+            if (box != null)
+            {
+                // Call GeneratePreys method through reflection since it's private
+                var generatePreysMethod = box.GetType().GetMethod("GeneratePreys", 
+                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                generatePreysMethod?.Invoke(box, null);
+            }
         }
         
-        // Return to pool thay vì Destroy để tránh conflict
         PoolableObject poolable = target.GetComponent<PoolableObject>();
         if (poolable != null)
         {
-            // Tìm manager tương ứng dựa trên tag
-            Manager targetManager = FindManagerForObject(target);
-            if (targetManager != null)
-            {
-                targetManager.ReturnItem(poolable);
-            }
-            else
-            {
-                Destroy(target);
-            }
+            // Trigger the object's own removal logic
+            poolable.transform.position = new Vector3(-1000, -1000, 0); // Move off-screen
+            // This will trigger DestroyOnOutOfBounds -> RemoveSelf on next Update
         }
         else
         {
-            Destroy(target);
+            // Nếu không có poolable, chỉ disable thay vì destroy
+            target.SetActive(false);
         }
+    }
+    
+    private void ResetObjectProperties(GameObject target)
+    {
+        if (target == null) return;
+        
+        // Remove effect sprite overlay trước tiên
+        RemoveEffectSprite(target);
+        
+        // Reset special properties cho từng loại object
+        if (target.CompareTag("Box"))
+        {
+            // Reset Box về trạng thái ban đầu
+            Box box = target.GetComponent<Box>();
+            if (box != null && originalBoxDragonNeeded.ContainsKey(target))
+            {
+                // Restore giá trị gốc đã lưu
+                var numberDragonNeededField = box.GetType().GetField("numberDragonNeeded", 
+                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                if (numberDragonNeededField != null)
+                {
+                    int originalValue = originalBoxDragonNeeded[target];
+                    numberDragonNeededField.SetValue(box, originalValue);
+                    originalBoxDragonNeeded.Remove(target); // Cleanup
+                    Debug.Log($"Reset: Box numberDragonNeeded restored to {originalValue}");
+                }
+            }
+        }
+        else if (target.CompareTag("Bomb"))
+        {
+            // Reset Bomb collision về trạng thái gốc
+            Bomb bomb = target.GetComponent<Bomb>();
+            if (bomb != null && originalBombCollisionEnabled.ContainsKey(target))
+            {
+                Collider2D bombCollider = bomb.GetComponent<Collider2D>();
+                if (bombCollider != null)
+                {
+                    bool originalEnabled = originalBombCollisionEnabled[target];
+                    bombCollider.enabled = originalEnabled;
+                    originalBombCollisionEnabled.Remove(target); // Cleanup
+                }
+            }
+        }
+        
+        // Reset rigidbody properties
+        Rigidbody2D rb = target.GetComponent<Rigidbody2D>();
+        if (rb != null)
+        {
+            rb.isKinematic = false;
+            rb.velocity = Vector2.zero;
+        }
+        
+        // Reset scale về original
+        target.transform.localScale = Vector3.one;
     }
     
     private void ApplyIceEffect(GameObject target)
     {
-        if (target == null || this == null || gameObject == null) return;
+        if (target == null) return;
         
-        // Băng - hoá băng vật thể (change color/material to ice)
-        Debug.Log($"Ice Trail Effect: Freezing {target.name}");
-        
-        // Change to ice color/material
-        SpriteRenderer renderer = target.GetComponent<SpriteRenderer>();
-        if (renderer != null)
+        // Thêm ice sprite overlay
+        if (iceSprite != null)
         {
-            renderer.color = Color.cyan; // Màu băng
+            CreateEffectSprite(target, iceSprite);
+        }
+        
+        // Special effects cho từng loại object
+        if (target.CompareTag("Box"))
+        {
+            // Box: giảm numberDragonNeeded thành 1
+            Box box = target.GetComponent<Box>();
+            if (box != null)
+            {
+                // Lưu giá trị gốc trước khi modify
+                var numberDragonNeededField = box.GetType().GetField("numberDragonNeeded", 
+                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                if (numberDragonNeededField != null)
+                {
+                    int originalValue = (int)numberDragonNeededField.GetValue(box);
+                    originalBoxDragonNeeded[target] = originalValue;
+                    
+                    numberDragonNeededField.SetValue(box, 1);
+                }
+            }
+        }
+        else if (target.CompareTag("Bomb"))
+        {
+            Bomb bomb = target.GetComponent<Bomb>();
+            if (bomb != null)
+            {
+                Collider2D bombCollider = bomb.GetComponent<Collider2D>();
+                if (bombCollider != null)
+                {
+                    // Lưu giá trị gốc trước khi modify
+                    originalBombCollisionEnabled[target] = bombCollider.enabled;
+                    
+                    bombCollider.enabled = false;
+                }
+            }
         }
         
         // Optional: Freeze movement if it has Rigidbody
@@ -281,93 +377,193 @@ public class TrailManager : MonoBehaviour
             rb.isKinematic = true;
         }
         
-        // Generate preys if it's a Box
-        Box box = target.GetComponent<Box>();
-        if (box != null)
-        {
-            // Call GeneratePreys method from Box
-            box.GetType().GetMethod("GeneratePreys", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.Invoke(box, null);
-        }
+        // Sau 0.5s tự động restore và biến mất
+        StartCoroutine(IceEffectDuration(target, 0.5f));
+    }
+    
+    private System.Collections.IEnumerator IceEffectDuration(GameObject target, float duration)
+    {
+        yield return new WaitForSeconds(duration);
         
-        // Return to pool immediately - no delay
-        PoolableObject poolable = target.GetComponent<PoolableObject>();
-        if (poolable != null)
+        if (target != null && target.activeInHierarchy)
         {
-            Manager targetManager = FindManagerForObject(target);
-            if (targetManager != null)
-            {
-                targetManager.ReturnItem(poolable);
-            }
-            else
-            {
-                Destroy(target);
-            }
-        }
-        else
-        {
-            Destroy(target);
+            // Reset object properties về trạng thái ban đầu
+            ResetObjectProperties(target);
+            
+            // Return object to pool (biến mất)
+            ReturnToPool(target);
         }
     }
     
     private void ApplyNatureEffect(GameObject target)
     {
-        if (target == null || this == null || gameObject == null) return;
+        if (target == null) return;
         
-        // Lá - hoá lá vật thể (change color to green/leaf)
-        Debug.Log($"Nature Trail Effect: Converting {target.name} to nature");
+        // Tạo leaf sprite tại vị trí của object
+        CreateLeafSprite(target.transform.position);
         
-        // Change to nature color
-        SpriteRenderer renderer = target.GetComponent<SpriteRenderer>();
-        if (renderer != null)
+        // Special handling for Box - generate prey trước khi biến mất
+        if (target.CompareTag("Box"))
         {
-            renderer.color = Color.green; // Màu lá
+            Box box = target.GetComponent<Box>();
+            if (box != null)
+            {
+                // Call GeneratePreys method through reflection since it's private
+                var generatePreysMethod = box.GetType().GetMethod("GeneratePreys", 
+                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                generatePreysMethod?.Invoke(box, null);
+            }
         }
         
-        // Optional: Add leaf particle effect
+        // Return to pool ngay lập tức (object biến mất, thay bằng leaf sprite)
+        ReturnToPool(target);
+    }
+    
+    private void CreateLeafSprite(Vector3 position)
+    {
+        // Tạo GameObject mới cho leaf sprite
+        GameObject leafObject = new GameObject("LeafSprite");
+        leafObject.transform.position = position;
         
-        // Generate preys if it's a Box
-        Box box = target.GetComponent<Box>();
-        if (box != null)
+        // Thêm SpriteRenderer component
+        SpriteRenderer leafRenderer = leafObject.AddComponent<SpriteRenderer>();
+        
+        // Assign leaf sprite nếu có
+        if (leafSprite != null)
         {
-            // Call GeneratePreys method from Box
-            box.GetType().GetMethod("GeneratePreys", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.Invoke(box, null);
+            leafRenderer.sprite = leafSprite;
         }
         
-        // Return to pool immediately - no delay
-        PoolableObject poolable = target.GetComponent<PoolableObject>();
-        if (poolable != null)
+        // Set sorting layer để hiển thị đúng
+        leafRenderer.sortingLayerName = "UI";
+        leafRenderer.sortingOrder = 10;
+        
+        // Thêm animation bay lên và biến mất
+        StartCoroutine(LeafFallAnimation(leafObject));
+    }
+    
+    private System.Collections.IEnumerator LeafFallAnimation(GameObject leafObject)
+    {
+        if (leafObject == null) yield break;
+        
+        Vector3 startPosition = leafObject.transform.position;
+        Vector3 endPosition = startPosition + Vector3.up * 2f; // bay lên 2 đơn vị
+        SpriteRenderer renderer = leafObject.GetComponent<SpriteRenderer>();
+        
+        float duration = 2f;
+        float elapsed = 0f;
+        
+        while (elapsed < duration && leafObject != null)
         {
-            Manager targetManager = FindManagerForObject(target);
-            if (targetManager != null)
+            elapsed += Time.deltaTime;
+            float progress = elapsed / duration;
+            
+            // Animation bay lên
+            leafObject.transform.position = Vector3.Lerp(startPosition, endPosition, progress);
+            
+            // Fade out trong nửa cuối của animation
+            if (progress > 0.5f && renderer != null)
             {
-                targetManager.ReturnItem(poolable);
+                float fadeProgress = (progress - 0.5f) * 2f; // 0 to 1 trong nửa cuối
+                Color color = renderer.color;
+                color.a = 1f - fadeProgress;
+                renderer.color = color;
             }
-            else
-            {
-                Destroy(target);
-            }
+            
+            yield return null;
+        }
+        
+        // Destroy leaf object khi animation hoàn thành
+        if (leafObject != null)
+        {
+            Destroy(leafObject);
+        }
+    }
+    
+    private GameObject CreateEffectSprite(GameObject target, Sprite effectSprite)
+    {
+        if (target == null || effectSprite == null) return null;
+        
+        // Tạo GameObject mới cho effect sprite
+        GameObject effectObject = new GameObject($"EffectSprite_{target.name}");
+        effectObject.transform.position = target.transform.position;
+        effectObject.transform.SetParent(target.transform); // Gắn làm child của target
+        
+        // Thêm SpriteRenderer component
+        SpriteRenderer effectRenderer = effectObject.AddComponent<SpriteRenderer>();
+        effectRenderer.sprite = effectSprite;
+        
+        // Set sorting layer để hiển thị trên object gốc
+        SpriteRenderer targetRenderer = target.GetComponentInChildren<SpriteRenderer>();
+        if (targetRenderer != null)
+        {
+            effectRenderer.sortingLayerName = targetRenderer.sortingLayerName;
+            effectRenderer.sortingOrder = targetRenderer.sortingOrder + 1; // Hiển thị trên object gốc
         }
         else
         {
-            Destroy(target);
+            effectRenderer.sortingLayerName = "UI";
+            effectRenderer.sortingOrder = 5;
+        }
+        
+        // Lưu vào dictionary để cleanup sau
+        effectSprites[target] = effectObject;
+        
+        return effectObject;
+    }
+    
+    private void RemoveEffectSprite(GameObject target)
+    {
+        if (target != null && effectSprites.ContainsKey(target))
+        {
+            GameObject effectSprite = effectSprites[target];
+            if (effectSprite != null)
+            {
+                Destroy(effectSprite);
+            }
+            effectSprites.Remove(target);
         }
     }
     
     private void ApplyDarkEffect(GameObject target)
     {
-        if (target == null || this == null || gameObject == null) return;
-        
         // Dark magic - hoá hố đen (create black hole effect)
         Debug.Log($"Dark Trail Effect: Creating black hole at {target.name}");
         
-        // Change to dark color
-        SpriteRenderer renderer = target.GetComponent<SpriteRenderer>();
-        if (renderer != null)
+        // Thêm dark hole sprite overlay
+        if (darkHoleSprite != null)
         {
-            renderer.color = Color.black; // Màu đen
+            CreateEffectSprite(target, darkHoleSprite);
         }
         
-        // Create shrinking effect (hố đen)
+        // Tắt collision tương tự Ice effect
+        if (target.CompareTag("Bomb"))
+        {
+            Bomb bomb = target.GetComponent<Bomb>();
+            if (bomb != null)
+            {
+                Collider2D bombCollider = bomb.GetComponent<Collider2D>();
+                if (bombCollider != null)
+                {
+                    // Lưu giá trị gốc trước khi modify
+                    if (!originalBombCollisionEnabled.ContainsKey(target))
+                    {
+                        originalBombCollisionEnabled[target] = bombCollider.enabled;
+                    }
+                    bombCollider.enabled = false;
+                }
+            }
+        }
+        
+        // Tắt movement
+        Rigidbody2D rb = target.GetComponent<Rigidbody2D>();
+        if (rb != null)
+        {
+            rb.velocity = Vector2.zero;
+            rb.isKinematic = true;
+        }
+        
+        // Create shrinking effect (hố đen) - chỉ shrink object gốc
         StartCoroutine(ShrinkToBlackHole(target));
     }
     
@@ -375,17 +571,40 @@ public class TrailManager : MonoBehaviour
     {
         if (target == null || target.transform == null) yield break; // Exit nếu object đã bị destroy
         
-        Vector3 originalScale = target.transform.localScale;
-        float duration = 0.1f;
+        // Tìm sprite renderer gốc của object (không phải effect sprite)
+        SpriteRenderer targetRenderer = null;
+        foreach (Transform child in target.transform)
+        {
+            if (!child.name.StartsWith("EffectSprite_"))
+            {
+                SpriteRenderer childRenderer = child.GetComponent<SpriteRenderer>();
+                if (childRenderer != null)
+                {
+                    targetRenderer = childRenderer;
+                    break;
+                }
+            }
+        }
+        
+        // Nếu không tìm thấy child renderer, thử lấy renderer trực tiếp từ target
+        if (targetRenderer == null)
+        {
+            targetRenderer = target.GetComponent<SpriteRenderer>();
+        }
+        
+        if (targetRenderer == null) yield break; // Không có sprite renderer để shrink
+        
+        Vector3 originalScale = targetRenderer.transform.localScale;
+        float duration = 1f;
         float elapsed = 0f;
         
-        while (elapsed < duration && target != null && target.transform != null) // Check null trong loop
+        while (elapsed < duration && target != null && targetRenderer != null) // Check null trong loop
         {
             elapsed += Time.deltaTime;
             float progress = elapsed / duration;
             
-            // Shrink object - check null trước khi access
-            target.transform.localScale = Vector3.Lerp(originalScale, Vector3.zero, progress);
+            // Chỉ shrink sprite renderer gốc, không shrink dark hole sprite overlay
+            targetRenderer.transform.localScale = Vector3.Lerp(originalScale, Vector3.zero, progress);
             
             yield return null;
         }
@@ -393,52 +612,11 @@ public class TrailManager : MonoBehaviour
         // Return to pool when fully shrunk - check null cuối cùng
         if (target != null)
         {
-            // Generate preys if it's a Box
-            Box box = target.GetComponent<Box>();
-            if (box != null)
-            {
-                // Call GeneratePreys method from Box
-                box.GetType().GetMethod("GeneratePreys", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.Invoke(box, null);
-            }
+            // Reset properties trước khi return về pool
+            ResetObjectProperties(target);
             
-            PoolableObject poolable = target.GetComponent<PoolableObject>();
-            if (poolable != null)
-            {
-                Manager targetManager = FindManagerForObject(target);
-                if (targetManager != null)
-                {
-                    targetManager.ReturnItem(poolable);
-                }
-                else
-                {
-                    Destroy(target);
-                }
-            }
-            else
-            {
-                Destroy(target);
-            }
-        }
-    }
-    
-
-    
-    private Manager FindManagerForObject(GameObject target)
-    {
-        if (target == null || this == null || gameObject == null) return null;
-        
-        string tag = target.tag;
-        
-        // Tìm manager tương ứng
-        switch (tag)
-        {
-            case "Bomb":
-                return FindObjectOfType<BombManager>();
-            case "Object":
-            case "Box":
-                return FindObjectOfType<BoxManager>();
-            default:
-                return null;
+            // Use ReturnToPool helper method
+            ReturnToPool(target);
         }
     }
 }

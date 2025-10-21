@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: M_Vefects_Grid_01
-  m_Shader: {fileID: 4800000, guid: ecfb07d71109a1d48b71d4677e100016, type: 3}
+  m_Shader: {fileID: 4800000, guid: 1869668f2e7680644902f6283213dee2, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
