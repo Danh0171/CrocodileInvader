@@ -10,7 +10,12 @@ GameObject:
   m_Component:
   - component: {fileID: 7953856056242113948}
   - component: {fileID: 753552020542912727}
+<<<<<<< Updated upstream
   m_Layer: 0
+=======
+  - component: {fileID: 5149401220365899422}
+  m_Layer: 14
+>>>>>>> Stashed changes
   m_Name: Trail 02
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24,13 +29,21 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1662094874520849773}
+<<<<<<< Updated upstream
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+=======
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+>>>>>>> Stashed changes
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3836811505428075909}
+<<<<<<< Updated upstream
   m_RootOrder: -1
+=======
+>>>>>>> Stashed changes
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!96 &753552020542912727
 TrailRenderer:
@@ -136,6 +149,28 @@ TrailRenderer:
   m_Autodestruct: 0
   m_Emitting: 1
   m_ApplyActiveColorSpace: 1
+<<<<<<< Updated upstream
+=======
+--- !u!114 &5149401220365899422
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1662094874520849773}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c02f657e7f613947aa7e57df7f33765, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  orbitSpeed: 40
+  baseOrbitRadius: 1
+  radiusMultiplier: 0.5
+  yDampingSpeed: 5
+  trailType: 0
+  destroyChance: 0.1
+  effectRadius: 1
+>>>>>>> Stashed changes
 --- !u!1 &2653153344604433488
 GameObject:
   m_ObjectHideFlags: 0
@@ -146,7 +181,12 @@ GameObject:
   m_Component:
   - component: {fileID: 3836811505428075909}
   - component: {fileID: 1814538232}
+<<<<<<< Updated upstream
   m_Layer: 0
+=======
+  - component: {fileID: 4695972189793036472}
+  m_Layer: 14
+>>>>>>> Stashed changes
   m_Name: VFX_Trail_Cosmos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -160,6 +200,10 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2653153344604433488}
+<<<<<<< Updated upstream
+=======
+  serializedVersion: 2
+>>>>>>> Stashed changes
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -169,7 +213,10 @@ Transform:
   - {fileID: 7413964462226679868}
   - {fileID: 7953856056242113948}
   m_Father: {fileID: 0}
+<<<<<<< Updated upstream
   m_RootOrder: 0
+=======
+>>>>>>> Stashed changes
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &1814538232
 AudioSource:
@@ -267,6 +314,28 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+<<<<<<< Updated upstream
+=======
+--- !u!114 &4695972189793036472
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2653153344604433488}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c02f657e7f613947aa7e57df7f33765, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  orbitSpeed: 400
+  baseOrbitRadius: 2
+  radiusMultiplier: 0.5
+  yDampingSpeed: 10
+  trailType: 0
+  destroyChance: 0.1
+  effectRadius: 1
+>>>>>>> Stashed changes
 --- !u!1 &6192924075387278833
 GameObject:
   m_ObjectHideFlags: 0
@@ -277,7 +346,12 @@ GameObject:
   m_Component:
   - component: {fileID: 7413964462226679868}
   - component: {fileID: 2067156272347811351}
+<<<<<<< Updated upstream
   m_Layer: 0
+=======
+  - component: {fileID: 1128336617309277859}
+  m_Layer: 16
+>>>>>>> Stashed changes
   m_Name: Trail 01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -291,13 +365,21 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6192924075387278833}
+<<<<<<< Updated upstream
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+=======
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+>>>>>>> Stashed changes
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3836811505428075909}
+<<<<<<< Updated upstream
   m_RootOrder: -1
+=======
+>>>>>>> Stashed changes
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!96 &2067156272347811351
 TrailRenderer:
@@ -338,9 +420,15 @@ TrailRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+<<<<<<< Updated upstream
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+=======
+  m_SortingLayerID: -370206741
+  m_SortingLayer: 2
+  m_SortingOrder: 10
+>>>>>>> Stashed changes
   m_Time: 1
   m_PreviewTimeScale: 1
   m_Parameters:
@@ -403,6 +491,28 @@ TrailRenderer:
   m_Autodestruct: 0
   m_Emitting: 1
   m_ApplyActiveColorSpace: 1
+<<<<<<< Updated upstream
+=======
+--- !u!114 &1128336617309277859
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6192924075387278833}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c02f657e7f613947aa7e57df7f33765, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  orbitSpeed: 40
+  baseOrbitRadius: 1
+  radiusMultiplier: 0.5
+  yDampingSpeed: 5
+  trailType: 0
+  destroyChance: 0.1
+  effectRadius: 1
+>>>>>>> Stashed changes
 --- !u!1 &6666282043616776576
 GameObject:
   m_ObjectHideFlags: 0
@@ -413,7 +523,11 @@ GameObject:
   m_Component:
   - component: {fileID: 5138860128888308404}
   - component: {fileID: 3687070318493439711}
+<<<<<<< Updated upstream
   m_Layer: 0
+=======
+  m_Layer: 14
+>>>>>>> Stashed changes
   m_Name: Distortion
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -427,13 +541,20 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6666282043616776576}
+<<<<<<< Updated upstream
+=======
+  serializedVersion: 2
+>>>>>>> Stashed changes
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3836811505428075909}
+<<<<<<< Updated upstream
   m_RootOrder: -1
+=======
+>>>>>>> Stashed changes
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!96 &3687070318493439711
 TrailRenderer:
