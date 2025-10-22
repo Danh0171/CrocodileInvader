@@ -27,13 +27,6 @@ public class Box : PoolableObject
     public override float Height => boxCollider2D.size.y;
     public int CollisionCount => dragonContacts.Count;
 
-    // Start is called before the first frame update
-    protected override void Start()
-    {
-
-    }
-
-    // Update is called once per frame
     protected override void Update()
     {
         base.Update();

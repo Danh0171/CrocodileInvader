@@ -490,7 +490,7 @@ GameObject:
   - component: {fileID: 7403834500226571452}
   - component: {fileID: 4936983900422567026}
   m_Layer: 0
-  m_Name: VFX_Trail_Dark
+  m_Name: 1. VFX_Trail_Dark
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
