@@ -56,41 +56,41 @@ public class TrailManager : MonoBehaviour
 
     void Update()
     {
-        // // Tính orbit radius dựa trên dragons
-        // float dynamicRadius = CalculateDynamicRadius();
+        // Tính orbit radius dựa trên dragons
+        float dynamicRadius = CalculateDynamicRadius();
         
-        // // Tính center position động dựa trên dragons
-        // Vector3 dynamicCenter = CalculateDynamicCenter();
+        // Tính center position động dựa trên dragons
+        Vector3 dynamicCenter = CalculateDynamicCenter();
         
-        // // Tính Y position dựa trên dragons với damping
-        // float targetY = CalculateDragonY();
-        // currentY = Mathf.Lerp(currentY, targetY, yDampingSpeed * Time.deltaTime);
+        // Tính Y position dựa trên dragons với damping
+        float targetY = CalculateDragonY();
+        currentY = Mathf.Lerp(currentY, targetY, yDampingSpeed * Time.deltaTime);
         
-        // // Object di chuyển theo hình tròn với depth effect
-        // // Orbit speed thay đổi theo scrollBackSpeed
-        // float currentOrbitSpeed = orbitSpeed * GameManager.Instance.ScrollBackSpeed;
-        // float angle = Time.time * currentOrbitSpeed * Mathf.Deg2Rad;
+        // Object di chuyển theo hình tròn với depth effect
+        // Orbit speed thay đổi theo scrollBackSpeed
+        float currentOrbitSpeed = orbitSpeed * GameManager.Instance.ScrollBackSpeed;
+        float angle = Time.time * currentOrbitSpeed * Mathf.Deg2Rad;
         
-        // Vector3 orbitOffset = new Vector3(
-        //     Mathf.Cos(angle) * dynamicRadius,
-        //     0, // Y sẽ được set riêng
-        //     Mathf.Sin(angle) * dynamicRadius * 0.5f // Z depth - nhỏ hơn X để tạo ellipse
-        // );
+        Vector3 orbitOffset = new Vector3(
+            Mathf.Cos(angle) * dynamicRadius,
+            0, // Y sẽ được set riêng
+            Mathf.Sin(angle) * dynamicRadius * 0.5f // Z depth - nhỏ hơn X để tạo ellipse
+        );
         
-        // Vector3 newPosition = dynamicCenter + orbitOffset;
-        // newPosition.y = currentY + 0.7f; // Dùng smooth Y thay vì direct Y
+        Vector3 newPosition = dynamicCenter + orbitOffset;
+        newPosition.y = currentY + 0.7f; // Dùng smooth Y thay vì direct Y
         
-        // // Adjust Z để có depth relative to dragon
-        // if (GameManager.Instance.Zombies.FirstDragon != null)
-        // {
-        //     float dragonZ = GameManager.Instance.Zombies.FirstDragon.transform.position.z;
-        //     newPosition.z = dragonZ + orbitOffset.z; // Trail ở trước/sau dragon
+        // Adjust Z để có depth relative to dragon
+        if (GameManager.Instance.Zombies.FirstDragon != null)
+        {
+            float dragonZ = GameManager.Instance.Zombies.FirstDragon.transform.position.z;
+            newPosition.z = dragonZ + orbitOffset.z; // Trail ở trước/sau dragon
             
-        //     // Điều chỉnh sorting order dựa trên Z position
-        //     UpdateSortingOrder(orbitOffset.z);
-        // }
+            // Điều chỉnh sorting order dựa trên Z position
+            UpdateSortingOrder(orbitOffset.z);
+        }
         
-        // transform.localPosition = newPosition;
+        transform.localPosition = newPosition;
     }
     
     private void UpdateSortingOrder(float zOffset)
