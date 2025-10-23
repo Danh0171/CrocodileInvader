@@ -96,6 +96,7 @@ public class GameManager : MonoBehaviour
     }
 
     public DragonManager Zombies => (DragonManager)managers[0];
+    public TrailManager Trails => (TrailManager)managers[1];
     public ScalesManager Coins => (ScalesManager)managers[4];
     public EggManager Humans => (EggManager)managers[2];
     #endregion Properties

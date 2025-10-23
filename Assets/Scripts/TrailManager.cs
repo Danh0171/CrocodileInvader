@@ -3,371 +3,109 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 
-public class TrailManager : MonoBehaviour
+public class TrailManager : Manager
 {
-    protected Manager manager;
-
-    [Header("Orbit Settings")]
-    [SerializeField] private float orbitSpeed = 90f; // Degrees per second
-    [SerializeField] private float baseOrbitRadius = 1f; // Bán kính cơ bản
-    [SerializeField] private float radiusMultiplier = 0.1f; // Hệ số nhân với số lượng/khoảng cách dragon
-    [SerializeField] private float yDampingSpeed = 5f; // Tốc độ smooth Y position
-    
-    [Header("Trail Magic Effects")]
-    [SerializeField] private TrailType trailType = TrailType.Fire; // Loại trail
-    [SerializeField] private float destroyChance = 0.1f; // 10% chance phá vỡ
-    [SerializeField] private float effectRadius = 1f; // Bán kính hiệu ứng
-    
-    [Header("Effect Sprites")]
-    [SerializeField] private Sprite fireSprite; // Sprite cho Fire effect
-    [SerializeField] private Sprite iceSprite; // Sprite cho Ice effect
-    [SerializeField] private Sprite leafSprite; // Sprite cho Nature effect
-    [SerializeField] private Sprite darkHoleSprite; // Sprite cho Dark effect
-    
-    // Dictionary để lưu trữ original values trước khi apply ice effect
-    private Dictionary<GameObject, int> originalBoxDragonNeeded = new Dictionary<GameObject, int>();
-    private Dictionary<GameObject, bool> originalBombCollisionEnabled = new Dictionary<GameObject, bool>();
-    
-    // Dictionary để track effect sprites
-    private Dictionary<GameObject, GameObject> effectSprites = new Dictionary<GameObject, GameObject>();
-    
-    private Vector3 centerPosition; // Vị trí trung tâm orbit ban đầu
-    private TrailRenderer trailRenderer;
-    private float currentY; // Y position hiện tại để smooth
-    private Collider2D trailCollider; // Để detect collision
-    
-    public enum TrailType
+    public override PoolableObject GetItem(int id = 0)
     {
-        Fire,    // Lửa - nổ đen
-        Ice,     // Băng - hoá băng  
-        Nature,  // Lá - hoá lá
-        Dark     // Dark magic - hố đen
+        Trail trail = (Trail)base.GetItem(id);
+        trail.transform.position = GameManager.Instance.SpawnerPosition;
+        return trail;
     }
+
+    private Trail currentActiveTrail;
+    
+    #region Properties
+    public Trail ActiveTrail => currentActiveTrail;
+    public bool HasActiveTrail => currentActiveTrail != null && currentActiveTrail.gameObject.activeInHierarchy;
+    #endregion Properties
 
     void Start()
     {
-        // Lưu vị trí ban đầu làm center (chỉ X và Z)
-        centerPosition = transform.localPosition;
-        currentY = centerPosition.y; // Khởi tạo current Y
-        
-        trailRenderer = GetComponent<TrailRenderer>();
-        trailCollider = GetComponent<Collider2D>();
+        // Spawn trail dựa trên selected trail from shop
+        SpawnSelectedTrail();
     }
 
     void Update()
     {
-        // Tính orbit radius dựa trên dragons
-        float dynamicRadius = CalculateDynamicRadius();
+        // Check if selected trail changed during gameplay
+        CheckTrailChange();
         
-        // Tính center position động dựa trên dragons
-        Vector3 dynamicCenter = CalculateDynamicCenter();
+        // Manage active trail
+        ManageActiveTrail();
+    }
+    
+    private void SpawnSelectedTrail()
+    {
+        int selectedTrailID = PlayerPrefs.GetInt("selectedTrail", 0);
         
-        // Tính Y position dựa trên dragons với damping
-        float targetY = CalculateDragonY();
-        currentY = Mathf.Lerp(currentY, targetY, yDampingSpeed * Time.deltaTime);
+        // Ensure we have trails to spawn
+        if (PrefabsCount == 0) return;
         
-        // Object di chuyển theo hình tròn với depth effect
-        // Orbit speed thay đổi theo scrollBackSpeed
-        float currentOrbitSpeed = orbitSpeed * GameManager.Instance.ScrollBackSpeed;
-        float angle = Time.time * currentOrbitSpeed * Mathf.Deg2Rad;
+        // Clamp ID to available prefabs
+        selectedTrailID = Mathf.Clamp(selectedTrailID, 0, PrefabsCount - 1);
         
-        Vector3 orbitOffset = new Vector3(
-            Mathf.Cos(angle) * dynamicRadius,
-            0, // Y sẽ được set riêng
-            Mathf.Sin(angle) * dynamicRadius * 0.5f // Z depth - nhỏ hơn X để tạo ellipse
-        );
+        // Spawn the selected trail
+        currentActiveTrail = (Trail)GetItem(selectedTrailID);
         
-        Vector3 newPosition = dynamicCenter + orbitOffset;
-        newPosition.y = currentY + 0.7f; // Dùng smooth Y thay vì direct Y
+        Debug.Log($"Spawned trail ID: {selectedTrailID}");
+    }
+    
+    private void CheckTrailChange()
+    {
+        int currentSelectedID = PlayerPrefs.GetInt("selectedTrail", 0);
         
-        // Adjust Z để có depth relative to dragon
-        if (GameManager.Instance.Zombies.FirstDragon != null)
+        if (currentActiveTrail != null)
         {
-            float dragonZ = GameManager.Instance.Zombies.FirstDragon.transform.position.z;
-            newPosition.z = dragonZ + orbitOffset.z; // Trail ở trước/sau dragon
-            
-            // Điều chỉnh sorting order dựa trên Z position
-            UpdateSortingOrder(orbitOffset.z);
-        }
-        
-        transform.localPosition = newPosition;
-    }
-    
-    private void UpdateSortingOrder(float zOffset)
-    {
-        if (trailRenderer == null) return;
-        
-        if (zOffset > 0)
-        {
-            // Trail ở phía trước
-            trailRenderer.sortingLayerName = "UI"; 
-        }
-        else
-        {
-            // Trail ở phía sau  
-            trailRenderer.sortingLayerName = "Vehicle"; 
-        }
-    }
-    
-    private float CalculateDynamicRadius()
-    {
-        DragonManager dragonManager = GameManager.Instance.Zombies;
-        
-        if (dragonManager == null || dragonManager.Count == 0)
-            return baseOrbitRadius;
-        
-        // Option 1: Dựa trên số lượng dragons
-        float countBasedRadius = baseOrbitRadius + (dragonManager.Count * radiusMultiplier);
-        
-        return countBasedRadius;
-    }
-    
-    private Vector3 CalculateDynamicCenter()
-    {
-        DragonManager dragonManager = GameManager.Instance.Zombies;
-        
-        if (dragonManager == null || dragonManager.FirstDragon == null)
-            return centerPosition; // Fallback về center ban đầu
-        
-        // Lấy vị trí FirstDragon
-        Vector3 firstDragonPos = dragonManager.FirstDragon.transform.position;
-        
-        // Tính toán offset dựa trên số lượng dragons
-        float baseOffset = 0.1f; // Khoảng cách cố định
-        float countOffset = dragonManager.Count * 0.2f; // Offset dựa trên số lượng
-        float totalOffset = baseOffset + countOffset;
-        
-        // Center position = FirstDragon position - offset
-        Vector3 dynamicCenter = new Vector3(
-            firstDragonPos.x - totalOffset,
-            centerPosition.y, // Giữ Y gốc cho center, Y thực sẽ được tính riêng
-            firstDragonPos.z
-        );
-        
-        return dynamicCenter;
-    }
-    
-    private float CalculateDragonY()
-    {
-        DragonManager dragonManager = GameManager.Instance.Zombies;
-        
-        if (dragonManager == null || dragonManager.FirstDragon == null)
-            return centerPosition.y; // Fallback về Y ban đầu
-        
-        // Sync với Y của dragon đầu tiên
-        return dragonManager.FirstDragon.transform.position.y;
-    }
-    
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        // 10% chance phá vỡ vật thể
-        if (Random.Range(0f, 1f) <= destroyChance)
-        {
-            ApplyTrailEffect(other.gameObject);
-        }
-    }
-    
-    private void ApplyTrailEffect(GameObject target)
-    {
-        // Null check đầu tiên
-        if (target == null) return;
-        
-        // Kiểm tra có thể phá vỡ không (tương tự hoá vàng logic)
-        if (!CanDestroyObject(target)) return;
-        
-        // Check nếu object đã bị marked for destruction
-        if (!target.activeInHierarchy) return;
-        
-        switch (trailType)
-        {
-            case TrailType.Fire:
-                ApplyEffectToTarget(target, fireSprite);
-                break;
-            case TrailType.Ice:
-                ApplyEffectToTarget(target, iceSprite);
-                break;
-            case TrailType.Nature:
-                ApplyEffectToTarget(target, leafSprite);
-                break;
-            case TrailType.Dark:
-                ApplyEffectToTarget(target, darkHoleSprite);
-                break;
-        }
-    }
-    
-    private bool CanDestroyObject(GameObject target)
-    {
-        // Tương tự logic hoá vàng - chỉ phá được certain objects
-        string tag = target.tag;
-        return tag == "Object" || tag == "Bomb" || tag == "Box" || tag == "Obstacle";
-    }
-    
-    private void ApplyEffectToTarget(GameObject target, Sprite effectSprite)
-    {
-        if (target == null) return;
-        
-        // Tạo effect sprite tại vị trí của object
-        CreateLeafSprite(target.transform.position, effectSprite);
-        
-        // Special handling for Box - generate prey trước khi biến mất
-        if (target.CompareTag("Box"))
-        {
-            Box box = target.GetComponent<Box>();
-            if (box != null)
+            // If trail changed, replace current trail
+            if (currentActiveTrail.ID != currentSelectedID)
             {
-                // Call GeneratePreys method through reflection since it's private
-                var generatePreysMethod = box.GetType().GetMethod("GeneratePreys", 
-                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                generatePreysMethod?.Invoke(box, null);
+                ChangeTrail(currentSelectedID);
             }
         }
-        
-        // Return to pool ngay lập tức (object biến mất, thay bằng effect sprite)
-        ReturnToPool(target);
-    }
-
-    private void ReturnToPool(GameObject target)
-    {
-        if (target == null) return;
-        
-        // Special handling for Box - generate prey before returning to pool
-        if (target.CompareTag("Box"))
+        else if (GameManager.Instance.Zombies.FirstDragon != null)
         {
-            Box box = target.GetComponent<Box>();
-            if (box != null)
-            {
-                // Call GeneratePreys method through reflection since it's private
-                var generatePreysMethod = box.GetType().GetMethod("GeneratePreys", 
-                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                generatePreysMethod?.Invoke(box, null);
-            }
-        }
-        
-        PoolableObject poolable = target.GetComponent<PoolableObject>();
-        if (poolable != null)
-        {
-            // TRỰC TIẾP gọi RemoveSelf() thay vì move off-screen để tránh race condition
-            // Sử dụng reflection để gọi protected method RemoveSelf()
-            var removeSelfMethod = poolable.GetType().GetMethod("RemoveSelf", 
-                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            removeSelfMethod?.Invoke(poolable, null);
-        }
-        else
-        {
-            // Nếu không có poolable, chỉ disable thay vì destroy
-            target.SetActive(false);
+            // If no trail but have dragons, spawn trail
+            SpawnSelectedTrail();
         }
     }
     
-    private void CreateLeafSprite(Vector3 position, Sprite effectSprite)
+    private void ChangeTrail(int newTrailID)
     {
-        // Tạo GameObject mới cho effect sprite
-        GameObject effectObject = new GameObject("EffectSprite");
-        effectObject.transform.position = position;
-        
-        // Thêm SpriteRenderer component
-        SpriteRenderer effectRenderer = effectObject.AddComponent<SpriteRenderer>();
-        
-        // Assign effect sprite nếu có
-        if (effectSprite != null)
+        // Remove current trail
+        if (currentActiveTrail != null)
         {
-            effectRenderer.sprite = effectSprite;
+            ReturnItem(currentActiveTrail);
+            currentActiveTrail = null;
         }
         
-        // Set sorting layer để hiển thị đúng
-        effectRenderer.sortingLayerName = "UI";
-        effectRenderer.sortingOrder = 10;
+        // Spawn new trail
+        newTrailID = Mathf.Clamp(newTrailID, 0, PrefabsCount - 1);
+        currentActiveTrail = (Trail)GetItem(newTrailID);
         
-        // Thêm animation bay lên và biến mất
-        StartCoroutine(LeafFallAnimation(effectObject));
+        Debug.Log($"Changed to trail ID: {newTrailID}");
     }
     
-    private System.Collections.IEnumerator LeafFallAnimation(GameObject leafObject)
+    private void ManageActiveTrail()
     {
-        if (leafObject == null) yield break;
-        
-        Vector3 startPosition = leafObject.transform.position;
-        SpriteRenderer renderer = leafObject.GetComponent<SpriteRenderer>();
-        
-        float duration = 2f;
-        float elapsed = 0f;
-        
-        while (elapsed < duration && leafObject != null)
+        // If no dragons, remove trail
+        if (GameManager.Instance.Zombies.FirstDragon == null && currentActiveTrail != null)
         {
-            elapsed += Time.deltaTime;
-            float progress = elapsed / duration;
-            
-            // Animation trôi về bên trái với tốc độ ScrollBackSpeed
-            if (GameManager.Instance != null)
-            {
-                float moveSpeed = GameManager.Instance.ScrollBackSpeed;
-                Vector3 currentPos = leafObject.transform.position;
-                currentPos.x -= moveSpeed * Time.deltaTime;
-                leafObject.transform.position = currentPos;
-            }
-            
-            // Fade out trong nửa cuối của animation
-            if (progress > 0.5f && renderer != null)
-            {
-                float fadeProgress = (progress - 0.5f) * 2f; // 0 to 1 trong nửa cuối
-                Color color = renderer.color;
-                color.a = 1f - fadeProgress;
-                renderer.color = color;
-            }
-            
-            yield return null;
+            ReturnItem(currentActiveTrail);
+            currentActiveTrail = null;
         }
         
-        // Destroy leaf object khi animation hoàn thành
-        if (leafObject != null)
+        // If have dragons but no trail, spawn trail
+        else if (GameManager.Instance.Zombies.FirstDragon != null && currentActiveTrail == null)
         {
-            Destroy(leafObject);
+            SpawnSelectedTrail();
         }
     }
     
-    private GameObject CreateEffectSprite(GameObject target, Sprite effectSprite)
+    // Public method để force change trail (có thể gọi từ shop)
+    public void ForceChangeTrail(int trailID)
     {
-        if (target == null || effectSprite == null) return null;
-        
-        // Tạo GameObject mới cho effect sprite
-        GameObject effectObject = new GameObject($"EffectSprite_{target.name}");
-        effectObject.transform.position = target.transform.position;
-        effectObject.transform.SetParent(target.transform); // Gắn làm child của target
-        
-        // Thêm SpriteRenderer component
-        SpriteRenderer effectRenderer = effectObject.AddComponent<SpriteRenderer>();
-        effectRenderer.sprite = effectSprite;
-        
-        // Set sorting layer để hiển thị trên object gốc
-        SpriteRenderer targetRenderer = target.GetComponentInChildren<SpriteRenderer>();
-        if (targetRenderer != null)
-        {
-            effectRenderer.sortingLayerName = targetRenderer.sortingLayerName;
-            effectRenderer.sortingOrder = targetRenderer.sortingOrder + 1; // Hiển thị trên object gốc
-        }
-        else
-        {
-            effectRenderer.sortingLayerName = "UI";
-            effectRenderer.sortingOrder = 5;
-        }
-        
-        // Lưu vào dictionary để cleanup sau
-        effectSprites[target] = effectObject;
-        
-        return effectObject;
+        PlayerPrefs.SetInt("selectedTrail", trailID);
+        PlayerPrefs.Save();
+        ChangeTrail(trailID);
     }
-    
-    private void RemoveEffectSprite(GameObject target)
-    {
-        if (target != null && effectSprites.ContainsKey(target))
-        {
-            GameObject effectSprite = effectSprites[target];
-            if (effectSprite != null)
-            {
-                Destroy(effectSprite);
-            }
-            effectSprites.Remove(target);
-        }
-    }
-    
 }
