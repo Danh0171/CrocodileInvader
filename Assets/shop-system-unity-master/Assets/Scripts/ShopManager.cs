@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class ShopManager : MonoBehaviour
 {
     [SerializeField] private GameObject Dragons;
     [SerializeField] private GameObject Trails;
-    [SerializeField] private GameObject PowerUp;
+    [SerializeField] private GameObject Diamond; // Changed from PowerUp to Diamond
 
-    public Text coinsText;
+    public TextMeshProUGUI coinsText;
 
     private int coins;
 
@@ -64,19 +65,19 @@ public class ShopManager : MonoBehaviour
     {
         Dragons.SetActive(true);
         Trails.SetActive(false);
-        PowerUp.SetActive(false);
+        Diamond.SetActive(false);
     }
 
     public void TrailsPopUp()
     {
         Trails.SetActive(true);
         Dragons.SetActive(false);
-        PowerUp.SetActive(false);
+        Diamond.SetActive(false);
     }
 
-    public void PowerUpPopUp()
+    public void DiamondPopUp()
     {
-        PowerUp.SetActive(true);
+        Diamond.SetActive(true);
         Dragons.SetActive(false);
         Trails.SetActive(false);
     }

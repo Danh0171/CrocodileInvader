@@ -36,7 +36,28 @@ public class TrailManager : Manager
     
     private void SpawnSelectedTrail()
     {
-        int selectedTrailID = PlayerPrefs.GetInt("selectedTrail", 0);
+        // Check if player has selected a trail (if no key, no trail)
+        if (!PlayerPrefs.HasKey("selectedTrail"))
+        {
+            Debug.Log("No trail selected - not spawning any trail");
+            return;
+        }
+        
+        int selectedTrailID = PlayerPrefs.GetInt("selectedTrail", -1);
+        
+        // If selectedTrail is -1, means no trail wanted
+        if (selectedTrailID < 0)
+        {
+            Debug.Log("No trail selected (ID < 0) - not spawning trail");
+            return;
+        }
+        
+        // Check if selected trail is unlocked
+        if (PlayerPrefs.GetInt("trailStatus" + selectedTrailID, 0) != 1)
+        {
+            Debug.Log($"Trail {selectedTrailID} is locked - not spawning trail");
+            return;
+        }
         
         // Ensure we have trails to spawn
         if (PrefabsCount == 0) return;
@@ -46,13 +67,34 @@ public class TrailManager : Manager
         
         // Spawn the selected trail
         currentActiveTrail = (Trail)GetItem(selectedTrailID);
-        
-        Debug.Log($"Spawned trail ID: {selectedTrailID}");
     }
     
     private void CheckTrailChange()
     {
-        int currentSelectedID = PlayerPrefs.GetInt("selectedTrail", 0);
+        // Check if player has selected a trail
+        if (!PlayerPrefs.HasKey("selectedTrail"))
+        {
+            // No trail selected, remove current trail if any
+            if (currentActiveTrail != null)
+            {
+                ReturnItem(currentActiveTrail);
+                currentActiveTrail = null;
+            }
+            return;
+        }
+        
+        int currentSelectedID = PlayerPrefs.GetInt("selectedTrail", -1);
+        
+        // If selectedTrail is -1, remove current trail
+        if (currentSelectedID < 0)
+        {
+            if (currentActiveTrail != null)
+            {
+                ReturnItem(currentActiveTrail);
+                currentActiveTrail = null;
+            }
+            return;
+        }
         
         if (currentActiveTrail != null)
         {
@@ -64,7 +106,7 @@ public class TrailManager : Manager
         }
         else if (GameManager.Instance.Zombies.FirstDragon != null)
         {
-            // If no trail but have dragons, spawn trail
+            // If no trail but have dragons and a trail is selected, try to spawn trail
             SpawnSelectedTrail();
         }
     }
@@ -81,8 +123,6 @@ public class TrailManager : Manager
         // Spawn new trail
         newTrailID = Mathf.Clamp(newTrailID, 0, PrefabsCount - 1);
         currentActiveTrail = (Trail)GetItem(newTrailID);
-        
-        Debug.Log($"Changed to trail ID: {newTrailID}");
     }
     
     private void ManageActiveTrail()
@@ -94,11 +134,8 @@ public class TrailManager : Manager
             currentActiveTrail = null;
         }
         
-        // If have dragons but no trail, spawn trail
-        else if (GameManager.Instance.Zombies.FirstDragon != null && currentActiveTrail == null)
-        {
-            SpawnSelectedTrail();
-        }
+        // NOTE: Removed auto-spawn logic - trails are now optional
+        // Players must explicitly select a trail for it to appear
     }
     
     // Public method để force change trail (có thể gọi từ shop)
@@ -107,5 +144,19 @@ public class TrailManager : Manager
         PlayerPrefs.SetInt("selectedTrail", trailID);
         PlayerPrefs.Save();
         ChangeTrail(trailID);
+    }
+    
+    // Public method để deselect trail (no trail mode)
+    public void DeselectTrail()
+    {
+        PlayerPrefs.DeleteKey("selectedTrail"); // Remove trail selection entirely
+        PlayerPrefs.Save();
+        
+        // Remove current trail if any
+        if (currentActiveTrail != null)
+        {
+            ReturnItem(currentActiveTrail);
+            currentActiveTrail = null;
+        }
     }
 }

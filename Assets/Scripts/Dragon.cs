@@ -65,8 +65,7 @@ public class Dragon : PoolableObject
                 return true;
             LayerMask mask = LayerMask.GetMask("Road1");
             RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 10f, mask);
-            // if (hit)
-            //     Debug.Log(hit.collider.gameObject.tag);
+            
             return (!hit) && (jumpStatus == 0);
         }
     }
