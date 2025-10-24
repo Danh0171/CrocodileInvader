@@ -85,7 +85,6 @@ public class DiamondManager : MonoBehaviour
     {
         if (amount <= 0)
         {
-            Debug.LogWarning("DiamondManager: Cannot add negative or zero diamonds");
             return;
         }
 
@@ -105,13 +104,11 @@ public class DiamondManager : MonoBehaviour
     {
         if (amount <= 0)
         {
-            Debug.LogWarning("DiamondManager: Cannot spend negative or zero diamonds");
             return false;
         }
 
         if (currentDiamonds < amount)
         {
-            Debug.LogWarning($"DiamondManager: Not enough diamonds. Need {amount}, have {currentDiamonds}");
             return false;
         }
 
@@ -147,13 +144,11 @@ public class DiamondManager : MonoBehaviour
     {
         if (diamondsToConvert <= 0)
         {
-            Debug.LogWarning("DiamondManager: Cannot convert negative or zero diamonds");
             return false;
         }
 
         if (!HasEnoughDiamonds(diamondsToConvert))
         {
-            Debug.LogWarning($"DiamondManager: Not enough diamonds to convert. Need {diamondsToConvert}, have {currentDiamonds}");
             return false;
         }
 
@@ -263,11 +258,6 @@ public class DiamondManager : MonoBehaviour
     /// </summary>
     public void OnConvertIconClicked()
     {
-        if (convertPanel == null)
-        {
-            Debug.LogWarning("DiamondManager: Convert panel not assigned!");
-            return;
-        }
 
         // Toggle panel state
         isConvertPanelOpen = !isConvertPanelOpen;

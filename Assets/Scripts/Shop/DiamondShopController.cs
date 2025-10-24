@@ -158,7 +158,6 @@ public class DiamondShopController : MonoBehaviour
     {
         if (packageIndex < 0 || packageIndex >= diamondPackages.Length)
         {
-            Debug.LogError($"DiamondShopController: Invalid package index {packageIndex}");
             return;
         }
 
@@ -178,7 +177,6 @@ public class DiamondShopController : MonoBehaviour
     {
         if (selectedPackage == null)
         {
-            Debug.LogError("DiamondShopController: No package selected");
             return;
         }
 
@@ -208,10 +206,6 @@ public class DiamondShopController : MonoBehaviour
         if (DiamondManager.Instance != null)
         {
             DiamondManager.Instance.AddDiamonds(selectedPackage.diamondAmount);
-        }
-        else
-        {
-            Debug.LogError("DiamondShopController: DiamondManager instance not found!");
         }
 
         // Show success feedback (có thể add popup sau)

@@ -131,7 +131,6 @@ public class ShopController : MonoBehaviour
         
         if (index < 0 || index >= dragons.Length)
         {
-            Debug.LogError($"Invalid dragon index: {index}");
             return;
         }
         
@@ -163,14 +162,12 @@ public class ShopController : MonoBehaviour
         // Check if DiamondManager exists
         if (DiamondManager.Instance == null)
         {
-            Debug.LogError("DiamondManager not found! Cannot purchase dragon with diamonds.");
             return;
         }
 
         // Check if player has enough diamonds
         if (!DiamondManager.Instance.HasEnoughDiamonds(diamondCost))
         {
-            Debug.LogWarning($"Not enough diamonds to purchase dragon {index}. Need {diamondCost}, have {DiamondManager.Instance.CurrentDiamonds}");
             return;
         }
 
@@ -232,7 +229,6 @@ public class ShopController : MonoBehaviour
         
         if (index < 0 || index >= trails.Length)
         {
-            Debug.LogError($"Invalid trail index: {index}");
             return;
         }
         
@@ -265,7 +261,6 @@ public class ShopController : MonoBehaviour
         
         if (index < 0 || index >= diamondPackageAmounts.Length)
         {
-            Debug.LogError($"Invalid diamond package index: {index}");
             return;
         }
 
@@ -288,14 +283,12 @@ public class ShopController : MonoBehaviour
         // Check if DiamondManager exists
         if (DiamondManager.Instance == null)
         {
-            Debug.LogError("DiamondManager not found! Cannot purchase trail with diamonds.");
             return;
         }
 
         // Check if player has enough diamonds
         if (!DiamondManager.Instance.HasEnoughDiamonds(diamondCost))
         {
-            Debug.LogWarning($"Not enough diamonds to purchase trail {index}. Need {diamondCost}, have {DiamondManager.Instance.CurrentDiamonds}");
             return;
         }
 
@@ -353,7 +346,6 @@ public class ShopController : MonoBehaviour
     {
         if (index < 0 || index >= dragons.Length)
         {
-            Debug.LogError($"Invalid dragon index: {index}");
             return;
         }
 
@@ -368,7 +360,15 @@ public class ShopController : MonoBehaviour
             
             selectedDragonIndex = index;
             selectedDragon = obj;
-            GetChildGameObject(obj, 1).SetActive(true);
+            GameObject selectionIndicator = GetChildGameObject(obj, 1);
+            selectionIndicator.SetActive(true);
+            
+            // Change image color to yellow to indicate purchase mode
+            Image indicatorImage = selectionIndicator.GetComponent<Image>();
+            if (indicatorImage != null)
+            {
+                indicatorImage.color = Color.yellow;
+            }
             
             // Update cost display based on dragon type (similar to trail logic)
             UpdateDragonCostDisplay(index);
@@ -407,7 +407,6 @@ public class ShopController : MonoBehaviour
     {
         if (index < 0 || index >= trails.Length)
         {
-            Debug.LogError($"Invalid trail index: {index}");
             return;
         }
 
@@ -422,7 +421,15 @@ public class ShopController : MonoBehaviour
             
             selectedTrailIndex = index;
             selectedTrail = obj;
-            GetChildGameObject(obj, 1).SetActive(true);
+            GameObject selectionIndicator = GetChildGameObject(obj, 1);
+            selectionIndicator.SetActive(true);
+            
+            // Change image color to yellow to indicate purchase mode
+            Image indicatorImage = selectionIndicator.GetComponent<Image>();
+            if (indicatorImage != null)
+            {
+                indicatorImage.color = Color.yellow;
+            }
             
             // Update cost display based on trail type
             UpdateTrailCostDisplay(index);
@@ -782,7 +789,6 @@ public class ShopController : MonoBehaviour
     {
         if (index < 0 || index >= diamondPackageAmounts.Length)
         {
-            Debug.LogError($"Invalid diamond package index: {index}");
             return;
         }
 
@@ -795,7 +801,15 @@ public class ShopController : MonoBehaviour
         if (index < diamonds.Length && diamonds[index] != null)
         {
             selectedDiamond = diamonds[index];
-            GetChildGameObject(selectedDiamond, 1).SetActive(true);
+            GameObject selectionIndicator = GetChildGameObject(selectedDiamond, 1);
+            selectionIndicator.SetActive(true);
+            
+            // Change image color to yellow to indicate purchase mode
+            Image indicatorImage = selectionIndicator.GetComponent<Image>();
+            if (indicatorImage != null)
+            {
+                indicatorImage.color = Color.yellow;
+            }
         }
         
         // Update cost display
@@ -1103,16 +1117,6 @@ public class ShopController : MonoBehaviour
         coins = 0;
         coinsText.text = "0";
         
-        // Force update DiamondManager if exists
-        if (DiamondManager.Instance != null)
-        {
-            // Reset diamonds in DiamondManager (use reflection or direct access)
-            Debug.Log("Resetting DiamondManager diamonds to 0");
-        }
-        
-        Debug.Log($"🔒 Locked {dragons.Length - 1} dragons + {trails.Length} trails");
-        Debug.Log("💰 Reset scales and diamonds to 0");
-        Debug.Log("✅ Only Dragon 0 remains unlocked");
     }
 
     #endregion
