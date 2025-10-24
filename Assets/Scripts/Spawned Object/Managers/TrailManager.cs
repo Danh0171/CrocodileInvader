@@ -39,7 +39,6 @@ public class TrailManager : Manager
         // Check if player has selected a trail (if no key, no trail)
         if (!PlayerPrefs.HasKey("selectedTrail"))
         {
-            Debug.Log("No trail selected - not spawning any trail");
             return;
         }
         
@@ -48,14 +47,12 @@ public class TrailManager : Manager
         // If selectedTrail is -1, means no trail wanted
         if (selectedTrailID < 0)
         {
-            Debug.Log("No trail selected (ID < 0) - not spawning trail");
             return;
         }
         
         // Check if selected trail is unlocked
         if (PlayerPrefs.GetInt("trailStatus" + selectedTrailID, 0) != 1)
         {
-            Debug.Log($"Trail {selectedTrailID} is locked - not spawning trail");
             return;
         }
         

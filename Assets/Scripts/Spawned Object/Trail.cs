@@ -13,7 +13,6 @@ public class Trail : PoolableObject
     [Header("Trail Magic Effects")]
     [SerializeField] private TrailType trailType = TrailType.Fire; // Loại trail
     [SerializeField] private float destroyChance = 0.1f; // 10% chance phá vỡ
-    [SerializeField] private float effectRadius = 1f; // Bán kính hiệu ứng
     
     [Header("Effect Sprites")]
     [SerializeField] private Sprite effectSprite; // Sprite cho effect này

@@ -138,7 +138,6 @@ public class ShopController : MonoBehaviour
         // Check if dragon is locked
         if (!GetChildGameObject(selectedDragon, 3).activeSelf)
         {
-            Debug.Log("Dragon is already unlocked");
             return;
         }
 
@@ -182,7 +181,6 @@ public class ShopController : MonoBehaviour
             UnlockDragonSuccess(index);
             
             // Note: Diamond display will be updated automatically via OnDiamondsChanged event
-            Debug.Log($"Unlocked Dragon {index} with {diamondCost} diamonds!");
         }
     }
 
@@ -200,11 +198,6 @@ public class ShopController : MonoBehaviour
 
             // Unlock dragon
             UnlockDragonSuccess(index);
-            Debug.Log($"Unlocked Dragon {index} with {coinCost} coins!");
-        }
-        else
-        {
-            Debug.LogWarning($"Not enough coins to purchase dragon {index}. Need {coinCost}, have {coins}");
         }
     }
 
@@ -246,7 +239,6 @@ public class ShopController : MonoBehaviour
         // Check if trail is locked
         if (!GetChildGameObject(selectedTrail, 3).activeSelf)
         {
-            Debug.Log("Trail is already unlocked");
             return;
         }
 
@@ -285,7 +277,6 @@ public class ShopController : MonoBehaviour
         else
         {
             // Real IAP purchase (sẽ implement sau)
-            Debug.Log("Real IAP not implemented yet, using fake purchase");
             SimulateDiamondPurchase(index);
         }
     }
@@ -315,7 +306,6 @@ public class ShopController : MonoBehaviour
             UnlockTrailSuccess(index);
             
             // Note: Diamond display will be updated automatically via OnDiamondsChanged event
-            Debug.Log($"Unlocked Trail {index} with {diamondCost} diamonds!");
         }
     }
 
@@ -333,11 +323,6 @@ public class ShopController : MonoBehaviour
 
             // Unlock trail
             UnlockTrailSuccess(index);
-            Debug.Log($"Unlocked Trail {index} with {coinCost} coins!");
-        }
-        else
-        {
-            Debug.LogWarning($"Not enough coins to purchase trail {index}. Need {coinCost}, have {coins}");
         }
     }
 
@@ -398,7 +383,6 @@ public class ShopController : MonoBehaviour
                 // Remove from pool
                 PlayerPrefs.SetInt("dragonInPool" + index, 0);
                 GetChildGameObject(obj, 1).SetActive(false); // Remove selection indicator
-                Debug.Log($"Removed Dragon {index} from spawn pool");
             }
             else
             {
@@ -413,7 +397,6 @@ public class ShopController : MonoBehaviour
                 {
                     indicatorImage.color = Color.green;
                 }
-                Debug.Log($"Added Dragon {index} to spawn pool");
             }
             
             PlayerPrefs.Save();
@@ -455,7 +438,6 @@ public class ShopController : MonoBehaviour
                 PlayerPrefs.DeleteKey("selectedTrail");
                 GetChildGameObject(obj, 1).SetActive(false);
                 PlayerPrefs.Save();
-                Debug.Log($"Deselected Trail {index} - No trail will be active");
             }
             else
             {
@@ -483,7 +465,6 @@ public class ShopController : MonoBehaviour
                 }
                 
                 PlayerPrefs.Save();
-                Debug.Log($"Selected Trail {index}");
             }
         }
     }
@@ -779,7 +760,6 @@ public class ShopController : MonoBehaviour
     private void SimulateDiamondPurchase(int index)
     {
         // Simulate successful purchase
-        Debug.Log($"Simulating purchase of {diamondPackageAmounts[index]} diamonds for ${diamondPackagePrices[index]}");
         DiamondManager.Instance.AddDiamonds(diamondPackageAmounts[index]);
         // Note: Diamond display will be updated automatically via OnDiamondsChanged event
     }
@@ -795,7 +775,6 @@ public class ShopController : MonoBehaviour
         if (diamondsText != null && DiamondManager.Instance != null)
         {
             diamondsText.text = DiamondManager.Instance.CurrentDiamonds.ToString();
-            Debug.Log($"ShopController: Initial diamond display loaded with {DiamondManager.Instance.CurrentDiamonds} diamonds");
         }
     }
 
@@ -911,22 +890,7 @@ public class ShopController : MonoBehaviour
         clickProcessed = true;
     }
 
-    /// <summary>
-    /// Immediately mark click as processed and prevent deselection
-    /// </summary>
-    private void PreventAutoDeselect()
-    {
-        clickProcessed = true;
-        
-        // Stop any running deselect coroutine safely
-        if (autoDeselectCoroutine != null)
-        {
-            StopCoroutine(autoDeselectCoroutine);
-            autoDeselectCoroutine = null;
-        }
-        
-        Debug.Log("Auto-deselect prevented for button click");
-    }
+
 
     /// <summary>
     /// Deselect currently selected trail for purchase
@@ -944,8 +908,6 @@ public class ShopController : MonoBehaviour
             // Clear selection
             selectedTrail = null;
             selectedTrailIndex = -1;
-            
-            Debug.Log("Auto-deselected trail due to click outside");
         }
     }
 
@@ -968,8 +930,6 @@ public class ShopController : MonoBehaviour
             // Clear selection
             selectedDragon = null;
             selectedDragonIndex = -1;
-            
-            Debug.Log("Auto-deselected dragon due to click outside");
         }
     }
 
@@ -989,8 +949,6 @@ public class ShopController : MonoBehaviour
             // Clear selection
             selectedDiamond = null;
             selectedDiamondIndex = -1;
-            
-            Debug.Log("Auto-deselected diamond package due to click outside");
         }
     }
 
@@ -1006,8 +964,6 @@ public class ShopController : MonoBehaviour
         // Clear text values as well (optional)
         if (value != null) value.text = "";
         if (diamondValue != null) diamondValue.text = "";
-        
-        Debug.Log("Cost display hidden");
     }
 
     #endregion
@@ -1026,12 +982,6 @@ public class ShopController : MonoBehaviour
             
             // Subscribe to scales changes (from diamond conversion)
             DiamondManager.Instance.OnScalesChanged.AddListener(UpdateScalesDisplay);
-            
-            Debug.Log("ShopController: Subscribed to DiamondManager events");
-        }
-        else
-        {
-            Debug.LogWarning("ShopController: DiamondManager.Instance is null, cannot subscribe to events");
         }
     }
 
@@ -1044,7 +994,6 @@ public class ShopController : MonoBehaviour
         {
             DiamondManager.Instance.OnDiamondsChanged.RemoveListener(UpdateDiamondDisplay);
             DiamondManager.Instance.OnScalesChanged.RemoveListener(UpdateScalesDisplay);
-            Debug.Log("ShopController: Unsubscribed from DiamondManager events");
         }
     }
 
@@ -1061,7 +1010,6 @@ public class ShopController : MonoBehaviour
         if (diamondsText != null)
         {
             diamondsText.text = newAmount.ToString();
-            Debug.Log($"ShopController: Diamond display updated to {newAmount}");
         }
     }
 
@@ -1075,7 +1023,6 @@ public class ShopController : MonoBehaviour
         if (coinsText != null)
         {
             coinsText.text = newAmount.ToString();
-            Debug.Log($"ShopController: Scales display updated to {newAmount}");
         }
     }
 
@@ -1107,8 +1054,6 @@ public class ShopController : MonoBehaviour
     /// </summary>
     public void OnDebugLockClicked()
     {
-        Debug.Log(" DEBUG: NUCLEAR LOCK - Locking everything (except dragon 0)!");
-        
         DebugNuclearLock();
         
         // Refresh UI
@@ -1122,7 +1067,6 @@ public class ShopController : MonoBehaviour
     /// </summary>
     private void DebugNuclearLock()
     {
-        Debug.Log("� NUCLEAR LOCK: Locking everything except dragon 0!");
         
         // Lock all dragons (except dragon 0)
         for (int i = 1; i < dragons.Length; i++)

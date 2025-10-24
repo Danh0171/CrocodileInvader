@@ -63,7 +63,6 @@ public class DiamondManager : MonoBehaviour
     private void LoadDiamonds()
     {
         currentDiamonds = PlayerPrefs.GetInt("totalDiamonds", 0);
-        Debug.Log($"DiamondManager: Loaded {currentDiamonds} diamonds");
         
         // Trigger event để update UI
         OnDiamondsChanged?.Invoke(currentDiamonds);
@@ -76,7 +75,6 @@ public class DiamondManager : MonoBehaviour
     {
         PlayerPrefs.SetInt("totalDiamonds", currentDiamonds);
         PlayerPrefs.Save();
-        Debug.Log($"DiamondManager: Saved {currentDiamonds} diamonds");
     }
 
     /// <summary>
@@ -96,8 +94,6 @@ public class DiamondManager : MonoBehaviour
         
         // Trigger event để update UI
         OnDiamondsChanged?.Invoke(currentDiamonds);
-        
-        Debug.Log($"DiamondManager: Added {amount} diamonds. Total: {currentDiamonds}");
     }
 
     /// <summary>
@@ -125,7 +121,6 @@ public class DiamondManager : MonoBehaviour
         // Trigger event để update UI
         OnDiamondsChanged?.Invoke(currentDiamonds);
         
-        Debug.Log($"DiamondManager: Spent {amount} diamonds. Remaining: {currentDiamonds}");
         return true;
     }
 
@@ -172,7 +167,6 @@ public class DiamondManager : MonoBehaviour
         int scalesToAdd = diamondsToConvert * diamondToScalesRate;
         AddScalesToGame(scalesToAdd);
 
-        Debug.Log($"DiamondManager: Converted {diamondsToConvert} diamonds to {scalesToAdd} scales");
         return true;
     }
 
@@ -204,8 +198,6 @@ public class DiamondManager : MonoBehaviour
         
         // Trigger event để update UI
         OnScalesChanged?.Invoke(newTotal);
-        
-        Debug.Log($"DiamondManager: Added {scalesToAdd} scales. New total: {newTotal}");
     }
 
     #endregion
@@ -294,8 +286,6 @@ public class DiamondManager : MonoBehaviour
                 convertFeedbackText.gameObject.SetActive(false);
             }
         }
-
-        Debug.Log($"DiamondManager: Convert panel {(isConvertPanelOpen ? "opened" : "closed")}");
     }
 
     /// <summary>
@@ -468,22 +458,20 @@ public class DiamondManager : MonoBehaviour
     /// Debug method để test - chỉ dùng trong development
     /// </summary>
     [System.Diagnostics.Conditional("UNITY_EDITOR")]
-    public void Debug_AddDiamonds(int amount)
+    public void DebugAddDiamonds(int amount = 100)
     {
         AddDiamonds(amount);
-        Debug.Log($"[DEBUG] Added {amount} diamonds for testing");
     }
 
     /// <summary>
     /// Debug method để reset diamonds - chỉ dùng trong development
     /// </summary>
     [System.Diagnostics.Conditional("UNITY_EDITOR")]
-    public void Debug_ResetDiamonds()
+    public void DebugResetDiamonds()
     {
         currentDiamonds = 0;
         SaveDiamonds();
         OnDiamondsChanged?.Invoke(currentDiamonds);
-        Debug.Log("[DEBUG] Reset diamonds to 0");
     }
 
     /// <summary>

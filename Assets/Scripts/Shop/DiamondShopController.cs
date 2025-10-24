@@ -165,7 +165,7 @@ public class DiamondShopController : MonoBehaviour
         selectedPackage = diamondPackages[packageIndex];
         selectedPackageIndex = packageIndex;
 
-        Debug.Log($"DiamondShopController: Selected package '{selectedPackage.packageName}' - {selectedPackage.displayPrice} for {selectedPackage.diamondAmount} diamonds");
+
 
         // Immediately attempt purchase (fake or real)
         AttemptPurchase();
@@ -190,7 +190,7 @@ public class DiamondShopController : MonoBehaviour
         else
         {
             // Real IAP purchase (sẽ implement sau)
-            Debug.Log("DiamondShopController: Real IAP not implemented yet, using fake purchase");
+
             SimulatePurchaseSuccess();
         }
     }
@@ -202,7 +202,7 @@ public class DiamondShopController : MonoBehaviour
     {
         if (selectedPackage == null) return;
 
-        Debug.Log($"DiamondShopController: [FAKE PURCHASE] Successfully purchased {selectedPackage.packageName}");
+
         
         // Award diamonds
         if (DiamondManager.Instance != null)
@@ -228,12 +228,12 @@ public class DiamondShopController : MonoBehaviour
     private void ShowPurchaseSuccess()
     {
         // TODO: Show success popup/animation
-        Debug.Log("DiamondShopController: Purchase successful!");
+
         
         // For now, just log
         if (selectedPackage != null)
         {
-            Debug.Log($"You received {selectedPackage.diamondAmount} diamonds!");
+
         }
     }
 
@@ -297,11 +297,11 @@ public class DiamondShopController : MonoBehaviour
     [System.Diagnostics.Conditional("UNITY_EDITOR")]
     public void Debug_TestAllPackages()
     {
-        Debug.Log("DiamondShopController: Testing all packages...");
+
         
         for (int i = 0; i < diamondPackages.Length; i++)
         {
-            Debug.Log($"Package {i}: {GetPackageInfo(i)}");
+
         }
     }
 
