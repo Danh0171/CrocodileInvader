@@ -112,15 +112,15 @@ public class DragonManager : Manager
 
     public void AddZombie(bool isEating = false)
     {
-        int prefabID; // ID để spawn từ Object Prefabs array
+        int prefabID; 
         
-        if (isNormalForm) // Normal form - use selected dragon from shop
+        if (isNormalForm)
         {
             prefabID = GetSelectedDragonID();
         }
-        else // Magic form - prefab cuối cùng
+        else 
         {
-            prefabID = PrefabsCount - 1; // Sử dụng [^1] logic: magic dragon ở cuối
+            prefabID = PrefabsCount - 1; 
         }
         
         Dragon c = (Dragon)GetItem(prefabID);
@@ -157,7 +157,7 @@ public class DragonManager : Manager
 
     private float GetDelayedTime(Dragon dragon)
     {
-        float delayModifier = IsMagicForm ? 0.5f : 0.8f; // Magic form nhanh hơn
+        float delayModifier = IsMagicForm ? 0.5f : 0.8f; 
         float distance = Mathf.Max(FirstDragon.transform.position.x - dragon.transform.position.x, 0f);
         float raw = distance / GameManager.Instance.ScrollBackSpeed * delayModifier + 0.001f;
         return Mathf.Min(maxJumpDelay, raw);
@@ -221,7 +221,7 @@ public class DragonManager : Manager
                 dragon.CallTriggerFall(GetDelayedTime(dragon));
         }
 
-        // Trạng thái thả (không còn giữ) nhưng trước đó có cá sấu đang "IsTouchingScreen"
+        // Trạng thái thả 
         if (!pressHeld)
         {
             foreach (Dragon dragon in dragonList)
@@ -291,7 +291,6 @@ public class DragonManager : Manager
 
     public void ChangeForm(int id)
     {
-        // Convert old ID system to new bool system
         bool newIsNormalForm = (id == 0);
         ChangeForm(newIsNormalForm);
     }
@@ -308,13 +307,13 @@ public class DragonManager : Manager
             Dragon temp = dragonList[i];
             
             int prefabID;
-            if (isNormalForm) // Normal form - use selected dragon from shop
+            if (isNormalForm) 
             {
                 prefabID = GetSelectedDragonID();
             }
-            else // Magic form - last prefab
+            else 
             {
-                prefabID = PrefabsCount - 1; // Magic dragon ở cuối [^1]
+                prefabID = PrefabsCount - 1;
             }
             
             dragonList[i] = (Dragon)GetItem(prefabID);

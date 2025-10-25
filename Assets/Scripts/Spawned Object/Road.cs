@@ -12,12 +12,10 @@ public class Road : PoolableObject
     public override float Width => spriteRenderer.size.x;
     public override float Height => spriteRenderer.size.y;
 
-    // Start is called before the first frame update
     protected override void Start()
     {
     }
 
-    // Update is called once per frame
     protected override void Update()
     {
         base.Update();

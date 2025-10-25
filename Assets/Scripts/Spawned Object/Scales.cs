@@ -8,7 +8,6 @@ public class Scales : MonoBehaviour
     [SerializeField] SpriteRenderer spriteRenderer;
     
 
-    // Update is called once per frame
     void Update()
     {
         if (GameManager.Instance.Zombies.IsMagicForm)
@@ -41,10 +40,8 @@ public class Scales : MonoBehaviour
             }
             spriteRenderer.enabled = false;
             
-            // Normal coin increment
             GameManager.Instance.IncCoin();
             
-            // Process gem bonus through ScalesManager
             GameManager.Instance.Coins.ProcessScalesBonus();
         }
     }

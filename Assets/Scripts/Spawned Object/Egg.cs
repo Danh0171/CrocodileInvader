@@ -28,18 +28,7 @@ public class Egg : PoolableObject
     protected override void Update()
     {
         base.Update();
-        //JumpingAnimation();
     }
-
-    //private void JumpingAnimation()
-    //{
-    //    countTime += Time.deltaTime;
-    //    if (countTime >= deltaJumpTime)
-    //    {
-    //        rigidBody2D.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-    //        countTime -= deltaJumpTime;
-    //    }
-    //}
 
     public void SetLayer(int layer)
     {

@@ -27,22 +27,22 @@ public class DiamondManager : MonoBehaviour
     [SerializeField] private int diamondToScalesRate = 100; // 1 diamond = 100 scales
 
     [Header("Convert Toggle")]
-    [SerializeField] private Button convertToggleIcon; // Icon/Button để toggle convert panel
-    [SerializeField] private GameObject convertPanel; // Panel chứa tất cả convert UI
+    [SerializeField] private Button convertToggleIcon; 
+    [SerializeField] private GameObject convertPanel; 
 
     [Header("Convert UI References")]
-    [SerializeField] private TMP_InputField convertInputField; // TextMeshPro Input field cho số diamond
-    [SerializeField] private Button convertButton; // Convert button  
-    [SerializeField] private TextMeshProUGUI convertPreviewText; // Real-time preview "X Diamonds → Y Scales"
-    [SerializeField] private TextMeshProUGUI convertFeedbackText; // TextMeshPro Text hiển thị feedback
-    [SerializeField] private float feedbackDisplayTime = 3f; // Thời gian hiển thị feedback
+    [SerializeField] private TMP_InputField convertInputField; 
+    [SerializeField] private Button convertButton; 
+    [SerializeField] private TextMeshProUGUI convertPreviewText; 
+    [SerializeField] private TextMeshProUGUI convertFeedbackText; 
+    [SerializeField] private float feedbackDisplayTime = 3f; 
 
     [Header("Events")]
-    public UnityEvent<int> OnDiamondsChanged; // Event khi diamonds thay đổi
-    public UnityEvent<int> OnScalesChanged;   // Event khi scales thay đổi từ conversion
+    public UnityEvent<int> OnDiamondsChanged; 
+    public UnityEvent<int> OnScalesChanged;   
 
     private int currentDiamonds;
-    private bool isConvertPanelOpen = false; // Track convert panel state
+    private bool isConvertPanelOpen = false; 
 
     #region Properties
     public int CurrentDiamonds => currentDiamonds;
@@ -57,9 +57,6 @@ public class DiamondManager : MonoBehaviour
 
     #region Diamond Management
     
-    /// <summary>
-    /// Load diamond count từ PlayerPrefs
-    /// </summary>
     private void LoadDiamonds()
     {
         currentDiamonds = PlayerPrefs.GetInt("totalDiamonds", 0);
@@ -68,18 +65,12 @@ public class DiamondManager : MonoBehaviour
         OnDiamondsChanged?.Invoke(currentDiamonds);
     }
 
-    /// <summary>
-    /// Save diamond count vào PlayerPrefs
-    /// </summary>
     private void SaveDiamonds()
     {
         PlayerPrefs.SetInt("totalDiamonds", currentDiamonds);
         PlayerPrefs.Save();
     }
 
-    /// <summary>
-    /// Thêm diamonds (từ purchases)
-    /// </summary>
     /// <param name="amount">Số diamonds cần thêm</param>
     public void AddDiamonds(int amount)
     {
@@ -95,9 +86,6 @@ public class DiamondManager : MonoBehaviour
         OnDiamondsChanged?.Invoke(currentDiamonds);
     }
 
-    /// <summary>
-    /// Spend diamonds (để mua trails)
-    /// </summary>
     /// <param name="amount">Số diamonds cần spend</param>
     /// <returns>True nếu có đủ diamonds và spend thành công</returns>
     public bool SpendDiamonds(int amount)
@@ -121,9 +109,7 @@ public class DiamondManager : MonoBehaviour
         return true;
     }
 
-    /// <summary>
     /// Check xem có đủ diamonds không
-    /// </summary>
     /// <param name="amount">Số diamonds cần check</param>
     /// <returns>True nếu có đủ diamonds</returns>
     public bool HasEnoughDiamonds(int amount)
@@ -135,9 +121,7 @@ public class DiamondManager : MonoBehaviour
 
     #region Diamond to Scales Conversion
 
-    /// <summary>
     /// Convert diamonds sang scales
-    /// </summary>
     /// <param name="diamondsToConvert">Số diamonds muốn convert</param>
     /// <returns>True nếu conversion thành công</returns>
     public bool ConvertDiamondsToScales(int diamondsToConvert)
@@ -152,7 +136,6 @@ public class DiamondManager : MonoBehaviour
             return false;
         }
 
-        // Spend diamonds
         if (!SpendDiamonds(diamondsToConvert))
         {
             return false;
@@ -165,20 +148,11 @@ public class DiamondManager : MonoBehaviour
         return true;
     }
 
-    /// <summary>
-    /// Tính toán số scales sẽ nhận được từ diamond conversion
-    /// </summary>
-    /// <param name="diamonds">Số diamonds</param>
-    /// <returns>Số scales sẽ nhận được</returns>
     public int CalculateScalesFromDiamonds(int diamonds)
     {
         return diamonds * diamondToScalesRate;
     }
 
-    /// <summary>
-    /// Add scales vào game system
-    /// </summary>
-    /// <param name="scalesToAdd">Số scales cần add</param>
     private void AddScalesToGame(int scalesToAdd)
     {
         // Get current scales (note: still using "totalCoins" key for compatibility)
@@ -199,40 +173,32 @@ public class DiamondManager : MonoBehaviour
 
     #region Convert UI Methods
 
-    /// <summary>
-    /// Setup Convert UI elements
-    /// </summary>
     private void SetupConvertUI()
     {
-        // Setup convert toggle icon click event
         if (convertToggleIcon != null)
         {
             convertToggleIcon.onClick.RemoveAllListeners();
             convertToggleIcon.onClick.AddListener(OnConvertIconClicked);
         }
 
-        // Setup convert button click event
         if (convertButton != null)
         {
             convertButton.onClick.RemoveAllListeners();
             convertButton.onClick.AddListener(OnConvertButtonClicked);
         }
 
-        // Hide convert panel initially
         if (convertPanel != null)
         {
             convertPanel.SetActive(false);
             isConvertPanelOpen = false;
         }
 
-        // Hide feedback text initially
         if (convertFeedbackText != null)
         {
             convertFeedbackText.text = "";
             convertFeedbackText.gameObject.SetActive(false);
         }
 
-        // Setup input field placeholder (TextMeshPro)
         if (convertInputField != null && convertInputField.placeholder != null)
         {
             TextMeshProUGUI placeholder = convertInputField.placeholder.GetComponent<TextMeshProUGUI>();
@@ -246,16 +212,12 @@ public class DiamondManager : MonoBehaviour
             convertInputField.onValueChanged.AddListener(OnInputFieldChanged);
         }
 
-        // Setup initial preview text
         if (convertPreviewText != null)
         {
             UpdatePreviewDisplay("");
         }
     }
 
-    /// <summary>
-    /// Public method để toggle convert panel khi click icon
-    /// </summary>
     public void OnConvertIconClicked()
     {
 
@@ -278,19 +240,11 @@ public class DiamondManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Called when input field value changes - for real-time preview
-    /// </summary>
-    /// <param name="value">Input field value</param>
     private void OnInputFieldChanged(string value)
     {
         UpdatePreviewDisplay(value);
     }
 
-    /// <summary>
-    /// Update preview display based on input
-    /// </summary>
-    /// <param name="input">Input string from field</param>
     private void UpdatePreviewDisplay(string input)
     {
         if (convertPreviewText == null) return;
@@ -326,9 +280,6 @@ public class DiamondManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Public method để gọi từ Convert Button
-    /// </summary>
     public void OnConvertButtonClicked()
     {
         if (convertInputField == null)
@@ -382,11 +333,6 @@ public class DiamondManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Hiển thị feedback message với color
-    /// </summary>
-    /// <param name="message">Message để hiển thị</param>
-    /// <param name="color">Màu của text</param>
     private void ShowFeedback(string message, Color color)
     {
         if (convertFeedbackText == null) return;
@@ -399,9 +345,6 @@ public class DiamondManager : MonoBehaviour
         StartCoroutine(HideFeedbackAfterDelay());
     }
 
-    /// <summary>
-    /// Coroutine để ẩn feedback sau delay
-    /// </summary>
     private System.Collections.IEnumerator HideFeedbackAfterDelay()
     {
         yield return new WaitForSeconds(feedbackDisplayTime);
@@ -412,17 +355,11 @@ public class DiamondManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Public method để lấy conversion rate info cho UI
-    /// </summary>
     public string GetConversionRateInfo()
     {
         return $"1 Diamond = {diamondToScalesRate} Scales";
     }
 
-    /// <summary>
-    /// Public method để close convert panel từ bên ngoài
-    /// </summary>
     public void CloseConvertPanel()
     {
         if (convertPanel != null)
@@ -432,9 +369,6 @@ public class DiamondManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Public method để check trạng thái convert panel
-    /// </summary>
     public bool IsConvertPanelOpen()
     {
         return isConvertPanelOpen;
@@ -442,35 +376,4 @@ public class DiamondManager : MonoBehaviour
 
     #endregion
 
-    #region Debug/Testing Methods
-
-    /// <summary>
-    /// Debug method để test - chỉ dùng trong development
-    /// </summary>
-    [System.Diagnostics.Conditional("UNITY_EDITOR")]
-    public void DebugAddDiamonds(int amount = 100)
-    {
-        AddDiamonds(amount);
-    }
-
-    /// <summary>
-    /// Debug method để reset diamonds - chỉ dùng trong development
-    /// </summary>
-    [System.Diagnostics.Conditional("UNITY_EDITOR")]
-    public void DebugResetDiamonds()
-    {
-        currentDiamonds = 0;
-        SaveDiamonds();
-        OnDiamondsChanged?.Invoke(currentDiamonds);
-    }
-
-    /// <summary>
-    /// Get diamond info for debugging
-    /// </summary>
-    public string GetDebugInfo()
-    {
-        return $"Diamonds: {currentDiamonds}, Rate: 1 diamond = {diamondToScalesRate} scales";
-    }
-
-    #endregion
 }

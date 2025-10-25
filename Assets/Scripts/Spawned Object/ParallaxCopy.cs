@@ -5,8 +5,8 @@ using UnityEngine;
 public class ParallaxCopy : MonoBehaviour
 {
     [Header("Copy Settings")]
-    [SerializeField] private bool isRightCopy = true;  // true = copy bên phải, false = copy bên trái
-    [SerializeField] private bool parentMovesRight = false; // true nếu parent bay qua phải
+    [SerializeField] private bool isRightCopy = true;  
+    [SerializeField] private bool parentMovesRight = false; 
     
     void Start()
     {
@@ -15,10 +15,8 @@ public class ParallaxCopy : MonoBehaviour
     
     void SetupCopyPosition()
     {
-        // Tự động lấy parent làm original sprite
         Transform parentSprite = transform.parent;
         
-        // Lấy vị trí của parent (sprite gốc)
         Vector3 parentPos = parentSprite.position;
         
         // Tính toán vị trí mới dựa trên direction và ScreenWidth
@@ -26,15 +24,13 @@ public class ParallaxCopy : MonoBehaviour
         
         if (parentMovesRight)
         {
-            // Parent bay qua phải → copy nên ở bên trái để ready replace
             if (isRightCopy)
-                newPos.x = parentPos.x - GameManager.ScreenWidth; // Copy "bên phải" thực ra ở bên trái
+                newPos.x = parentPos.x - GameManager.ScreenWidth; 
             else
-                newPos.x = parentPos.x + GameManager.ScreenWidth; // Copy "bên trái" thực ra ở bên phải
+                newPos.x = parentPos.x + GameManager.ScreenWidth;
         }
         else
         {
-            // Parent di chuyển qua trái (normal) → copy ở bên phải
             if (isRightCopy)
                 newPos.x = parentPos.x + GameManager.ScreenWidth;
             else

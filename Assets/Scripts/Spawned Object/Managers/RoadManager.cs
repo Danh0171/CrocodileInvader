@@ -13,18 +13,15 @@ public class RoadManager : Manager
     [SerializeField] private float currentHeight;
     [SerializeField] private float nextHeight;
     [SerializeField] private int nextRoadID;
-    [SerializeField] private bool lastSpawnWasCrackedRoad = false; // Track để tăng width road kế tiếp
+    [SerializeField] private bool lastSpawnWasCrackedRoad = false;
 
-    //public float CurrentHeight => currentHeight;
     public float MinHeight => standardHeight[0];
 
     public override PoolableObject GetItem(int id = 0)
     {
-        // Simply return the pooled object, configuration handled in SpawnRoad()
         return base.GetItem(id);
     }
 
-    // Start is called before the first frame update
     void Start()
     {
         countDistance = 0;
@@ -33,7 +30,6 @@ public class RoadManager : Manager
         nextRoadID = 2;
     }
 
-    // Update is called once per frame
     void Update()
     {
         standardDistance = GameManager.Instance.Zombies.FirstDragon ?
@@ -49,10 +45,8 @@ public class RoadManager : Manager
         if (GameManager.Instance.SpawnBombAndWitchOnly)
             GameManager.Instance.SpawnBombAndWitchOnly = false;
 
-        // DECISION: Spawn CrackedRoad hoặc normal Road
-        // Chỉ spawn khi BrainNumber >= 30 và chỉ với width nhỏ/vừa
         bool meetsBrainRequirement = GameManager.Instance.BrainNumber >= 30;
-        bool isAllowedWidth = ((standardWidth[nextRoadID] == 4.5f || standardWidth[nextRoadID] == 35.16f) && nextHeight == standardHeight[1]  );
+        bool isAllowedWidth = ((standardWidth[nextRoadID] == 4.5f || standardWidth[nextRoadID] == 35.16f) && nextHeight == standardHeight[1]);
 
         bool shouldSpawnCrackedRoad = meetsBrainRequirement &&
                                       isAllowedWidth;
@@ -63,7 +57,6 @@ public class RoadManager : Manager
         
         if (shouldSpawnCrackedRoad && PrefabsCount > 1)
         {
-            // Spawn CrackedRoad (id = 1)
             CrackedRoad cr = (CrackedRoad)GetItem(1);
             cr.Config(standardWidth[nextRoadID], l);
             
@@ -80,13 +73,12 @@ public class RoadManager : Manager
         }
         else
         {
-            // Spawn normal Road (id = 0)
             float roadWidth = standardWidth[nextRoadID];
             
             // Nếu road trước là CrackedRoad → tăng width để dễ landing
             if (lastSpawnWasCrackedRoad)
             {
-                roadWidth = Mathf.Max(roadWidth * 1.5f, standardWidth[standardWidth.Count - 2]); // 50% wider or use large road size
+                roadWidth = Mathf.Max(roadWidth * 1.5f, standardWidth[standardWidth.Count - 2]); 
                 lastSpawnWasCrackedRoad = false; // Reset flag
             }
             

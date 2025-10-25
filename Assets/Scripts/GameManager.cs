@@ -102,7 +102,6 @@ public class GameManager : MonoBehaviour
     #endregion Properties
 
 
-    // Start is called before the first frame update
     void Start()
     {
         // Initialize coin system - load from PlayerPrefs for shop integration
@@ -115,7 +114,6 @@ public class GameManager : MonoBehaviour
         countDownOver = 1f;
     }
 
-    // Update is called once per frame
     void Update()
     {
         CheckBonusBlockUpdate();
@@ -184,7 +182,7 @@ public class GameManager : MonoBehaviour
                     else
                     {
                         // 30% spawn witch
-                        managers[6].CallSpawnItem(); // WitchManager (assuming index 6)
+                        managers[6].CallSpawnItem(); // WitchManager (index 6)
                     }
                 }
                 else

@@ -16,10 +16,8 @@ public class PoolableObject : MonoBehaviour
     public Manager AssociatedManager { set { manager = value; } }
 
 
-    // Start is called before the first frame update
     protected virtual void Start() { }
 
-    // Update is called once per frame
     protected virtual void Update()
     {
         ScrollBack();

@@ -8,26 +8,26 @@ public class ShopController : MonoBehaviour
 {
     private ShopManager gameManager;
 
-    public GameObject[] dragons; // Renamed from planets to dragons
-    public GameObject[] trails; // Trail items array
-    public GameObject[] diamonds; // Diamond packages array
+    public GameObject[] dragons; 
+    public GameObject[] trails; 
+    public GameObject[] diamonds; 
 
-    private GameObject selectedDragon; // Renamed from selectedPlanet
-    private GameObject selectedTrail; // For trail selection
-    private GameObject selectedDiamond; // For diamond package selection
-    private int selectedDragonIndex = -1; // Track selected dragon index
-    private int selectedTrailIndex = -1; // Track selected trail index
-    private int selectedDiamondIndex = -1; // Track selected diamond index
+    private GameObject selectedDragon; 
+    private GameObject selectedTrail; 
+    private GameObject selectedDiamond; 
+    private int selectedDragonIndex = -1; 
+    private int selectedTrailIndex = -1; 
+    private int selectedDiamondIndex = -1; 
 
     [Header("Dragon Cost Configuration")]
-    [SerializeField] private bool[] dragonUsesDiamonds = new bool[] { false, true, true, true, true, true, true }; // dragon 0 uses coins, others use diamonds
-    [SerializeField] private int[] dragonDiamondCosts = new int[] { 0, 25, 50, 75, 100, 150, 250 }; // diamond costs per dragon
-    [SerializeField] private int[] dragonCoinCosts = new int[] { 100, 0, 0, 0, 0, 0, 0 }; // coin costs per dragon (only dragon 0)
+    [SerializeField] private bool[] dragonUsesDiamonds = new bool[] { false, true, true, true, true, true, true }; 
+    [SerializeField] private int[] dragonDiamondCosts = new int[] { 0, 25, 50, 75, 100, 150, 250 }; 
+    [SerializeField] private int[] dragonCoinCosts = new int[] { 100, 0, 0, 0, 0, 0, 0 }; 
 
     [Header("Trail Cost Configuration")]
-    [SerializeField] private bool[] trailUsesDiamonds = new bool[] { false, true, true, true, true, true, true }; // trail 0 uses coins, others use diamonds
-    [SerializeField] private int[] trailDiamondCosts = new int[] { 0, 50, 100, 150, 200, 300, 500 }; // diamond costs per trail
-    [SerializeField] private int[] trailCoinCosts = new int[] { 100, 0, 0, 0, 0, 0, 0 }; // coin costs per trail (only trail 0)
+    [SerializeField] private bool[] trailUsesDiamonds = new bool[] { false, true, true, true, true, true, true }; 
+    [SerializeField] private int[] trailDiamondCosts = new int[] { 0, 50, 100, 150, 200, 300, 500 }; 
+    [SerializeField] private int[] trailCoinCosts = new int[] { 100, 0, 0, 0, 0, 0, 0 }; 
 
     [Header("Diamond Package Configuration")]
     [SerializeField] private string[] diamondPackageNames = new string[] {
@@ -39,18 +39,18 @@ public class ShopController : MonoBehaviour
     [SerializeField] private int[] diamondPackageAmounts = new int[] {
         10, 30, 55, 130, 270, 900, 1500
     };
-    [SerializeField] private bool enableFakePurchases = true; // Enable fake purchases for testing
+    [SerializeField] private bool enableFakePurchases = true; 
 
     [Header("UI References")]
-    [SerializeField] private TextMeshProUGUI value; // For coin costs
-    [SerializeField] private TextMeshProUGUI diamondValue; // For diamond costs
-    [SerializeField] private GameObject coinValueUI; // UI container for coin display
-    [SerializeField] private GameObject diamondValueUI; // UI container for diamond display
+    [SerializeField] private TextMeshProUGUI value; 
+    [SerializeField] private TextMeshProUGUI diamondValue; 
+    [SerializeField] private GameObject coinValueUI;
+    [SerializeField] private GameObject diamondValueUI; 
     [SerializeField] private TextMeshProUGUI coinsText;
     [SerializeField] private TextMeshProUGUI diamondsText;
 
     [Header("Debug UI (Remove after testing)")]
-    [SerializeField] private Button debugLockButton; // Debug button để lock items
+    [SerializeField] private Button debugLockButton; 
 
     private int coins;
 
@@ -59,8 +59,6 @@ public class ShopController : MonoBehaviour
         LoadProgress(dragons);
         LoadProgressTrails(trails);
 
-        // load and select the saved dragon 
-        // or select the first dragon if there is no saved value
         if (PlayerPrefs.HasKey("selectedDragon"))
         {
             SelectDragon(PlayerPrefs.GetInt("selectedDragon"));
@@ -70,18 +68,12 @@ public class ShopController : MonoBehaviour
             SelectDragon(0);
         }
 
-        // load and select the saved trail
-        // or select the first trail if there is no saved value
+       
         if (PlayerPrefs.HasKey("selectedTrail"))
         {
             SelectTrail(PlayerPrefs.GetInt("selectedTrail"));
         }
-        // else if (trails.Length > 0)
-        // {
-        //     SelectTrail(trails[0]);
-        // }
-
-        // get the total coins from Dragon Age game
+        
         coins = (PlayerPrefs.HasKey("totalCoins")) ? PlayerPrefs.GetInt("totalCoins") : 0;
         coinsText.text = coins.ToString();
         
@@ -95,37 +87,34 @@ public class ShopController : MonoBehaviour
 
     private void Update()
     {
-        // Check for click outside to auto-deselect trails
         CheckClickOutsideToDeselect();
     }
 
     private void OnDestroy()
     {
-        // Unsubscribe from events to prevent memory leaks
         UnsubscribeFromEvents();
     }
 
     public void OnClick(int index)
     {
-        MarkClickProcessed(); // Mark click as handled
+        MarkClickProcessed();
         SelectDragon(index);
     }
 
     public void OnClickTrail(int index)
     {
-        MarkClickProcessed(); // Mark click as handled
+        MarkClickProcessed(); 
         SelectTrail(index);
     }
 
     public void OnClickDiamond(int index)
     {
-        MarkClickProcessed(); // Mark click as handled
+        MarkClickProcessed(); 
         SelectDiamond(index);
     }
 
     public void UnlockDragon()
     {
-        // Mark click as handled and store index
         MarkClickProcessed();
         int index = selectedDragonIndex;
         
@@ -145,12 +134,10 @@ public class ShopController : MonoBehaviour
 
         if (usesDiamonds)
         {
-            // Dragon uses diamonds
             UnlockDragonWithDiamonds(index);
         }
         else
         {
-            // Dragon uses coins (dragon 0)
             UnlockDragonWithCoins(index);
         }
     }
@@ -159,25 +146,19 @@ public class ShopController : MonoBehaviour
     {
         int diamondCost = index < dragonDiamondCosts.Length ? dragonDiamondCosts[index] : 100;
 
-        // Check if DiamondManager exists
         if (DiamondManager.Instance == null)
         {
             return;
         }
 
-        // Check if player has enough diamonds
         if (!DiamondManager.Instance.HasEnoughDiamonds(diamondCost))
         {
             return;
         }
 
-        // Spend diamonds
         if (DiamondManager.Instance.SpendDiamonds(diamondCost))
         {
-            // Unlock dragon
             UnlockDragonSuccess(index);
-            
-            // Note: Diamond display will be updated automatically via OnDiamondsChanged event
         }
     }
 
@@ -188,19 +169,16 @@ public class ShopController : MonoBehaviour
 
         if (coins >= coinCost)
         {
-            // Spend coins
             PlayerPrefs.SetInt("totalCoins", balance);
             coinsText.text = balance.ToString();
-            coins = balance; // Update local coins
+            coins = balance; 
 
-            // Unlock dragon
             UnlockDragonSuccess(index);
         }
     }
 
     private void UnlockDragonSuccess(int index)
     {
-        // Hide lock UI
         GetChildGameObject(selectedDragon, 3).SetActive(false);
 
         // Unlock dragon and automatically add to spawn pool
@@ -211,7 +189,6 @@ public class ShopController : MonoBehaviour
         GameObject selectionIndicator = GetChildGameObject(selectedDragon, 1);
         selectionIndicator.SetActive(true);
         
-        // Change image color to green to indicate selection
         Image indicatorImage = selectionIndicator.GetComponent<Image>();
         if (indicatorImage != null)
         {
@@ -223,7 +200,6 @@ public class ShopController : MonoBehaviour
 
     public void UnlockTrail()
     {
-        // Mark click as handled and store index
         MarkClickProcessed();
         int index = selectedTrailIndex;
         
@@ -232,7 +208,6 @@ public class ShopController : MonoBehaviour
             return;
         }
         
-        // Check if trail is locked
         if (!GetChildGameObject(selectedTrail, 3).activeSelf)
         {
             return;
@@ -243,19 +218,16 @@ public class ShopController : MonoBehaviour
 
         if (usesDiamonds)
         {
-            // Trail uses diamonds
             UnlockTrailWithDiamonds(index);
         }
         else
         {
-            // Trail uses coins (trail 0)
             UnlockTrailWithCoins(index);
         }
     }
 
     public void PurchaseDiamond()
     {
-        // Mark click as handled and store index
         MarkClickProcessed();
         int index = selectedDiamondIndex;
         
@@ -266,12 +238,10 @@ public class ShopController : MonoBehaviour
 
         if (enableFakePurchases)
         {
-            // Fake purchase for testing
             SimulateDiamondPurchase(index);
         }
         else
         {
-            // Real IAP purchase (sẽ implement sau)
             SimulateDiamondPurchase(index);
         }
     }
@@ -280,25 +250,19 @@ public class ShopController : MonoBehaviour
     {
         int diamondCost = index < trailDiamondCosts.Length ? trailDiamondCosts[index] : 100;
 
-        // Check if DiamondManager exists
         if (DiamondManager.Instance == null)
         {
             return;
         }
 
-        // Check if player has enough diamonds
         if (!DiamondManager.Instance.HasEnoughDiamonds(diamondCost))
         {
             return;
         }
 
-        // Spend diamonds
         if (DiamondManager.Instance.SpendDiamonds(diamondCost))
         {
-            // Unlock trail
             UnlockTrailSuccess(index);
-            
-            // Note: Diamond display will be updated automatically via OnDiamondsChanged event
         }
     }
 
@@ -312,16 +276,14 @@ public class ShopController : MonoBehaviour
             // Spend coins
             PlayerPrefs.SetInt("totalCoins", balance);
             coinsText.text = balance.ToString();
-            coins = balance; // Update local coins
+            coins = balance; 
 
-            // Unlock trail
             UnlockTrailSuccess(index);
         }
     }
 
     private void UnlockTrailSuccess(int index)
     {
-        // Hide lock UI
         GetChildGameObject(selectedTrail, 3).SetActive(false);
 
         // Unlock trail and set as selected
@@ -370,7 +332,6 @@ public class ShopController : MonoBehaviour
                 indicatorImage.color = Color.yellow;
             }
             
-            // Update cost display based on dragon type (similar to trail logic)
             UpdateDragonCostDisplay(index);
         }
         else
@@ -441,15 +402,12 @@ public class ShopController : MonoBehaviour
             
             if (currentSelectedTrail == index)
             {
-                // Currently selected trail clicked again - deselect it (no trail mode)
                 PlayerPrefs.DeleteKey("selectedTrail");
                 GetChildGameObject(obj, 1).SetActive(false);
                 PlayerPrefs.Save();
             }
             else
             {
-                // Select this trail (deselect others first)
-                
                 // Deselect all other trails first
                 for (int i = 0; i < trails.Length; i++)
                 {
@@ -493,7 +451,6 @@ public class ShopController : MonoBehaviour
                 diamondValue.text = diamondCost.ToString();
             }
             
-            // Legacy support cho old value text
             if (value != null)
             {
                 int diamondCost = index < dragonDiamondCosts.Length ? dragonDiamondCosts[index] : 100;
@@ -545,7 +502,6 @@ public class ShopController : MonoBehaviour
             if (diamondValueUI != null) diamondValueUI.SetActive(false);
             if (coinValueUI != null) coinValueUI.SetActive(true);
             
-            // Legacy support cho old value text
             if (value != null)
             {
                 int coinCost = index < trailCoinCosts.Length ? trailCoinCosts[index] : 100;
@@ -638,7 +594,6 @@ public class ShopController : MonoBehaviour
             }
         }
         
-        // Trail 0 default unlock (only if not explicitly locked by debug)
         if (list.Length > 0)
         {
             // Only auto-unlock trail 0 if it hasn't been set before (first time)
@@ -648,26 +603,10 @@ public class ShopController : MonoBehaviour
                 PlayerPrefs.SetInt("trailStatus0", 1);
             }
             
-            // Optional: If no trail is selected and trail 0 is unlocked, you could select trail 0
-            // But now we allow "no trail" as a valid option, so this is commented out
-            // if (!PlayerPrefs.HasKey("selectedTrail") && PlayerPrefs.GetInt("trailStatus0", 0) == 1)
-            // {
-            //     PlayerPrefs.SetInt("selectedTrail", 0);
-            // }
-            
             bool isTrail0Selected = (selectedTrailIndex == 0);
             GameObject trail0Indicator = GetChildGameObject(list[0], 1);
             trail0Indicator.SetActive(isTrail0Selected);
             
-            // Set green color for trail 0 if selected
-            if (isTrail0Selected)
-            {
-                Image indicatorImage = trail0Indicator.GetComponent<Image>();
-                if (indicatorImage != null)
-                {
-                    indicatorImage.color = Color.green;
-                }
-            }
         }
     }
 
@@ -714,11 +653,6 @@ public class ShopController : MonoBehaviour
 
     #region Trail Cost Helper Methods
 
-    /// <summary>
-    /// Get trail cost info for UI or debugging
-    /// </summary>
-    /// <param name="index">Trail index</param>
-    /// <returns>Cost info string</returns>
     public string GetTrailCostInfo(int index)
     {
         if (index < 0) return "Invalid trail";
@@ -737,11 +671,6 @@ public class ShopController : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Check if player can afford trail
-    /// </summary>
-    /// <param name="index">Trail index</param>
-    /// <returns>True if player can afford the trail</returns>
     public bool CanAffordTrail(int index)
     {
         if (index < 0) return false;
@@ -766,17 +695,9 @@ public class ShopController : MonoBehaviour
 
     private void SimulateDiamondPurchase(int index)
     {
-        // Simulate successful purchase
         DiamondManager.Instance.AddDiamonds(diamondPackageAmounts[index]);
-        // Note: Diamond display will be updated automatically via OnDiamondsChanged event
     }
 
-
-
-    /// <summary>
-    /// Initial load of diamond progress - only called once at start
-    /// After this, updates are handled automatically via events
-    /// </summary>
     private void LoadDiamondProgress()
     {
         if (diamondsText != null && DiamondManager.Instance != null)
@@ -812,7 +733,6 @@ public class ShopController : MonoBehaviour
             }
         }
         
-        // Update cost display
         UpdateDiamondCostDisplay(index);
     }
 
@@ -837,9 +757,6 @@ public class ShopController : MonoBehaviour
     private bool clickProcessed = false;
     private Coroutine autoDeselectCoroutine;
 
-    /// <summary>
-    /// Check for clicks outside trail items to auto-deselect
-    /// </summary>
     private void CheckClickOutsideToDeselect()
     {
         // Check for trail, dragon, and diamond selections
@@ -895,28 +812,18 @@ public class ShopController : MonoBehaviour
         // Clear coroutine reference when done
         autoDeselectCoroutine = null;
     }
-    
-    /// <summary>
-    /// Call this method from click handlers to mark click as processed
-    /// </summary>
+
     public void MarkClickProcessed()
     {
         clickProcessed = true;
     }
 
-
-
-    /// <summary>
-    /// Deselect currently selected trail for purchase
-    /// </summary>
     private void DeselectCurrentTrail()
     {
         if (selectedTrail != null && selectedTrailIndex >= 0)
         {
-            // Hide selection indicator
             GetChildGameObject(selectedTrail, 1).SetActive(false);
             
-            // Hide cost display UI
             HideCostDisplay();
             
             // Clear selection
@@ -925,31 +832,22 @@ public class ShopController : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Deselect currently selected dragon for purchase
-    /// </summary>
     private void DeselectCurrentDragon()
     {
         if (selectedDragon != null && selectedDragonIndex >= 0)
         {
-            // Hide selection indicator (only if dragon is locked - for purchase)
             if (GetChildGameObject(selectedDragon, 3).activeSelf)
             {
                 GetChildGameObject(selectedDragon, 1).SetActive(false);
             }
             
-            // Hide cost display UI
             HideCostDisplay();
             
-            // Clear selection
             selectedDragon = null;
             selectedDragonIndex = -1;
         }
     }
 
-    /// <summary>
-    /// Deselect currently selected diamond package for purchase
-    /// </summary>
     private void DeselectCurrentDiamond()
     {
         if (selectedDiamond != null && selectedDiamondIndex >= 0)
@@ -957,7 +855,6 @@ public class ShopController : MonoBehaviour
             // Hide selection indicator
             GetChildGameObject(selectedDiamond, 1).SetActive(false);
             
-            // Hide cost display UI
             HideCostDisplay();
             
             // Clear selection
@@ -966,9 +863,6 @@ public class ShopController : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Hide all cost display UI elements
-    /// </summary>
     private void HideCostDisplay()
     {
         // Hide both coin and diamond value UI containers
@@ -984,9 +878,6 @@ public class ShopController : MonoBehaviour
 
     #region Event Management
 
-    /// <summary>
-    /// Subscribe to DiamondManager events for real-time UI updates
-    /// </summary>
     private void SubscribeToEvents()
     {
         if (DiamondManager.Instance != null)
@@ -999,9 +890,6 @@ public class ShopController : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Unsubscribe from DiamondManager events to prevent memory leaks
-    /// </summary>
     private void UnsubscribeFromEvents()
     {
         if (DiamondManager.Instance != null)
@@ -1015,10 +903,6 @@ public class ShopController : MonoBehaviour
 
     #region Event Handlers
     
-    /// <summary>
-    /// Event handler for diamond amount changes - updates UI automatically
-    /// </summary>
-    /// <param name="newAmount">New diamond amount</param>
     private void UpdateDiamondDisplay(int newAmount)
     {
         if (diamondsText != null)
@@ -1027,10 +911,6 @@ public class ShopController : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Event handler for scales amount changes - updates UI automatically
-    /// </summary>
-    /// <param name="newAmount">New scales amount</param>
     private void UpdateScalesDisplay(int newAmount)
     {
         coins = newAmount;
@@ -1044,9 +924,6 @@ public class ShopController : MonoBehaviour
 
     #region Debug Methods (REMOVE AFTER TESTING)
 
-    /// <summary>
-    /// Setup debug button for testing
-    /// </summary>
     private void SetupDebugButton()
     {
         if (debugLockButton != null)
@@ -1063,9 +940,6 @@ public class ShopController : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Debug button click handler - Nuclear lock everything
-    /// </summary>
     public void OnDebugLockClicked()
     {
         DebugNuclearLock();
@@ -1076,9 +950,6 @@ public class ShopController : MonoBehaviour
         // Note: Diamond display will be updated automatically via OnDiamondsChanged event
     }
 
-    /// <summary>
-    /// DEBUG: Nuclear lock everything except dragon 0
-    /// </summary>
     private void DebugNuclearLock()
     {
         
@@ -1093,7 +964,7 @@ public class ShopController : MonoBehaviour
             GetChildGameObject(dragons[i], 1).SetActive(false); // Hide selection
         }
         
-        // Lock ALL trails (including trail 0)
+        // Lock ALL trails 
         for (int i = 0; i < trails.Length; i++)
         {
             PlayerPrefs.SetInt("trailStatus" + i, 0);

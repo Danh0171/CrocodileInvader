@@ -41,7 +41,6 @@ public class GameplayMusicManager : MonoBehaviour
     [SerializeField] public Slider SFXUI;
 
 
-    // Start is called before the first frame update
     void Start()
     {
         if (!PlayerPrefs.HasKey("musicVolume"))
@@ -59,11 +58,6 @@ public class GameplayMusicManager : MonoBehaviour
         ChangeSFXVolume();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
     public void StopBGMandZombie()
     {
         BGM.Stop();

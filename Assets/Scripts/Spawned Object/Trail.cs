@@ -5,29 +5,29 @@ using UnityEngine;
 public class Trail : PoolableObject
 {
     [Header("Trail Settings")]
-    [SerializeField] private float orbitSpeed = 90f; // Degrees per second
-    [SerializeField] private float baseOrbitRadius = 1f; // Bán kính cơ bản
-    [SerializeField] private float radiusMultiplier = 0.1f; // Hệ số nhân với số lượng/khoảng cách dragon
-    [SerializeField] private float yDampingSpeed = 5f; // Tốc độ smooth Y position
+    [SerializeField] private float orbitSpeed = 90f; 
+    [SerializeField] private float baseOrbitRadius = 1f; 
+    [SerializeField] private float radiusMultiplier = 0.1f; 
+    [SerializeField] private float yDampingSpeed = 5f;
     
     [Header("Trail Magic Effects")]
-    [SerializeField] private TrailType trailType = TrailType.Fire; // Loại trail
-    [SerializeField] private float destroyChance = 0.1f; // 10% chance phá vỡ
+    [SerializeField] private TrailType trailType = TrailType.Fire; 
+    [SerializeField] private float destroyChance = 0.1f; 
     
     [Header("Effect Sprites")]
-    [SerializeField] private Sprite effectSprite; // Sprite cho effect này
+    [SerializeField] private Sprite effectSprite;
     
-    private Vector3 centerPosition; // Vị trí trung tâm orbit ban đầu
+    private Vector3 centerPosition; 
     private TrailRenderer trailRenderer;
-    private float currentY; // Y position hiện tại để smooth
-    private Collider2D trailCollider; // Để detect collision
+    private float currentY; 
+    private Collider2D trailCollider; 
     
     public enum TrailType
     {
-        Fire,    // ID: 0 - Lửa - nổ đen
-        Ice,     // ID: 1 - Băng - hoá băng  
-        Nature,  // ID: 2 - Lá - hoá lá
-        Dark     // ID: 3 - Dark magic - hố đen
+        Fire,    
+        Ice,      
+        Nature,  
+        Dark     
     }
 
     public override float Width => trailCollider ? trailCollider.bounds.size.x : 1f;
@@ -52,17 +52,14 @@ public class Trail : PoolableObject
     {
         base.Init();
         
-        // Reset position và các giá trị
         centerPosition = transform.localPosition;
         currentY = centerPosition.y;
     }
 
     protected override void Update()
     {
-        // Không gọi base.Update() vì trail có logic orbit riêng, không scroll back
         OrbitMovement();
         
-        // Vẫn check destroy khi out of bounds nhưng với logic khác
         if (GameManager.Instance.Zombies.FirstDragon == null)
         {
             DestroyOnOutOfBounds();
@@ -71,37 +68,30 @@ public class Trail : PoolableObject
 
     private void OrbitMovement()
     {
-        // Tính orbit radius dựa trên dragons
         float dynamicRadius = CalculateDynamicRadius();
         
-        // Tính center position động dựa trên dragons
         Vector3 dynamicCenter = CalculateDynamicCenter();
         
-        // Tính Y position dựa trên dragons với damping
         float targetY = CalculateDragonY();
         currentY = Mathf.Lerp(currentY, targetY, yDampingSpeed * Time.deltaTime);
         
-        // Object di chuyển theo hình tròn với depth effect
-        // Orbit speed thay đổi theo scrollBackSpeed
         float currentOrbitSpeed = orbitSpeed * GameManager.Instance.ScrollBackSpeed;
         float angle = Time.time * currentOrbitSpeed * Mathf.Deg2Rad;
         
         Vector3 orbitOffset = new Vector3(
             Mathf.Cos(angle) * dynamicRadius,
-            0, // Y sẽ được set riêng
-            Mathf.Sin(angle) * dynamicRadius * 0.5f // Z depth - nhỏ hơn X để tạo ellipse
+            0, 
+            Mathf.Sin(angle) * dynamicRadius * 0.5f 
         );
         
         Vector3 newPosition = dynamicCenter + orbitOffset;
-        newPosition.y = currentY + 0.7f; // Dùng smooth Y thay vì direct Y
+        newPosition.y = currentY + 0.7f; 
         
-        // Adjust Z để có depth relative to dragon
         if (GameManager.Instance.Zombies.FirstDragon != null)
         {
             float dragonZ = GameManager.Instance.Zombies.FirstDragon.transform.position.z;
-            newPosition.z = dragonZ + orbitOffset.z; // Trail ở trước/sau dragon
+            newPosition.z = dragonZ + orbitOffset.z; 
             
-            // Điều chỉnh sorting order dựa trên Z position
             UpdateSortingOrder(orbitOffset.z);
         }
         
@@ -131,7 +121,6 @@ public class Trail : PoolableObject
         if (dragonManager == null || dragonManager.Count == 0)
             return baseOrbitRadius;
         
-        // Option 1: Dựa trên số lượng dragons
         float countBasedRadius = baseOrbitRadius + (dragonManager.Count * radiusMultiplier);
         
         return countBasedRadius;
@@ -142,20 +131,18 @@ public class Trail : PoolableObject
         DragonManager dragonManager = GameManager.Instance.Zombies;
         
         if (dragonManager == null || dragonManager.FirstDragon == null)
-            return centerPosition; // Fallback về center ban đầu
+            return centerPosition; 
         
-        // Lấy vị trí FirstDragon
         Vector3 firstDragonPos = dragonManager.FirstDragon.transform.position;
         
         // Tính toán offset dựa trên số lượng dragons
-        float baseOffset = 0.1f; // Khoảng cách cố định
-        float countOffset = dragonManager.Count * 0.2f; // Offset dựa trên số lượng
+        float baseOffset = 0.1f; 
+        float countOffset = dragonManager.Count * 0.2f; 
         float totalOffset = baseOffset + countOffset;
         
-        // Center position = FirstDragon position - offset
         Vector3 dynamicCenter = new Vector3(
             firstDragonPos.x - totalOffset,
-            centerPosition.y, // Giữ Y gốc cho center, Y thực sẽ được tính riêng
+            centerPosition.y, 
             firstDragonPos.z
         );
         
@@ -167,7 +154,7 @@ public class Trail : PoolableObject
         DragonManager dragonManager = GameManager.Instance.Zombies;
         
         if (dragonManager == null || dragonManager.FirstDragon == null)
-            return centerPosition.y; // Fallback về Y ban đầu
+            return centerPosition.y; 
         
         // Sync với Y của dragon đầu tiên
         return dragonManager.FirstDragon.transform.position.y;
@@ -175,7 +162,6 @@ public class Trail : PoolableObject
     
     private void OnTriggerEnter2D(Collider2D other)
     {
-        // 10% chance phá vỡ vật thể
         if (Random.Range(0f, 1f) <= destroyChance)
         {
             ApplyTrailEffect(other.gameObject);
@@ -184,10 +170,8 @@ public class Trail : PoolableObject
     
     private void ApplyTrailEffect(GameObject target)
     {
-        // Null check đầu tiên
         if (target == null) return;
         
-        // Kiểm tra có thể phá vỡ không (tương tự hoá vàng logic)
         if (!CanDestroyObject(target)) return;
         
         // Check nếu object đã bị marked for destruction
@@ -198,7 +182,7 @@ public class Trail : PoolableObject
     
     private bool CanDestroyObject(GameObject target)
     {
-        // Tương tự logic hoá vàng - chỉ phá được certain objects
+        // chỉ phá được certain objects
         string tag = target.tag;
         return tag == "Object" || tag == "Bomb" || tag == "Box" || tag == "Obstacle";
     }
@@ -207,7 +191,6 @@ public class Trail : PoolableObject
     {
         if (target == null) return;
         
-        // Tạo effect sprite tại vị trí của object
         CreateLeafSprite(target.transform.position, effectSprite);
         
         // Special handling for Box - generate prey trước khi biến mất
@@ -223,7 +206,6 @@ public class Trail : PoolableObject
             }
         }
         
-        // Return to pool ngay lập tức (object biến mất, thay bằng effect sprite)
         ReturnToPool(target);
     }
 
@@ -231,13 +213,11 @@ public class Trail : PoolableObject
     {
         if (target == null) return;
         
-        // Special handling for Box - generate prey before returning to pool
         if (target.CompareTag("Box"))
         {
             Box box = target.GetComponent<Box>();
             if (box != null)
             {
-                // Call GeneratePreys method through reflection since it's private
                 var generatePreysMethod = box.GetType().GetMethod("GeneratePreys", 
                     System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
                 generatePreysMethod?.Invoke(box, null);
@@ -247,15 +227,12 @@ public class Trail : PoolableObject
         PoolableObject poolable = target.GetComponent<PoolableObject>();
         if (poolable != null)
         {
-            // TRỰC TIẾP gọi RemoveSelf() thay vì move off-screen để tránh race condition
-            // Sử dụng reflection để gọi protected method RemoveSelf()
             var removeSelfMethod = poolable.GetType().GetMethod("RemoveSelf", 
                 System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
             removeSelfMethod?.Invoke(poolable, null);
         }
         else
         {
-            // Nếu không có poolable, chỉ disable thay vì destroy
             target.SetActive(false);
         }
     }
@@ -269,17 +246,14 @@ public class Trail : PoolableObject
         // Thêm SpriteRenderer component
         SpriteRenderer effectRenderer = effectObject.AddComponent<SpriteRenderer>();
         
-        // Assign effect sprite nếu có
         if (effectSprite != null)
         {
             effectRenderer.sprite = effectSprite;
         }
         
-        // Set sorting layer để hiển thị đúng
         effectRenderer.sortingLayerName = "UI";
         effectRenderer.sortingOrder = 10;
         
-        // Thêm animation bay lên và biến mất
         StartCoroutine(LeafFallAnimation(effectObject));
     }
     
@@ -310,7 +284,7 @@ public class Trail : PoolableObject
             // Fade out trong nửa cuối của animation
             if (progress > 0.5f && renderer != null)
             {
-                float fadeProgress = (progress - 0.5f) * 2f; // 0 to 1 trong nửa cuối
+                float fadeProgress = (progress - 0.5f) * 2f; 
                 Color color = renderer.color;
                 color.a = 1f - fadeProgress;
                 renderer.color = color;
@@ -319,7 +293,6 @@ public class Trail : PoolableObject
             yield return null;
         }
         
-        // Destroy leaf object khi animation hoàn thành
         if (leafObject != null)
         {
             Destroy(leafObject);
@@ -328,7 +301,6 @@ public class Trail : PoolableObject
 
     protected override void DestroyOnOutOfBounds()
     {
-        // Trail chỉ bị destroy khi không còn dragon nào
         if (GameManager.Instance.Zombies.FirstDragon == null)
         {
             base.DestroyOnOutOfBounds();

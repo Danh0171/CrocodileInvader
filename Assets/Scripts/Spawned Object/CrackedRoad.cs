@@ -13,7 +13,6 @@ public class CrackedRoad : PoolableObject
     [Header("Auto Crack Settings")]
     [SerializeField] private float fallSpeed = 1.5f;
     
-    // Dynamic timing calculated from width and ScrollBackSpeed
     private float delayBeforeCrack;
     private float crackTime;
     
@@ -27,7 +26,6 @@ public class CrackedRoad : PoolableObject
     
     public void Config(float width, int layer)
     {
-        // Tăng width cho CrackedRoad để dễ nhảy hơn
         float crackedRoadWidth = width * 1.3f; // 30% longer than normal road
         
         spriteRenderer.size = new Vector2(crackedRoadWidth, spriteRenderer.size.y);
@@ -47,12 +45,10 @@ public class CrackedRoad : PoolableObject
         // Delay before crack starts (safe time)
         delayBeforeCrack = ((width - 4.4f)*2f ) / (currentScrollSpeed * 5f - 49.3f); 
         
-        // Crack warning time (time to react)
-        crackTime = delayBeforeCrack * 0.55f; // 70% of delay time as warning
+        crackTime = delayBeforeCrack * 0.55f; 
         
-        // Minimum timing bounds (ensure playability)
-        delayBeforeCrack = Mathf.Max(delayBeforeCrack, 0.1f); // At least 0s delay
-        crackTime = Mathf.Max(crackTime, 1f); // At least 1s warning
+        delayBeforeCrack = Mathf.Max(delayBeforeCrack, 0.1f); 
+        crackTime = Mathf.Max(crackTime, 1f); 
     }
 
     protected override void Start()
@@ -64,7 +60,6 @@ public class CrackedRoad : PoolableObject
     {
         base.Update();
         
-        // Auto crack sequence: delay → crack → break
         if (!isCracking && !hasFallen)
         {
             delayTimer += Time.deltaTime;
@@ -94,8 +89,7 @@ public class CrackedRoad : PoolableObject
         isCracking = false;
         hasFallen = false;
         crackTimer = 0f;
-        delayTimer = 0f; // Reset delay timer
-        // boxCollider.isTrigger = false;
+        delayTimer = 0f; 
         if (animator != null)
         {
             animator.SetBool("isCracking", false);
@@ -113,7 +107,6 @@ public class CrackedRoad : PoolableObject
             if (animator != null)
                 animator.SetBool("isCracking", true);
             
-            // Play crack sound effect
             GameplayMusicManager.Instance.PlayCrackedRoadSound();
         }
     }

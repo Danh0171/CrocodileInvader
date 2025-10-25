@@ -10,15 +10,8 @@ public class BonusBlock : MonoBehaviour
     [SerializeField] private GameObject topCover, bottomCover;
 
     private float countdownPopUp;
-    //private bool isCountdownPopUp = false;
     private float Width => boxCollider.size.x;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
     void Update()
     {
         if (countdownPopUp > 0)

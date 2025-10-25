@@ -4,6 +4,4 @@ using UnityEngine;
 
 public class CrackedRoadManager : Manager
 {
-    // Simple object pooling manager for CrackedRoad prefabs
-    // Spawning logic is handled by RoadManager
 }

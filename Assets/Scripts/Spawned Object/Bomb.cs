@@ -12,13 +12,11 @@ public class Bomb : PoolableObject
     public override float Width => boxCollider.size.x;
     public override float Height => boxCollider.size.y;
 
-    // Start is called before the first frame update
     protected override void Start()
     {
         
     }
 
-    // Update is called once per frame
     protected override void Update()
     {
         base.Update();

@@ -9,8 +9,7 @@ public class ShopManager : MonoBehaviour
 {
     [SerializeField] private GameObject Dragons;
     [SerializeField] private GameObject Trails;
-    [SerializeField] private GameObject Diamond; // Changed from PowerUp to Diamond
-
+    [SerializeField] private GameObject Diamond; 
     public TextMeshProUGUI coinsText;
 
     private int coins;

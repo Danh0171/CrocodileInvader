@@ -34,11 +34,11 @@ public class DiamondShopController : MonoBehaviour
     };
 
     [Header("UI References")]
-    [SerializeField] private Text diamondsText; // Text hiển thị số diamonds hiện tại
-    [SerializeField] private Button[] purchaseButtons; // Buttons để mua packages
+    [SerializeField] private Text diamondsText; 
+    [SerializeField] private Button[] purchaseButtons; 
 
     [Header("Testing")]
-    [SerializeField] private bool enableFakePurchases = true; // Enable fake purchases for testing
+    [SerializeField] private bool enableFakePurchases = true; 
 
     private DiamondPackage selectedPackage;
     private int selectedPackageIndex = -1;
@@ -71,9 +71,6 @@ public class DiamondShopController : MonoBehaviour
 
     #region UI Initialization
 
-    /// <summary>
-    /// Initialize UI elements
-    /// </summary>
     private void InitializeUI()
     {
         // Setup package UI elements
@@ -83,10 +80,6 @@ public class DiamondShopController : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Setup individual package UI
-    /// </summary>
-    /// <param name="index">Package index</param>
     private void SetupPackageUI(int index)
     {
         if (index < 0 || index >= diamondPackages.Length) return;
@@ -95,7 +88,6 @@ public class DiamondShopController : MonoBehaviour
         
         if (package.packageUI != null)
         {
-            // Setup price text (child 0 - similar to Dragon/Trail structure)
             Transform priceTextTransform = package.packageUI.transform.GetChild(0);
             if (priceTextTransform != null)
             {
@@ -106,7 +98,6 @@ public class DiamondShopController : MonoBehaviour
                 }
             }
 
-            // Setup diamond amount display (có thể là child khác)
             Text[] allTexts = package.packageUI.GetComponentsInChildren<Text>();
             foreach (Text text in allTexts)
             {
@@ -129,9 +120,6 @@ public class DiamondShopController : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Setup purchase buttons
-    /// </summary>
     private void SetupPackageButtons()
     {
         for (int i = 0; i < purchaseButtons.Length && i < diamondPackages.Length; i++)
@@ -150,10 +138,6 @@ public class DiamondShopController : MonoBehaviour
 
     #region Package Selection & Purchase
 
-    /// <summary>
-    /// Handle package click
-    /// </summary>
-    /// <param name="packageIndex">Index của package được click</param>
     public void OnPackageClicked(int packageIndex)
     {
         if (packageIndex < 0 || packageIndex >= diamondPackages.Length)
@@ -164,15 +148,9 @@ public class DiamondShopController : MonoBehaviour
         selectedPackage = diamondPackages[packageIndex];
         selectedPackageIndex = packageIndex;
 
-
-
-        // Immediately attempt purchase (fake or real)
         AttemptPurchase();
     }
 
-    /// <summary>
-    /// Attempt to purchase selected package
-    /// </summary>
     private void AttemptPurchase()
     {
         if (selectedPackage == null)
@@ -188,56 +166,28 @@ public class DiamondShopController : MonoBehaviour
         else
         {
             // Real IAP purchase (sẽ implement sau)
-
             SimulatePurchaseSuccess();
         }
     }
 
-    /// <summary>
     /// Simulate successful purchase (for testing)
-    /// </summary>
     private void SimulatePurchaseSuccess()
     {
         if (selectedPackage == null) return;
 
-
-        
         // Award diamonds
         if (DiamondManager.Instance != null)
         {
             DiamondManager.Instance.AddDiamonds(selectedPackage.diamondAmount);
         }
 
-        // Show success feedback (có thể add popup sau)
-        ShowPurchaseSuccess();
-
         // Clear selection
         selectedPackage = null;
         selectedPackageIndex = -1;
     }
 
-    /// <summary>
-    /// Show purchase success feedback
-    /// </summary>
-    private void ShowPurchaseSuccess()
-    {
-        // TODO: Show success popup/animation
-
-        
-        // For now, just log
-        if (selectedPackage != null)
-        {
-
-        }
-    }
-
     #endregion
 
-    #region UI Updates
-
-    /// <summary>
-    /// Update diamonds display
-    /// </summary>
     private void UpdateDiamondsDisplay()
     {
         if (diamondsText != null && DiamondManager.Instance != null)
@@ -246,33 +196,16 @@ public class DiamondShopController : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Called when diamonds change
-    /// </summary>
-    /// <param name="newDiamondCount">New diamond count</param>
     private void OnDiamondsChanged(int newDiamondCount)
     {
         UpdateDiamondsDisplay();
     }
 
-    #endregion
-
-    #region Public Methods (for buttons/UI)
-
-    /// <summary>
-    /// Method để gọi từ button click events
-    /// </summary>
-    /// <param name="packageIndex">Package index</param>
     public void PurchasePackage(int packageIndex)
     {
         OnPackageClicked(packageIndex);
     }
 
-    /// <summary>
-    /// Get package info for UI
-    /// </summary>
-    /// <param name="index">Package index</param>
-    /// <returns>Package info string</returns>
     public string GetPackageInfo(int index)
     {
         if (index < 0 || index >= diamondPackages.Length) return "";
@@ -280,36 +213,4 @@ public class DiamondShopController : MonoBehaviour
         DiamondPackage package = diamondPackages[index];
         return $"{package.packageName}\n{package.displayPrice}\n{package.diamondAmount} Diamonds";
     }
-
-    #endregion
-
-    #region Debug Methods
-
-    /// <summary>
-    /// Debug method để test tất cả packages
-    /// </summary>
-    [System.Diagnostics.Conditional("UNITY_EDITOR")]
-    public void Debug_TestAllPackages()
-    {
-
-        
-        for (int i = 0; i < diamondPackages.Length; i++)
-        {
-
-        }
-    }
-
-    /// <summary>
-    /// Debug method để force purchase package
-    /// </summary>
-    [System.Diagnostics.Conditional("UNITY_EDITOR")]
-    public void Debug_ForcePurchase(int packageIndex)
-    {
-        if (packageIndex >= 0 && packageIndex < diamondPackages.Length)
-        {
-            OnPackageClicked(packageIndex);
-        }
-    }
-
-    #endregion
 }

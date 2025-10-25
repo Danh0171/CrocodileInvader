@@ -10,13 +10,6 @@ public class ScalesManager : Manager
     [SerializeField] private int BONUS_GEMS = 3;
     [SerializeField] private float TIME_BONUS_WINDOW = 0.2f;
     
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
     void Update()
     {
         // Countdown gem time bonus
@@ -25,7 +18,6 @@ public class ScalesManager : Manager
             gemTimeBonus -= Time.deltaTime;
             if (gemTimeBonus <= 0f)
             {
-                // Reset khi hết thời gian
                 ResetScalesBonus();
             }
         }
@@ -38,7 +30,6 @@ public class ScalesManager : Manager
 
     public void TransformIntoCoin(PoolableObject item, bool isBomb, int vehicleID)
     {
-        // Calculate ID from the END of the list to avoid issues when adding new prefabs at the beginning
         int bombScalesIndex = PrefabsCount - 4;
         int ID = bombScalesIndex;
         if (!isBomb)
@@ -47,7 +38,6 @@ public class ScalesManager : Manager
         cc.transform.position = item.transform.position;
     }
     
-    // Called by Scales when collected
     public void ProcessScalesBonus()
     {
         // Reset time window to 2 seconds
@@ -64,8 +54,7 @@ public class ScalesManager : Manager
             }
             
             GameplayMusicManager.Instance.PlayPerfectSound();
-            
-            // Reset for next bonus round
+
             ResetScalesBonus();
         }
     }

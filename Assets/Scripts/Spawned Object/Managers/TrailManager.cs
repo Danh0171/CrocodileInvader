@@ -21,16 +21,13 @@ public class TrailManager : Manager
 
     void Start()
     {
-        // Spawn trail dựa trên selected trail from shop
         SpawnSelectedTrail();
     }
 
     void Update()
     {
-        // Check if selected trail changed during gameplay
         CheckTrailChange();
         
-        // Manage active trail
         ManageActiveTrail();
     }
     
@@ -103,7 +100,6 @@ public class TrailManager : Manager
         }
         else if (GameManager.Instance.Zombies.FirstDragon != null)
         {
-            // If no trail but have dragons and a trail is selected, try to spawn trail
             SpawnSelectedTrail();
         }
     }
@@ -131,11 +127,8 @@ public class TrailManager : Manager
             currentActiveTrail = null;
         }
         
-        // NOTE: Removed auto-spawn logic - trails are now optional
-        // Players must explicitly select a trail for it to appear
     }
     
-    // Public method để force change trail (có thể gọi từ shop)
     public void ForceChangeTrail(int trailID)
     {
         PlayerPrefs.SetInt("selectedTrail", trailID);
@@ -143,13 +136,11 @@ public class TrailManager : Manager
         ChangeTrail(trailID);
     }
     
-    // Public method để deselect trail (no trail mode)
     public void DeselectTrail()
     {
-        PlayerPrefs.DeleteKey("selectedTrail"); // Remove trail selection entirely
+        PlayerPrefs.DeleteKey("selectedTrail"); 
         PlayerPrefs.Save();
         
-        // Remove current trail if any
         if (currentActiveTrail != null)
         {
             ReturnItem(currentActiveTrail);

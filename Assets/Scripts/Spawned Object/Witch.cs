@@ -6,16 +6,16 @@ public class Witch : PoolableObject
 {
     [Header("Witch Settings")]
     [SerializeField] private BoxCollider2D boxCollider;
-    [SerializeField] private float waitTime = 2f; // Đứng yên 2s
-    [SerializeField] private float flySpeed = 20f; // Tốc độ bay ngang
-    [SerializeField] private LayerMask dragonLayer; // Layer của dragons
+    [SerializeField] private float waitTime = 2f; 
+    [SerializeField] private float flySpeed = 20f; 
+    [SerializeField] private LayerMask dragonLayer; 
     [SerializeField] private SpriteRenderer idleSprite; 
     [SerializeField] private SpriteRenderer flySprite; 
     private enum WitchState
     {
-        Waiting,    // Đứng yên chờ
-        Flying,     // Bay ngang
-        Finished    // Đã bay xong
+        Waiting,    
+        Flying,    
+        Finished    
     }
     
     private WitchState currentState = WitchState.Waiting;
@@ -37,7 +37,7 @@ public class Witch : PoolableObject
         flySprite.enabled = false;
         currentState = WitchState.Waiting;
         stateTimer = 0f;
-        boxCollider.isTrigger = false; // Ban đầu không trigger
+        boxCollider.isTrigger = false; 
     }
 
     protected override void Update()
@@ -53,7 +53,6 @@ public class Witch : PoolableObject
                 HandleFlyingState();
                 break;
             case WitchState.Finished:
-                // Do nothing, waiting for removal
                 break;
         }
     }
@@ -75,15 +74,13 @@ public class Witch : PoolableObject
         idleSprite.enabled = false;
         flySprite.enabled = true;
         stateTimer = 0f;
-        boxCollider.isTrigger = true; // Bật trigger để kill dragons
+        boxCollider.isTrigger = true; 
     }
     
     private void HandleFlyingState()
     {
-        // Bay sang trái với tốc độ flySpeed
         transform.position += Vector3.left * flySpeed * Time.deltaTime;
         
-        // Kiểm tra nếu đã bay ra khỏi màn hình
         if (transform.position.x < -GameManager.ScreenWidth * 0.6f)
         {
             currentState = WitchState.Finished;
@@ -110,7 +107,6 @@ public class Witch : PoolableObject
         GameManager.Instance.CallExplosion(false, dragon.transform.position);
         GameplayMusicManager.Instance.PlayBoomSound();
         
-        // Remove dragon using DragonManager (Zombies)
         GameManager.Instance.Zombies.ReturnItem(dragon);
     }
 }
