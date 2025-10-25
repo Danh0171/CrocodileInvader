@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+
 
 public class GameManager : MonoBehaviour
 {
@@ -24,6 +26,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Transform detector1, detector2;
 
     [SerializeField] private float scrollBackSpeed;
+    private float savedScrollBackSpeed;
     [SerializeField] private float deltaSpawnTime;
     [SerializeField] private GameObject explosion;
 
@@ -44,7 +47,7 @@ public class GameManager : MonoBehaviour
 
     [Header("Debug only")]
     [SerializeField] private int spawnOnly;
-    public bool SpawnBombOnly
+    public bool SpawnBombAndWitchOnly
     {
         set
         {
@@ -92,17 +95,18 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public CrocodileManager Zombies => (CrocodileManager)managers[0];
-    public GemManager Coins => (GemManager)managers[4];
-    public ChickenManager Humans => (ChickenManager)managers[2];
+    public DragonManager Zombies => (DragonManager)managers[0];
+    public TrailManager Trails => (TrailManager)managers[1];
+    public ScalesManager Coins => (ScalesManager)managers[4];
+    public EggManager Humans => (EggManager)managers[2];
     #endregion Properties
 
 
-    // Start is called before the first frame update
     void Start()
     {
-        Debug.Log("ScreenSize: " + ScreenWidth + "x" + ScreenHeight);
-
+        // Initialize coin system - load from PlayerPrefs for shop integration
+        coinNumber = 0; // Current session coins (display only)
+        
         brainNumber = 0;
         GenerateZombies(initialZombieNumber);
         spawnTimeCount = 0f;
@@ -110,7 +114,6 @@ public class GameManager : MonoBehaviour
         countDownOver = 1f;
     }
 
-    // Update is called once per frame
     void Update()
     {
         CheckBonusBlockUpdate();
@@ -141,8 +144,12 @@ public class GameManager : MonoBehaviour
                     highRecord.SetActive(true);
                     PlayerPrefs.SetInt("HighScore", brainNumber);
                 }
+                
+                // Ensure all progress is saved
+                PlayerPrefs.Save();
 
                 Time.timeScale = 0f;
+                scrollBackSpeed = 0f;
             }
         }
     }
@@ -156,22 +163,40 @@ public class GameManager : MonoBehaviour
             {
                 if (spawnOnly == -1)
                 {
-                    // Thêm CrackedRoadManager vào danh sách có thể spawn
+                    // Normal spawn - all managers từ index 2 trở đi và trừ Witch ở index cuối
                     var availableManagers = new List<Manager>();
-                    for (int i = 2; i < managers.Count; i++)
+                    for (int i = 2; i < managers.Count-1; i++)
                         availableManagers.Add(managers[i]);
                     
                     availableManagers[Random.Range(0, availableManagers.Count)].CallSpawnItem();
                 }
+                else if (spawnOnly == 3)
+                {
+                    // SpawnBombAndWitchOnly - 70% bomb, 30% witch
+                    int randomChance = Random.Range(0, 100);
+                    if (randomChance < 70)
+                    {
+                        // 70% spawn bomb
+                        managers[3].CallSpawnItem(); // BombManager
+                    }
+                    else
+                    {
+                        // 30% spawn witch
+                        managers[6].CallSpawnItem(); // WitchManager (index 6)
+                    }
+                }
                 else
+                {
+                    // Specific manager spawn
                     managers[spawnOnly].CallSpawnItem();
+                }
             }
             else
             {
                 if (spawnCode == 1)
                     SetActiveBonusBlock();
                 else
-                    Coins.GetItem(2);
+                    Coins.GetItem(4); // Two column coin
                 spawnCode = 0;
             }
             spawnTimeCount = 0f;
@@ -192,11 +217,22 @@ public class GameManager : MonoBehaviour
         brainNumber += number;
     }
 
-    public void IncCoin() { coinNumber++; }
+    public void IncCoin() 
+    { 
+        coinNumber++;
+        
+        // Save to totalCoins for shop system
+        int totalCoins = PlayerPrefs.GetInt("totalCoins", 0);
+        totalCoins++;
+        PlayerPrefs.SetInt("totalCoins", totalCoins);
+        PlayerPrefs.Save();
+    }
 
     public void PauseGame()
     {
         Time.timeScale = 0f;
+        savedScrollBackSpeed = scrollBackSpeed;
+        scrollBackSpeed = 0f;
         pausedUI.SetActive(true);
         GameplayMusicManager.Instance.PauseBGMandZombie();
     }
@@ -204,8 +240,14 @@ public class GameManager : MonoBehaviour
     public void ContinueGame()
     {
         Time.timeScale = 1f;
+        scrollBackSpeed = savedScrollBackSpeed;
         pausedUI.SetActive(false);
         GameplayMusicManager.Instance.PlayBGMandZombie();
+    }
+
+    public void NavigateTo(string sceneName)
+    {
+        SceneManager.LoadScene(sceneName);
     }
 
     private void CheckBonusBlockUpdate()
@@ -245,7 +287,7 @@ public class GameManager : MonoBehaviour
         bonusBlockActiveCountTime = bonusBlockActiveMaxTime;
     }
 
-    public void DeactivateTranform()
+    public void DeactivateTransform()
     {
         Instance.Zombies.ChangeForm(0);
         isCountSpawnBlock = true;
@@ -256,8 +298,8 @@ public class GameManager : MonoBehaviour
         if (isBomb)
             explosion.transform.position = new Vector3(position.x, position.y + 1f, explosion.transform.position.z);
         else
-            explosion.transform.position = new Vector3(Zombies.FirstCrocodile.transform.position.x + 3f,
-                Zombies.FirstCrocodile.transform.position.y, explosion.transform.position.z);
+            explosion.transform.position = new Vector3(Zombies.FirstDragon.transform.position.x + 3f,
+                Zombies.FirstDragon.transform.position.y, explosion.transform.position.z);
         explosion.gameObject.SetActive(true);
     }
 }

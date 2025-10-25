@@ -1191,7 +1191,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 381576264}
-        m_TargetAssemblyTypeName: StartMenuFunctions, Assembly-CSharp
+        m_TargetAssemblyTypeName: ButtonFunctions, Assembly-CSharp
         m_MethodName: StartGame
         m_Mode: 1
         m_Arguments:
