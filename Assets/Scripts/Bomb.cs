@@ -56,7 +56,6 @@ public class Bomb : PoolableObject
             if (GameManager.Instance.Zombies.CurrentFormID != Crocodile.SPELLCASTERID)
             {
                 boxCollider.isTrigger = true;
-                animator.SetTrigger("damage");
                 GameplayMusicManager.Instance.PlayBoomSound();
                 GameManager.Instance.CallExplosion(true, transform.position);
             }
