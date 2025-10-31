@@ -27,7 +27,8 @@ public class ButtonFunctions : MonoBehaviour
         if (PlayerPrefs.HasKey("HighScore"))
             hs = PlayerPrefs.GetInt("HighScore");
         Time.timeScale = 1.0f;
-        highScoreText.text = hs.ToString();
+        if (highScoreText != null)
+            highScoreText.text = hs.ToString();
     }
     
 }

@@ -9,6 +9,7 @@ TagManager:
   - Zombie
   - Road
   - Object
+  - Box
   layers:
   - Default
   - TransparentFX
